@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -390,6 +391,88 @@ a{color:inherit;text-decoration:none}
 .rc-collapse ul{list-style:none;margin:0;padding:6px 0 0;display:flex;flex-direction:column;gap:8px}
 .rc-collapse li{font-size:13.5px;color:var(--txt2);line-height:1.4;display:flex;align-items:flex-start;gap:8px}
 .rc-collapse li svg{width:14px;height:14px;color:var(--teal);flex-shrink:0;margin-top:2px}
+
+/* ===== TELA 4 — PAGAMENTO (estilo Tokio, AAA) ===== */
+.pay-back{display:inline-flex;align-items:center;gap:7px;background:none;border:none;color:var(--teal);font-size:13px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;margin-bottom:6px}
+.pay-back svg{width:18px;height:18px}
+.pay-back:hover{opacity:.78}
+.pay-grid{display:grid;grid-template-columns:1fr 320px;gap:22px;max-width:1180px;margin:0 auto;align-items:start}
+@media(max-width:900px){.pay-grid{grid-template-columns:1fr}}
+.pay-main{display:flex;flex-direction:column;gap:18px;min-width:0}
+.pay-aside{align-self:start;position:sticky;top:90px;border-radius:18px;overflow:hidden;box-shadow:var(--card-sh);background:#fff}
+@media(max-width:900px){.pay-aside{position:static;order:-1}}
+.pa-top{background:linear-gradient(120deg,var(--teal),var(--neon));padding:18px 22px;color:#fff;text-align:center}
+.pa-from{font-size:15px;font-weight:700;color:rgba(255,255,255,.72);text-decoration:line-through;line-height:1.2}
+.pa-now{font-size:30px;font-weight:900;line-height:1.15}
+.pa-now span{font-size:15px;font-weight:600}
+.pa-cup{font-size:12px;font-weight:700;color:rgba(255,255,255,.92);margin-top:4px}
+.pa-body{padding:15px 20px;display:flex;flex-direction:column;gap:11px}
+.pa-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13.5px;color:var(--txt2)}
+.pa-row b{color:var(--txt1);font-weight:700;text-align:right}
+.coupon-card{border-radius:16px;overflow:hidden;box-shadow:var(--card-sh)}
+.cc-head{background:linear-gradient(120deg,rgba(39,153,137,.95),rgba(70,239,128,.92));color:#fff;text-align:center;font-size:18px;font-weight:800;padding:15px}
+.cc-body{background:#fff;padding:16px 22px;display:flex;gap:14px;align-items:center}
+.cc-body input{flex:1;border:none;border-bottom:2px solid rgba(0,36,48,.12);font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--txt1);padding:9px 2px;background:none}
+.cc-body input:focus{outline:none;border-color:var(--neon)}
+.cc-body input::placeholder{color:rgba(0,36,48,.28);font-weight:500;letter-spacing:normal}
+.cc-ok{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--neon),var(--teal));color:var(--navy);display:flex;align-items:center;justify-content:center;box-shadow:0 5px 14px rgba(70,239,128,.34);transition:transform .15s}
+.cc-ok:hover{transform:scale(1.07)}
+.cc-ok svg{width:22px;height:22px}
+.cc-msg{font-size:12.5px;font-weight:600;padding:0 22px 12px;min-height:0;background:#fff}
+.cc-msg:empty{padding:0}
+.cc-msg.ok{color:var(--teal)}
+.cc-msg.err{color:var(--err)}
+.pay-card{background:#fff;border-radius:18px;padding:24px 28px;box-shadow:var(--card-sh)}
+.pay-addr{max-width:1180px;margin:18px auto 0}
+.pc-title{display:flex;align-items:center;gap:11px;font-size:18px;font-weight:800;color:var(--txt1);margin-bottom:22px}
+.pc-title svg{width:24px;height:24px;color:var(--teal);flex-shrink:0}
+.pay-methods{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.pmeth{flex:1;min-width:170px;display:flex;align-items:center;gap:12px;border:2px solid rgba(0,36,48,.1);border-radius:14px;padding:15px 18px;cursor:pointer;transition:all .16s;background:#fff;text-align:left}
+.pmeth:hover{border-color:rgba(39,153,137,.45)}
+.pmeth.on{border-color:var(--neon);background:rgba(70,239,128,.06)}
+.pmeth .rdo{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,36,48,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .16s}
+.pmeth.on .rdo{border-color:var(--teal)}
+.pmeth.on .rdo::after{content:"";width:11px;height:11px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--teal))}
+.pmeth .pm-txt{font-size:14.5px;font-weight:700;color:var(--txt1)}
+.field-lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:9px;display:block}
+.titular-wrap{margin-bottom:22px;max-width:420px}
+.pay-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:13px;background:linear-gradient(135deg,var(--neon),var(--teal));color:var(--navy);font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;transition:all .18s;box-shadow:0 8px 20px rgba(70,239,128,.28)}
+.pay-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(70,239,128,.42)}
+.pay-btn svg{width:18px;height:18px}
+.pay-btn.done{background:linear-gradient(135deg,#e9faef,#dff6ea);color:var(--teal);box-shadow:none;border:2px solid rgba(39,153,137,.4)}
+.pay-btn.ghost{background:none;border:2px solid var(--teal);color:var(--teal);box-shadow:none;margin-top:12px}
+.pay-btn.ghost:hover{background:var(--teal);color:#fff;transform:none}
+.pay-sec{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--txt3);margin-top:16px;line-height:1.45}
+.pay-sec svg{width:16px;height:16px;color:var(--teal);flex-shrink:0;margin-top:1px}
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 24px}
+.addr-grid .af.full{grid-column:1/-1}
+.af label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;display:block}
+.af input{width:100%;border:none;border-bottom:2px solid rgba(0,36,48,.1);font-size:15.5px;font-weight:600;color:var(--txt1);padding:7px 2px;background:none;transition:border-color .16s}
+.af input:focus{outline:none;border-color:var(--neon)}
+.af input::placeholder{color:rgba(0,36,48,.28);font-weight:500}
+.af-hint{font-size:11px;color:var(--txt3);margin-top:6px}
+.pay-terms{max-width:560px;margin:22px auto 0}
+.pix-amount{text-align:center;font-size:30px;font-weight:900;color:var(--teal);padding:8px 0 2px}
+.pix-amount span{font-size:15px;font-weight:600;color:var(--txt2)}
+/* ===== TELA 5 — CONCLUSÃO ===== */
+.done-card{max-width:620px;margin:0 auto;background:#fff;border-radius:22px;box-shadow:0 16px 44px rgba(0,36,48,.12);padding:40px 34px 34px;text-align:center}
+.done-badge{width:84px;height:84px;border-radius:50%;margin:0 auto 22px;background:linear-gradient(135deg,var(--neon),var(--teal));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(70,239,128,.4);animation:dpop .4s cubic-bezier(.16,1,.3,1)}
+@keyframes dpop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.done-badge svg{width:42px;height:42px;color:#fff}
+.done-h{font-size:25px;font-weight:800;color:var(--txt1);margin-bottom:8px}
+.done-sub{font-size:15px;color:var(--txt2);line-height:1.5;margin-bottom:18px}
+.done-num{display:inline-block;background:var(--surf);border:1px solid rgba(0,36,48,.08);border-radius:12px;padding:10px 18px;font-size:14px;color:var(--txt2);margin-bottom:22px}
+.done-num b{color:var(--teal);letter-spacing:.04em}
+.done-summary{text-align:left;border:1px solid rgba(0,36,48,.08);border-radius:14px;overflow:hidden;margin-bottom:18px}
+.ds-row{display:flex;justify-content:space-between;gap:14px;padding:13px 18px;border-bottom:1px solid rgba(0,36,48,.06);font-size:14px;color:var(--txt2)}
+.ds-row:last-child{border-bottom:none}
+.ds-row b{color:var(--txt1);font-weight:700;text-align:right}
+.ds-row.total{background:var(--surf)}
+.ds-row.total b{color:var(--teal);font-size:18px;font-weight:900}
+.done-note{font-size:12.5px;color:var(--txt3);line-height:1.5;margin-bottom:22px}
+.done-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.done-actions .pay-btn,.done-actions .co-cta{min-width:200px;width:auto;flex:1;margin:0}
+.done-actions .pay-btn.ghost{margin-top:0}
 
 </style>
 </head>
@@ -906,9 +989,322 @@ function renderTela3(){
       btn.classList.toggle('open',open);
     };
   });
-  document.getElementById('t3-avancar').onclick=()=>{
-    alert('Próxima etapa: pagamento.\n\nApólice resumida:\n'+pacNome(r.pacote)+' · '+assistNome(r.assist)+petTxt+'\n'+fmtBRL(q.mensal)+'/mês · IS '+fmtBRL0(r.lmi)+'.');
+  document.getElementById('t3-avancar').onclick=()=>{ S.resStep=4; renderTela4(); };
+  window.scrollTo(0,0);
+}
+
+/* ===================== TELA 4 — PAGAMENTO (estilo Tokio, AAA) ===================== */
+/* Cupons de exemplo — EDITE/REMOVA livremente. Chave = código (maiúsculas), valor = % de desconto. */
+const CUPONS={ 'VOCE10':10, 'BEMVINDO5':5 };
+
+/* ícones locais da tela de pagamento */
+function _wallet(){return '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="14" r="1.4" fill="currentColor"/></svg>';}
+function _card(){return '<svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M2.5 9.5h19" stroke="currentColor" stroke-width="2"/><path d="M6 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';}
+function _lock(){return '<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/></svg>';}
+function _addrico(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 10v9h14v-9" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19v-5h4v5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';}
+function _check(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
+function _arrow(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
+
+/* totais (aplica cupom, se houver) — NÃO altera a fórmula resPremio, só desconto comercial sobre o resultado */
+function payTotais(){
+  const q=resPremio();
+  const pct=(S.res._cupom&&S.res._cupom.pct)||0;
+  const now=q.mensal*(1-pct/100);
+  return {mensal:q.mensal, now:now, pct:pct, anual:now*12};
+}
+function payAsideHTML(){
+  const r=S.res, t=payTotais();
+  return '<div class="pa-top">'
+    +(t.pct>0?'<div class="pa-from">'+fmtBRL(t.mensal)+' / mês</div>':'')
+    +'<div class="pa-now">'+fmtBRL(t.now)+' <span>/ mês</span></div>'
+    +(t.pct>0?'<div class="pa-cup">Cupom '+r._cupom.code+' · −'+t.pct+'%</div>':'')
+    +'</div>'
+    +'<div class="pa-body">'
+    +'<div class="pa-row"><span>IS</span><b>'+fmtBRL0(r.lmi)+'</b></div>'
+    +'<div class="pa-row"><span>Assistência</span><b>'+assistNome(r.assist)+(r.pet?' + '+petNome(r.pet):'')+'</b></div>'
+    +'<div class="pa-row"><span>Pacote de cobertura</span><b>'+pacNome(r.pacote)+'</b></div>'
+    +'</div>';
+}
+/* dropdown enxuto (sem o box do sel-card) — usa o mesmo bindCsel premium */
+function cselBare(id,opts,val){
+  const cur=opts.find(o=>o.v===val)||opts[0];
+  const optsHtml=opts.map(o=>'<div class="csel-opt'+(o.v===val?' sel':'')+'" data-val="'+o.v+'" data-nome="'+o.n+'"><span class="csel-opt-txt">'+o.n+'</span><svg class="csel-check" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>').join('');
+  return '<div class="csel" id="'+id+'" data-val="'+val+'"><button type="button" class="csel-btn"><span class="csel-val">'+(cur?cur.n:'Selecione')+'</span><svg class="csel-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="csel-panel">'+optsHtml+'</div></div>';
+}
+function af(label,id,val,ph,full,hint){
+  return '<div class="af'+(full?' full':'')+'"><label for="'+id+'">'+label+'</label>'
+    +'<input id="'+id+'" value="'+(val||'')+'" placeholder="'+(ph||'')+'" autocomplete="off">'
+    +(hint?'<div class="af-hint">'+hint+'</div>':'')+'</div>';
+}
+
+function renderTela4(){
+  const r=S.res;
+  if(r._titular===undefined)r._titular='proprio';
+  if(r._pgto===undefined)r._pgto='cartao';
+  if(r._parcelas===undefined)r._parcelas=12;
+  if(r._pgtoOk===undefined)r._pgtoOk=false;
+  if(r._terms===undefined)r._terms=false;
+  if(!r._addr)r._addr={cep:r.cep||'',endereco:'',numero:'',compl:'',bairro:'',cidade:'',uf:'',tel:r.wa||'',email:r.email||'',nomeSocial:''};
+  const ini=new Date(), fim=new Date(); fim.setMonth(fim.getMonth()+(r.vig||36));
+  const dt=d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+
+  const page=document.getElementById('wizard');
+  page.innerHTML=''
+    +'<div class="coast">'
+    +'<button class="pay-back" id="pay-back"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Voltar ao resumo</button>'
+    +'<div class="co-greet"><div class="cg-eye">Seguro Residencial</div>'
+    +'<h2>Agora, é só inserir os dados de pagamento e correspondência para finalizar.</h2>'
+    +'<p>Vigência do Seguro: '+dt(ini)+' a '+dt(fim)+'</p></div>'
+    + skylineBand(100)
+    +'<div class="pay-grid">'
+    +'<div class="pay-main">'
+      // cupom
+    +'<div class="coupon-card"><div class="cc-head">Possui Cupom de Desconto?</div>'
+    +'<div class="cc-body"><input id="pay-cupom" placeholder="DIGITE AQUI" value="'+((r._cupom&&r._cupom.code)||'')+'" autocomplete="off">'
+    +'<button class="cc-ok" id="pay-cupom-ok" aria-label="Aplicar cupom">'+_check()+'</button></div>'
+    +'<div class="cc-msg" id="pay-cupom-msg">'+((r._cupom&&r._cupom.pct)?'Cupom '+r._cupom.code+' aplicado: −'+r._cupom.pct+'%.':'')+'</div></div>'
+      // forma de pagamento
+    +'<div class="pay-card"><div class="pc-title">'+_wallet()+'Selecione a Forma de Pagamento</div>'
+    +'<div class="pay-methods">'
+    +'<button type="button" class="pmeth'+(r._pgto==='cartao'?' on':'')+'" data-pg="cartao"><span class="rdo"></span><span class="pm-txt">Cartão de Crédito</span></button>'
+    +'<button type="button" class="pmeth'+(r._pgto==='pix'?' on':'')+'" data-pg="pix"><span class="rdo"></span><span class="pm-txt">Débito / PIX Automático</span></button>'
+    +'</div>'
+    +'<div class="titular-wrap" id="titular-wrap"><label class="field-lbl">'+(r._pgto==='cartao'?'Titular do cartão':'Titular da conta')+'</label>'
+    + cselBare('sel-titular',[{v:'proprio',n:'Próprio Segurado'},{v:'outro',n:'Outro'}],r._titular)+'</div>'
+    +'<button type="button" class="pay-btn'+(r._pgtoOk?' done':'')+'" id="pay-dados">'+(r._pgtoOk?_check()+'<span>Dados confirmados</span>':_card()+'<span>Dados de pagamento</span>')+'</button>'
+    +'<button type="button" class="pay-btn ghost" id="pay-proposta">Fazer download da proposta</button>'
+    +'<div class="pay-sec">'+_lock()+'<span>Para sua segurança, esta seção é protegida por criptografia e monitoramento seguro. Parcelamento em até 12x sem juros.</span></div>'
+    +'</div>'
+    +'</div>' // pay-main
+    +'<aside class="pay-aside" id="pay-aside">'+payAsideHTML()+'</aside>'
+    +'</div>' // pay-grid
+      // endereço / dados pessoais
+    +'<div class="pay-card pay-addr">'
+    +'<div class="pc-title">'+_addrico()+'Endereço / Dados Pessoais do Segurado</div>'
+    +'<div class="addr-grid">'
+    + af('CEP','af-cep',r._addr.cep,'00000-000',true)
+    + af('Endereço','af-end',r._addr.endereco,'Rua, avenida...',true)
+    + af('Número do imóvel','af-num',r._addr.numero,'Digite aqui')
+    + af('Complemento','af-compl',r._addr.compl,'Digite aqui')
+    + af('Bairro','af-bairro',r._addr.bairro,'Digite aqui',true)
+    + af('Cidade','af-cidade',r._addr.cidade,'Digite aqui')
+    + af('Estado','af-uf',r._addr.uf,'UF')
+    + af('Telefone','af-tel',r._addr.tel,'(00) 00000-0000')
+    + af('E-mail','af-email',r._addr.email,'voce@email.com')
+    + af('Nome social','af-nome',r._addr.nomeSocial,'Digite aqui',true,'Opcional')
+    +'</div></div>'
+      // termos + finalizar
+    +'<label class="consent pay-terms'+(r._terms?' on':'')+'" id="pay-terms"><span class="ck">'+_check()+'</span><span>Eu concordo com os <a href="#" onclick="return false" style="color:var(--teal);font-weight:700;text-decoration:underline">Termos e Condições</a> do seguro.</span></label>'
+    +'<div class="co-cta-wrap"><button class="co-cta" id="pay-finalizar" disabled>Finalizar contratação'+_arrow()+'</button></div>'
+    +'</div>'; // coast
+  bindTela4();
+  window.scrollTo(0,0);
+}
+
+function bindTela4(){
+  const r=S.res;
+  document.getElementById('pay-back').onclick=()=>{ S.resStep=3; renderTela3(); };
+  // cupom
+  const apply=()=>{
+    const inp=document.getElementById('pay-cupom'); const msg=document.getElementById('pay-cupom-msg');
+    const code=(inp.value||'').trim().toUpperCase();
+    if(!code){ r._cupom=null; msg.className='cc-msg'; msg.textContent=''; refreshAside(); return; }
+    if(CUPONS[code]){ r._cupom={code:code,pct:CUPONS[code]}; msg.className='cc-msg ok'; msg.textContent='Cupom '+code+' aplicado: −'+CUPONS[code]+'%.'; }
+    else { r._cupom=null; msg.className='cc-msg err'; msg.textContent='Cupom inválido ou expirado.'; }
+    refreshAside();
   };
+  document.getElementById('pay-cupom-ok').onclick=apply;
+  document.getElementById('pay-cupom').addEventListener('keydown',e=>{ if(e.key==='Enter')apply(); });
+  // forma de pagamento
+  document.querySelectorAll('.pmeth').forEach(b=>{
+    b.onclick=()=>{
+      r._pgto=b.dataset.pg;
+      document.querySelectorAll('.pmeth').forEach(x=>x.classList.toggle('on',x===b));
+      r._pgtoOk=false; // troca de método pede nova confirmação
+      const dl=document.querySelector('.titular-wrap .field-lbl'); if(dl)dl.textContent=(r._pgto==='cartao'?'Titular do cartão':'Titular da conta');
+      paintDados(); checkFinalize();
+    };
+  });
+  bindCsel('sel-titular',v=>{ r._titular=v; });
+  document.getElementById('pay-dados').onclick=()=>{ r._pgto==='cartao'?openCardModal():openPixModal(); };
+  document.getElementById('pay-proposta').onclick=baixarProposta;
+  // endereço
+  const A=r._addr;
+  const cep=document.getElementById('af-cep');
+  cep.oninput=e=>{ let v=e.target.value.replace(/\D/g,'').slice(0,8); if(v.length>5)v=v.replace(/(\d{5})(\d+)/,'$1-$2'); e.target.value=v; A.cep=v; checkFinalize(); if(v.replace(/\D/g,'').length===8)viaCep(v); };
+  document.getElementById('af-end').oninput=e=>{ A.endereco=e.target.value; checkFinalize(); };
+  document.getElementById('af-num').oninput=e=>{ A.numero=e.target.value; checkFinalize(); };
+  document.getElementById('af-compl').oninput=e=>{ A.compl=e.target.value; };
+  document.getElementById('af-bairro').oninput=e=>{ A.bairro=e.target.value; checkFinalize(); };
+  document.getElementById('af-cidade').oninput=e=>{ A.cidade=e.target.value; checkFinalize(); };
+  const uf=document.getElementById('af-uf');
+  uf.oninput=e=>{ e.target.value=e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,2); A.uf=e.target.value; checkFinalize(); };
+  const tel=document.getElementById('af-tel');
+  tel.oninput=e=>{ let v=e.target.value.replace(/\D/g,'').slice(0,11); if(v.length>10)v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3'); else if(v.length>6)v=v.replace(/(\d{2})(\d{4,5})(\d{0,4})/,'($1) $2-$3'); else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2'); e.target.value=v; A.tel=v; };
+  document.getElementById('af-email').oninput=e=>{ A.email=e.target.value.trim(); };
+  document.getElementById('af-nome').oninput=e=>{ A.nomeSocial=e.target.value; };
+  // termos
+  document.getElementById('pay-terms').onclick=()=>{ r._terms=!r._terms; document.getElementById('pay-terms').classList.toggle('on',r._terms); checkFinalize(); };
+  // finalizar
+  document.getElementById('pay-finalizar').onclick=finalizarContratacao;
+  document.addEventListener('click',cselCloseAll);
+  // se o CEP já veio da Tela 1, tenta preencher endereço
+  if(A.cep && A.cep.replace(/\D/g,'').length===8 && !A.endereco)viaCep(A.cep);
+  checkFinalize();
+}
+function refreshAside(){ const el=document.getElementById('pay-aside'); if(el)el.innerHTML=payAsideHTML(); }
+function paintDados(){
+  const b=document.getElementById('pay-dados'); if(!b)return;
+  b.classList.toggle('done',S.res._pgtoOk);
+  b.innerHTML=S.res._pgtoOk?(_check()+'<span>Dados confirmados</span>'):(_card()+'<span>Dados de pagamento</span>');
+}
+function checkFinalize(){
+  const r=S.res, A=r._addr||{};
+  const addrOk=(A.cep||'').replace(/\D/g,'').length===8 && A.endereco && A.numero && A.bairro && A.cidade && (A.uf||'').length===2;
+  const btn=document.getElementById('pay-finalizar');
+  if(btn)btn.disabled=!(r._pgtoOk && r._terms && addrOk);
+}
+
+/* Consulta ViaCEP (roda no navegador do cliente; offline = ignora silenciosamente) */
+async function viaCep(cep){
+  const c=(cep||'').replace(/\D/g,''); if(c.length!==8)return;
+  try{
+    const res=await fetch('https://viacep.com.br/ws/'+c+'/json/');
+    const d=await res.json(); if(d.erro)return;
+    const A=S.res._addr;
+    const set=(id,val,key)=>{ const el=document.getElementById(id); if(el&&!el.value){ el.value=val||''; A[key]=val||''; } };
+    set('af-end',d.logradouro,'endereco');
+    set('af-bairro',d.bairro,'bairro');
+    set('af-cidade',d.localidade,'cidade');
+    set('af-uf',d.uf,'uf');
+    checkFinalize();
+  }catch(e){/* sem conexão: mantém manual */}
+}
+
+/* Modal de dados do cartão (demonstração — valida formato, não processa cobrança) */
+function openCardModal(){
+  const r=S.res, t=payTotais();
+  const parcOpts=[]; for(let n=1;n<=12;n++)parcOpts.push({v:String(n),n:n+'x de '+fmtBRL(t.anual/n)+' sem juros'});
+  const m=document.getElementById('plan-modal');
+  m.innerHTML='<div class="pm-box" style="max-width:560px">'
+    +'<button class="pm-close" id="cardf-x" aria-label="Fechar">&times;</button>'
+    +'<div class="pm-title">Dados do <b>Cartão de Crédito</b></div>'
+    +'<div class="pm-sub">Pagamento em até 12x sem juros. Ambiente de demonstração — os dados não são processados.</div>'
+    +'<div class="addr-grid">'
+    + af('Número do cartão','cf-num','','0000 0000 0000 0000',true)
+    + af('Nome impresso no cartão','cf-nome','','Como está no cartão',true)
+    + af('Validade','cf-val','','MM/AA')
+    + af('CVV','cf-cvv','','000')
+    +'<div class="af full"><label>Parcelamento</label>'+cselBare('cf-parc',parcOpts,String(r._parcelas))+'</div>'
+    +'</div>'
+    +'<button class="pay-btn" id="cardf-ok" style="margin-top:22px">'+_check()+'<span>Confirmar dados</span></button>'
+    +'</div>';
+  m.classList.add('show');
+  document.getElementById('cf-num').oninput=e=>{ let v=e.target.value.replace(/\D/g,'').slice(0,16); e.target.value=v.replace(/(\d{4})(?=\d)/g,'$1 '); };
+  document.getElementById('cf-val').oninput=e=>{ let v=e.target.value.replace(/\D/g,'').slice(0,4); if(v.length>2)v=v.replace(/(\d{2})(\d{1,2})/,'$1/$2'); e.target.value=v; };
+  document.getElementById('cf-cvv').oninput=e=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); };
+  bindCsel('cf-parc',v=>{ r._parcelas=parseInt(v,10)||12; });
+  const close=()=>{ m.classList.remove('show'); m.innerHTML=''; };
+  document.getElementById('cardf-x').onclick=close;
+  m.onclick=e=>{ if(e.target===m)close(); };
+  document.getElementById('cardf-ok').onclick=()=>{
+    const num=document.getElementById('cf-num').value.replace(/\s/g,'');
+    const nome=document.getElementById('cf-nome').value.trim();
+    const val=document.getElementById('cf-val').value;
+    const cvv=document.getElementById('cf-cvv').value;
+    if(num.length<13||!nome||!/^\d{2}\/\d{2}$/.test(val)||cvv.length<3){ alert('Confira os dados do cartão: número, nome, validade (MM/AA) e CVV.'); return; }
+    r._cardLast=num.slice(-4); r._pgtoOk=true; close(); paintDados(); checkFinalize();
+  };
+}
+/* Modal Débito/PIX automático */
+function openPixModal(){
+  const r=S.res, t=payTotais();
+  const m=document.getElementById('plan-modal');
+  m.innerHTML='<div class="pm-box" style="max-width:520px">'
+    +'<button class="pm-close" id="pixf-x" aria-label="Fechar">&times;</button>'
+    +'<div class="pm-title">Débito / <b>PIX Automático</b></div>'
+    +'<div class="pm-sub">O valor é debitado automaticamente todo mês — 12x sem juros. Ambiente de demonstração.</div>'
+    +'<div class="pix-amount">'+fmtBRL(t.now)+' <span>/ mês</span></div>'
+    +'<button class="pay-btn" id="pixf-ok" style="margin-top:20px">'+_check()+'<span>Autorizar débito automático</span></button>'
+    +'</div>';
+  m.classList.add('show');
+  const close=()=>{ m.classList.remove('show'); m.innerHTML=''; };
+  document.getElementById('pixf-x').onclick=close;
+  m.onclick=e=>{ if(e.target===m)close(); };
+  document.getElementById('pixf-ok').onclick=()=>{ r._parcelas=12; r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
+}
+
+/* Baixar a proposta como arquivo (HTML imprimível) — funciona offline */
+function baixarProposta(){
+  const r=S.res, t=payTotais();
+  const ini=new Date(), fim=new Date(); fim.setMonth(fim.getMonth()+(r.vig||36));
+  const dt=d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+  const A=r._addr||{};
+  const linha=(l,v)=>'<tr><td>'+l+'</td><td><b>'+v+'</b></td></tr>';
+  const html='<!doctype html><meta charset="utf-8"><title>Proposta — Você Seguradora</title>'
+    +'<style>body{font-family:Arial,Helvetica,sans-serif;color:#002430;max-width:720px;margin:30px auto;padding:0 20px}h1{color:#279989}table{width:100%;border-collapse:collapse;margin:14px 0}td{padding:9px 6px;border-bottom:1px solid #e3eef0;font-size:14px}td:first-child{color:#5b6b70;width:45%}small{color:#5b6b70}</style>'
+    +'<h1>Proposta de Seguro Residencial</h1><small>Você Seguradora · gerado em '+dt(new Date())+'</small>'
+    +'<table>'
+    +linha('Produto','Residencial')
+    +linha('Vigência',dt(ini)+' a '+dt(fim)+' ('+(r.vig||36)+' meses)')
+    +linha('Importância Segurada (IS)',fmtBRL0(r.lmi))
+    +linha('Pacote de coberturas',pacNome(r.pacote))
+    +linha('Assistência',assistNome(r.assist)+(r.pet?' + '+petNome(r.pet):''))
+    +linha('Tipo de imóvel',tipoNome(r.tipo))
+    +linha('Tipo de ocupação',ocupNome(r.ocup))
+    +(t.pct>0?linha('Cupom de desconto',r._cupom.code+' (−'+t.pct+'%)'):'')
+    +linha('Valor mensal',fmtBRL(t.now)+' / mês')
+    +linha('Forma de pagamento',(r._pgto==='cartao'?'Cartão de crédito':'Débito/PIX automático')+' · '+(r._parcelas||12)+'x sem juros')
+    +'</table>'
+    +'<h3 style="color:#279989">Dados do segurado</h3><table>'
+    +linha('CEP',A.cep||'—')+linha('Endereço',(A.endereco||'—')+', '+(A.numero||'s/n')+(A.compl?' — '+A.compl:''))
+    +linha('Bairro',A.bairro||'—')+linha('Cidade/UF',(A.cidade||'—')+' / '+(A.uf||'—'))
+    +linha('Telefone',A.tel||'—')+linha('E-mail',A.email||'—')
+    +'</table>'
+    +'<p><small>Documento de proposta. A cobertura inicia após a aceitação do risco e o pagamento da 1ª parcela. Sujeito às Condições Gerais do produto.</small></p>';
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='proposta-voce-seguradora.html'; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
+}
+
+function finalizarContratacao(){
+  const r=S.res;
+  const num='VS-'+Date.now().toString(36).toUpperCase().slice(-8);
+  /* PERSISTÊNCIA (opcional): quando a tabela `policies` do Supabase tiver o schema definido,
+     dá pra gravar aqui. Deixado pronto e desligado para não criar linhas com schema indefinido:
+     if(SB){ try{ SB.from('policies').insert({ produto:'residencial', numero:num, cpf:r.cpf, email:(r._addr&&r._addr.email)||r.email,
+       lmi:r.lmi, pacote:r.pacote, assist:r.assist, pet:r.pet, mensal:payTotais().now, vigencia_meses:r.vig,
+       forma_pgto:r._pgto, parcelas:r._parcelas, cupom:(r._cupom&&r._cupom.code)||null, origem:'site', status:'proposta' }); }catch(e){} } */
+  S.resStep=5; renderTela5(num);
+}
+
+function renderTela5(num){
+  const r=S.res, t=payTotais();
+  const page=document.getElementById('wizard');
+  page.innerHTML=''
+    +'<div class="coast">'
+    + skylineBand(100)
+    +'<div class="done-card">'
+    +'<div class="done-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+    +'<h2 class="done-h">Proposta enviada com sucesso!</h2>'
+    +'<p class="done-sub">Recebemos os seus dados. Sua proposta de Seguro Residencial está em análise.</p>'
+    +'<div class="done-num">Proposta nº <b>'+num+'</b></div>'
+    +'<div class="done-summary">'
+    +'<div class="ds-row"><span>Pacote</span><b>'+pacNome(r.pacote)+'</b></div>'
+    +'<div class="ds-row"><span>Assistência</span><b>'+assistNome(r.assist)+(r.pet?' + '+petNome(r.pet):'')+'</b></div>'
+    +'<div class="ds-row"><span>Importância Segurada</span><b>'+fmtBRL0(r.lmi)+'</b></div>'
+    +'<div class="ds-row"><span>Pagamento</span><b>'+(r._pgto==='cartao'?'Cartão de crédito':'Débito/PIX')+' · '+(r._parcelas||12)+'x sem juros</b></div>'
+    +'<div class="ds-row total"><span>Valor mensal</span><b>'+fmtBRL(t.now)+'</b></div>'
+    +'</div>'
+    +'<p class="done-note">A cobertura inicia após a aceitação do risco e o pagamento da 1ª parcela. Você receberá a apólice e as Condições Gerais por e-mail.</p>'
+    +'<div class="done-actions">'
+    +'<button class="pay-btn ghost" id="done-prop">Baixar proposta</button>'
+    +'<button class="co-cta" id="done-home">Voltar ao início'+_arrow()+'</button>'
+    +'</div>'
+    +'</div></div>';
+  document.getElementById('done-prop').onclick=baixarProposta;
+  document.getElementById('done-home').onclick=closePage;
   window.scrollTo(0,0);
 }
 
