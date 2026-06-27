@@ -656,9 +656,9 @@ warranty:`<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" heig
 lock:`<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" opacity=".2" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>`,
 bell:`<svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9Z" fill="currentColor" opacity=".2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 01-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 check:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-lsperfil:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" fill="currentColor" opacity=".18"/><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 20c0-3.4 2.9-6 6.5-6s6.5 2.6 6.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-lscobertura:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 8.6-4-1-7-4.2-7-8.6V6l7-3z" fill="currentColor" opacity=".15"/><path d="M12 3l7 3v5c0 4.4-3 7.6-7 8.6-4-1-7-4.2-7-8.6V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11.5l2 2 4-4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-lsplanos:`<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="13" width="4.4" height="7" rx="1" fill="currentColor" opacity=".2"/><rect x="4" y="13" width="4.4" height="7" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="9.8" y="9" width="4.4" height="11" rx="1" fill="currentColor" opacity=".2"/><rect x="9.8" y="9" width="4.4" height="11" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="15.6" y="5" width="4.4" height="15" rx="1" fill="currentColor" opacity=".2"/><rect x="15.6" y="5" width="4.4" height="15" rx="1" stroke="currentColor" stroke-width="1.7"/></svg>`,
+lsperfil:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7.5" r="3.6" stroke="currentColor" stroke-width="1.9"/><path d="M5.5 20v-1a5 5 0 0 1 5-5h3a5 5 0 0 1 5 5v1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+lscobertura:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-3.6 7-9V5.5L12 3 5 5.5V12c0 5.4 7 9 7 9z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 11.8l2 2 4-4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+lsplanos:`<svg viewBox="0 0 24 24" fill="none"><path d="M6 20v-5M12 20V8M18 20v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
 };
 function ico(name,size=22,col='currentColor'){
   if(!I[name])return '';
@@ -1468,6 +1468,7 @@ function show(id){ ['home','page','loading'].forEach(x=>{ const el=document.getE
 function openModal(){ document.getElementById('overlay').classList.add('show'); }
 function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
 function closePage(){ show('home'); }
+function wizBack(){var s=S.resStep||1;if(s===4){S.resStep=3;renderTela3();}else if(s===3){S.resStep=2;renderTela2();}else if(s===2){S.resStep=1;renderTela1();}else{closePage();}}
 
 function startSeg(id){
   closeModal();
@@ -1539,7 +1540,7 @@ function init(){
   document.getElementById('li-btn').onclick=doLogin;
   document.getElementById('li-senha').addEventListener('keydown',e=>{ if(e.key==='Enter')doLogin(); });
   document.getElementById('go-signup').onclick=()=>{ const msg=document.getElementById('li-msg'); msg.className='msg show ok'; msg.textContent='Criar conta: use o app Você Seguradora ou aguarde o cadastro no site (próxima etapa). Sua conta funciona nos dois.'; };
-  document.getElementById('wz-back-top').onclick=closePage;
+  document.getElementById('wz-back-top').onclick=wizBack;
   // ESC fecha modal
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); });
 }
