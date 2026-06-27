@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s2.8">
+<meta name="site-build" content="s3.0">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Área do Cliente</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2715%27%20fill%3D%27%23013a40%27%2F%3E%3Cpath%20d%3D%27M16%2019%20L32%2045%20L48%2019%27%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2717%27%20r%3D%276.5%27%20fill%3D%27%2346EF80%27%2F%3E%3C%2Fsvg%3E">
@@ -654,6 +654,155 @@ function authError(msg){
   if(m.includes('email not confirmed'))return 'Confirme seu e-mail antes de entrar.';
   if(m.includes('failed to fetch'))return 'Sem conexão no momento. Tente novamente.';
   return 'Não foi possível entrar. Verifique os dados e tente de novo.';
+}
+function authSignupError(msg){ var m=(msg||'').toLowerCase();
+  if(m.includes('already registered')||m.includes('already exists')||m.includes('user already')) return 'Este e-mail já tem conta. Tente entrar.';
+  if(m.includes('password')) return 'Senha inválida (mínimo 6 caracteres).';
+  if(m.includes('failed to fetch')) return 'Sem conexão no momento. Tente novamente.';
+  if(m.includes('email')) return 'Verifique o e-mail informado.';
+  return 'Não foi possível criar a conta. Tente novamente.'; }
+
+/* ========= CONTA (Supabase Auth) — mesmo esquema do app ========= */
+function _digits(v){ return (v||'').replace(/\D/g,''); }
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+async function currentUser(){ if(!SB)return null; try{ const r=await SB.auth.getUser(); return (r&&r.data&&r.data.user)||null; }catch(e){ return null; } }
+async function authSignUp(o){ if(!SB)return {error:{message:'failed to fetch'}}; return await SB.auth.signUp({email:o.email,password:o.senha,options:{data:{nome:o.nome||'',telefone:o.telefone||'',cpf:o.cpf||''}}}); }
+async function authLogout(){ try{ if(SB)await SB.auth.signOut(); }catch(e){} S.authed=false; S.user=null; S.policies=[]; }
+
+/* ===== Contratações pendentes (visitante) — vinculam ao logar com mesmo e-mail/CPF ===== */
+function _readPending(){ try{ return JSON.parse(localStorage.getItem('vs_pending')||'[]'); }catch(e){ return []; } }
+function _writePending(a){ try{ localStorage.setItem('vs_pending',JSON.stringify(a)); }catch(e){} }
+function _matchPending(x,email,cpf,phone){ email=(email||'').toLowerCase(); cpf=_digits(cpf); phone=_digits(phone);
+  if(email&&(x.email||'')===email)return true;
+  if(cpf&&cpf.length>=11&&x.cpf&&_digits(x.cpf)===cpf)return true;
+  if(phone&&phone.length>=10&&x.phone&&_digits(x.phone)===phone)return true;
+  return false; }
+function addPendingPolicy(email,cpf,phone,pol){ const a=_readPending(); a.push({email:(email||'').toLowerCase(),cpf:_digits(cpf),phone:_digits(phone),pol:pol,ts:Date.now()}); _writePending(a); }
+
+/* ===== Apólices no Supabase (MESMA tabela e colunas do app: shared DB) ===== */
+async function savePolicy(p){ if(!SB)return; try{ const u=await currentUser(); if(!u)return;
+  const base={user_id:u.id,tipo:p.type,item:p.item,preco:p.price,cobertura:p.cov,status:'ativa'};
+  const r=await SB.from('policies').insert(Object.assign({},base,{pagamento:p.pagamento||null}));
+  if(r&&r.error){ await SB.from('policies').insert(base); } // fallback se a coluna 'pagamento' não existir
+  }catch(e){ console.warn('Falha ao salvar apólice:',e); } }
+async function loadPolicies(){ if(!SB)return []; try{ const r=await SB.from('policies').select('*').order('created_at',{ascending:false}); return (r&&r.data)||[]; }catch(e){ return []; } }
+async function claimPendingPolicies(email,cpf,phone){ const a=_readPending(); if(!a.length)return;
+  const mine=a.filter(function(x){return _matchPending(x,email,cpf,phone);});
+  for(const it of mine){ try{ await savePolicy(it.pol); }catch(e){} }
+  _writePending(a.filter(function(x){return !_matchPending(x,email,cpf,phone);})); }
+
+/* ========= ÁREA DO CLIENTE (desktop) ========= */
+function _areaIco(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="#46EF80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>'; }
+function areaCardHTML(r){
+  var tipo=escapeHtml(r.tipo||'Seguro'), item=escapeHtml(r.item||''), preco=escapeHtml(r.preco||''), cov=escapeHtml(r.cobertura||''), pag=escapeHtml(r.pagamento||''), st=escapeHtml(r.status||'ativa');
+  st=st.charAt(0).toUpperCase()+st.slice(1);
+  return '<div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:18px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,36,48,.06)">'
+    +'<div style="width:46px;height:46px;border-radius:14px;background:var(--navy,#002430);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+_areaIco()+'</div>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:16px;font-weight:800;color:var(--txt1,#002430)">'+tipo+'</div>'
+    +(item?'<div style="font-size:13px;color:var(--txt2,#5b6b70);margin-top:2px">'+item+'</div>':'')
+    +(cov?'<div style="font-size:12.5px;color:var(--txt3,#8aa0a4);margin-top:6px">'+cov+'</div>':'')
+    +(pag?'<div style="font-size:12px;color:var(--txt3,#8aa0a4);margin-top:4px">Pagamento: '+pag+'</div>':'')
+    +'</div>'
+    +'<div style="text-align:right;flex-shrink:0">'
+    +'<div style="display:inline-block;font-size:11px;font-weight:800;color:#0a7d4f;background:rgba(70,239,128,.16);border-radius:999px;padding:4px 10px">● '+st+'</div>'
+    +(preco?'<div style="font-size:17px;font-weight:900;color:var(--teal,#279989);margin-top:10px">'+preco+'</div>':'')
+    +'</div>'
+    +'</div>';
+}
+function renderArea(){
+  var u=S.user||{}; var meta=(u&&u.user_metadata)||{};
+  var nome=(meta.nome||'').trim()||(u.email?u.email.split('@')[0]:'Cliente');
+  var initials=(nome||'C').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase();
+  var pols=S.policies||[];
+  var _num=function(s){ s=String(s||'').replace(/[^\d,.-]/g,''); if(!s)return 0; s=s.replace(/\./g,'').replace(',','.'); var n=parseFloat(s); return isNaN(n)?0:n; };
+  var monthly=pols.reduce(function(a,p){ return a+_num(p.preco); },0);
+  var cards=pols.length
+    ? pols.map(areaCardHTML).join('')
+    : '<div style="background:#fff;border:1px dashed rgba(0,36,48,.18);border-radius:18px;padding:40px 24px;text-align:center">'
+      +'<div style="font-size:15px;font-weight:800;color:var(--txt1,#002430);margin-bottom:6px">Você ainda não tem seguros aqui</div>'
+      +'<div style="font-size:13px;color:var(--txt2,#5b6b70);margin-bottom:18px;line-height:1.5">Contrate o Seguro Residencial e ele aparece automaticamente nesta área.</div>'
+      +'<button class="co-cta" id="area-cotar" style="margin:0 auto">Cotar agora'+_arrow()+'</button>'
+      +'</div>';
+  var page=document.getElementById('wizard');
+  page.innerHTML=''
+    +'<div style="min-height:100%;background:#eef3f5">'
+    +'<div style="background:linear-gradient(135deg,#002430,#0a3a44);padding:30px 32px;display:flex;align-items:center;gap:18px">'
+    +'<div style="width:60px;height:60px;border-radius:50%;background:rgba(70,239,128,.16);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;color:#46EF80;flex-shrink:0">'+escapeHtml(initials)+'</div>'
+    +'<div style="flex:1;min-width:0"><div style="font-size:13px;color:rgba(255,255,255,.6);font-weight:600">Área do cliente</div>'
+    +'<div style="font-size:22px;font-weight:900;color:#fff">Olá, '+escapeHtml(nome)+'</div>'
+    +'<div style="font-size:12.5px;color:rgba(255,255,255,.55);margin-top:2px">'+escapeHtml(u.email||'')+'</div></div>'
+    +'<button id="area-sair" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Sair</button>'
+    +'</div>'
+    +'<div style="max-width:920px;margin:0 auto;padding:28px 24px 60px">'
+    +'<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px">'
+    +'<div style="flex:1;min-width:200px;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:16px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,36,48,.06)"><div style="font-size:12px;color:var(--txt3,#8aa0a4);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Total mensal</div><div style="font-size:24px;font-weight:900;color:var(--txt1,#002430);margin-top:6px">'+fmtBRL(monthly)+'</div></div>'
+    +'<div style="flex:1;min-width:200px;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:16px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,36,48,.06)"><div style="font-size:12px;color:var(--txt3,#8aa0a4);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Seguros ativos</div><div style="font-size:24px;font-weight:900;color:var(--txt1,#002430);margin-top:6px">'+pols.length+'</div></div>'
+    +'</div>'
+    +'<div style="font-size:16px;font-weight:800;color:var(--txt1,#002430);margin-bottom:14px">Meus seguros</div>'
+    +'<div style="display:flex;flex-direction:column;gap:14px">'+cards+'</div>'
+    +'</div></div>';
+  show('page');
+  var sx=document.getElementById('area-sair'); if(sx)sx.onclick=async function(){ await authLogout(); show('home'); var e=document.getElementById('li-email'); if(e)e.value=''; var s=document.getElementById('li-senha'); if(s)s.value=''; var m=document.getElementById('li-msg'); if(m){m.className='msg';m.textContent='';} };
+  var ac=document.getElementById('area-cotar'); if(ac)ac.onclick=function(){ startSeg('residencial'); };
+  window.scrollTo(0,0);
+}
+async function openArea(){ try{ S.policies=await loadPolicies(); }catch(e){ S.policies=[]; } if(!S.user){ S.user=await currentUser(); } S.resStep=0; renderArea(); }
+
+/* ========= CADASTRO (modal) ========= */
+function openSignupModal(){
+  var m=document.getElementById('plan-modal');
+  m.innerHTML='<div class="pm-box" style="max-width:440px">'
+    +'<button class="pm-close" id="su-x" aria-label="Fechar">&times;</button>'
+    +'<div class="pm-title">Criar sua <b>conta</b></div>'
+    +'<div class="pm-sub">A mesma conta vale no site e no app. Você recebe um e-mail para confirmar o cadastro.</div>'
+    +'<div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">'
+    +'<input class="input" id="su-nome" placeholder="Nome completo" autocomplete="name">'
+    +'<input class="input" id="su-cpf" placeholder="CPF" inputmode="numeric" autocomplete="off">'
+    +'<input class="input" id="su-email" type="email" placeholder="voce@email.com" autocomplete="email">'
+    +'<input class="input" id="su-tel" placeholder="(00) 00000-0000" inputmode="tel" autocomplete="tel">'
+    +'<input class="input" id="su-senha" type="password" placeholder="Crie uma senha (mín. 6)" autocomplete="new-password">'
+    +'<input class="input" id="su-senha2" type="password" placeholder="Repita a senha" autocomplete="new-password">'
+    +'</div>'
+    +'<div class="msg" id="su-msg" style="margin-top:10px"></div>'
+    +'<button class="pay-btn" id="su-ok" style="margin-top:12px"><span>Criar conta</span></button>'
+    +'<div style="text-align:center;margin-top:10px;font-size:13px;color:var(--txt2,#5b6b70)">Já tem conta? <a id="su-login" style="color:var(--teal,#279989);font-weight:700;cursor:pointer">Entrar</a></div>'
+    +'</div>';
+  m.classList.add('show');
+  var close=function(){ m.classList.remove('show'); m.innerHTML=''; };
+  document.getElementById('su-x').onclick=close;
+  m.onclick=function(e){ if(e.target===m)close(); };
+  document.getElementById('su-login').onclick=function(){ close(); var e=document.getElementById('li-email'); if(e)e.focus(); };
+  var cpfEl=document.getElementById('su-cpf'); if(cpfEl)cpfEl.addEventListener('input',function(){ var d=_digits(this.value).slice(0,11); this.value=d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2'); });
+  var telEl=document.getElementById('su-tel'); if(telEl)telEl.addEventListener('input',function(){ var d=_digits(this.value).slice(0,11); this.value=d.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d{1,4})$/,'$1-$2'); });
+  document.getElementById('su-ok').onclick=async function(){
+    var nome=document.getElementById('su-nome').value.trim();
+    var cpf=document.getElementById('su-cpf').value.trim();
+    var email=document.getElementById('su-email').value.trim();
+    var tel=document.getElementById('su-tel').value.trim();
+    var senha=document.getElementById('su-senha').value;
+    var senha2=document.getElementById('su-senha2').value;
+    var msg=document.getElementById('su-msg'); msg.className='msg';
+    if(!nome||!email||!senha){ msg.className='msg show err'; msg.textContent='Preencha nome, e-mail e senha.'; return; }
+    if(_digits(cpf).length!==11){ msg.className='msg show err'; msg.textContent='Informe um CPF válido (11 dígitos).'; return; }
+    if(senha.length<6){ msg.className='msg show err'; msg.textContent='A senha precisa ter ao menos 6 caracteres.'; return; }
+    if(senha!==senha2){ msg.className='msg show err'; msg.textContent='As senhas não conferem.'; return; }
+    var btn=document.getElementById('su-ok'); btn.style.opacity='.5'; btn.style.pointerEvents='none';
+    var res=await authSignUp({nome:nome,email:email,telefone:tel,cpf:cpf,senha:senha});
+    btn.style.opacity='1'; btn.style.pointerEvents='auto';
+    if(res&&res.error){ msg.className='msg show err'; msg.textContent=authSignupError(res.error.message); return; }
+    var hasSession=res&&res.data&&res.data.session;
+    if(hasSession){
+      S.authed=true; S.user=(res.data&&res.data.user)||await currentUser();
+      var meta=(S.user&&S.user.user_metadata)||{};
+      try{ await claimPendingPolicies(email, meta.cpf||cpf, meta.telefone||tel); }catch(e){}
+      close(); await openArea();
+    } else {
+      msg.className='msg show ok';
+      msg.innerHTML='Conta criada! Enviamos um e-mail de confirmação para <b>'+escapeHtml(email)+'</b>. Confirme e depois entre com seu e-mail e senha.';
+      var ok=document.getElementById('su-ok'); if(ok)ok.innerHTML='<span>E-mail de confirmação enviado ✓</span>';
+    }
+  };
 }
 
 /* ===================== ÍCONES (mesma biblioteca do app) ===================== */
@@ -1355,13 +1504,29 @@ function baixarProposta(){
 }
 
 function finalizarContratacao(){
-  const r=S.res;
+  const r=S.res; const t=payTotais();
   const num='VS-'+Date.now().toString(36).toUpperCase().slice(-8);
-  /* PERSISTÊNCIA (opcional): quando a tabela `policies` do Supabase tiver o schema definido,
-     dá pra gravar aqui. Deixado pronto e desligado para não criar linhas com schema indefinido:
-     if(SB){ try{ SB.from('policies').insert({ produto:'residencial', numero:num, cpf:r.cpf, email:(r._addr&&r._addr.email)||r.email,
-       lmi:r.lmi, pacote:r.pacote, assist:r.assist, pet:r.pet, mensal:payTotais().now, vigencia_meses:r.vig,
-       forma_pgto:r._pgto, parcelas:r._parcelas, cupom:(r._cupom&&r._cupom.code)||null, origem:'site', status:'proposta' }); }catch(e){} } */
+  const A=r._addr||{};
+  // monta a apólice no MESMO formato que o app grava em `policies`
+  const pol={
+    type:'Seguro Residencial',
+    item:(A.endereco?(A.endereco+', '+(A.numero||'s/n')):'Residência')+(A.cidade?(' — '+A.cidade+'/'+(A.uf||'')):''),
+    price:fmtBRL(t.total)+'/mês',
+    cov:pacNome(r.pacote)+' · IS '+fmtBRL0(r.lmi)+' · '+assistNome(r.assist)+(r.pet?(' + '+petNome(r.pet)):''),
+    pagamento:(r._pgto==='cartao'?'Cartão de crédito':'PIX')+' · '+(r._parcelas||12)+'x sem juros',
+    numero:num
+  };
+  const email=((A.email||r.email||'')+'').trim();
+  const cpf=(r.cpf||'');
+  const phone=(A.tel||r.wa||'');
+  // grava no MESMO banco do app: logado → direto; visitante → pendente (vincula ao logar com mesmo e-mail/CPF)
+  (async function(){
+    try{
+      const u=await currentUser();
+      if(u){ await savePolicy(pol); if(S.authed){ try{ S.policies=await loadPolicies(); }catch(e){} } }
+      else { addPendingPolicy(email,cpf,phone,pol); }
+    }catch(e){ try{ addPendingPolicy(email,cpf,phone,pol); }catch(_){} }
+  })();
   S.resStep=5; renderTela5(num);
 }
 
@@ -1386,13 +1551,21 @@ function renderTela5(num){
     +'<div class="ds-row total"><span>Valor mensal (com IOF)</span><b>'+fmtBRL(t.total)+'</b></div>'
     +'</div>'
     +'<p class="done-note">A cobertura inicia após a aceitação do risco e o pagamento da 1ª parcela. Você receberá a apólice e as Condições Gerais por e-mail.</p>'
+    +(!S.authed?('<div style="background:rgba(70,239,128,.08);border:1px solid rgba(70,239,128,.28);border-radius:16px;padding:16px 18px;text-align:left;margin-bottom:14px">'
+      +'<div style="font-size:14px;font-weight:800;color:var(--txt1,#002430);margin-bottom:6px">Apólice vinculada ao seu CPF e e-mail</div>'
+      +'<div style="font-size:12.5px;color:var(--txt2,#5b6b70);margin-bottom:10px;line-height:1.5">Guardamos sua contratação. Crie sua conta (ou entre) com os mesmos dados e ela aparece automaticamente na sua área do cliente.</div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px"><span style="color:var(--txt3,#8aa0a4)">E-mail</span><span style="color:var(--txt1,#002430);font-weight:700">'+((((r._addr&&r._addr.email)||r.email||'')+'').replace(/^(.{2}).*(@.*)$/,"$1•••$2")||'—')+'</span></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--txt3,#8aa0a4)">CPF</span><span style="color:var(--txt1,#002430);font-weight:700">'+(function(){var d=_digits(r.cpf||'');return d.length>=11?('•••.•••.'+d.slice(6,9)+'-'+d.slice(9,11)):(r.cpf||'—');})()+'</span></div>'
+      +'</div>'):'')
     +'<div class="done-actions">'
     +'<button class="pay-btn ghost" id="done-prop">Baixar proposta</button>'
+    +(!S.authed?'<button class="pay-btn" id="done-criar"><span>Criar minha conta</span></button>':'')
     +'<button class="co-cta" id="done-home">Voltar ao início'+_arrow()+'</button>'
     +'</div>'
     +'</div></div>';
   document.getElementById('done-prop').onclick=baixarProposta;
-  document.getElementById('done-home').onclick=closePage;
+  document.getElementById('done-home').onclick=function(){ if(S.authed){ openArea(); } else { closePage(); } };
+  var dc=document.getElementById('done-criar'); if(dc)dc.onclick=function(){ closePage(); openSignupModal(); };
   window.scrollTo(0,0);
 }
 
@@ -1588,9 +1761,11 @@ async function doLogin(){
   const {data,error}=await authLogin(email,senha);
   btn.style.opacity='1'; btn.style.pointerEvents='auto';
   if(error){ msg.className='msg show err'; msg.textContent=authError(error.message); return; }
-  msg.className='msg show ok'; msg.textContent='Bem-vindo de volta! Sua área do cliente abrirá em instantes.';
+  msg.className='msg show ok'; msg.textContent='Bem-vindo de volta! Abrindo sua área do cliente…';
   S.authed=true;
-  // (Etapa 1: confirma login real. O painel de apólices entra na próxima etapa.)
+  S.user=(data&&data.user)||await currentUser();
+  try{ var _meta=(S.user&&S.user.user_metadata)||{}; await claimPendingPolicies(email,_meta.cpf||'',_meta.telefone||''); }catch(e){}
+  await openArea();
 }
 
 /* ===================== INICIALIZAÇÃO ===================== */
@@ -1621,10 +1796,12 @@ function init(){
   document.getElementById('overlay').onclick=e=>{ if(e.target.id==='overlay')closeModal(); };
   document.getElementById('li-btn').onclick=doLogin;
   document.getElementById('li-senha').addEventListener('keydown',e=>{ if(e.key==='Enter')doLogin(); });
-  document.getElementById('go-signup').onclick=()=>{ const msg=document.getElementById('li-msg'); msg.className='msg show ok'; msg.textContent='Criar conta: use o app Você Seguradora ou aguarde o cadastro no site (próxima etapa). Sua conta funciona nos dois.'; };
+  document.getElementById('go-signup').onclick=()=>{ openSignupModal(); };
   document.getElementById('wz-back-top').onclick=wizBack;
   // ESC fecha modal
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); });
+  // retoma sessão existente (mesmo banco do app): se já está logado, abre a área
+  setTimeout(function(){ currentUser().then(function(u){ if(u){ S.authed=true; S.user=u; openArea(); } }).catch(function(){}); }, 400);
 }
 window.startSeg=startSeg;
 document.addEventListener('DOMContentLoaded',init);
