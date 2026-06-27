@@ -722,6 +722,38 @@ const SERVICES=[
 /* Formatadores (idênticos ao app) */
 function fmtBRL(n){return 'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fmtBRL0(n){return 'R$ '+Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:0});}
+/* ===== IOF — idêntico ao app. 0,38% Vida/AP/Prestamista; 7,38% demais (residencial entra aqui). ===== */
+function _brlNum(s){ s=String(s||'').replace(/[^\d.,]/g,''); if(!s)return 0; s=s.replace(/\./g,'').replace(',','.'); const n=parseFloat(s); return isNaN(n)?0:n; }
+const IOF_RATES={vidaativa:0.0038,vidacoletivo:0.0038,acidentes:0.0038,prestamista:0.0038};
+function _iofRate(k){ k=k||'casa'; return Object.prototype.hasOwnProperty.call(IOF_RATES,k)?IOF_RATES[k]:0.0738; }
+function _iofPct(k){ return (_iofRate(k)*100).toFixed(2).replace('.',',')+'%'; }
+function _iofCalc(net,k){ net=(typeof net==='number')?net:_brlNum(net); const rate=_iofRate(k); const iof=net*rate; return {net:net,rate:rate,iof:iof,total:net+iof}; }
+/* Caixa clara de detalhamento do IOF (identidade do site) */
+function iofBoxLight(t,per){ per=per||'';
+  return '<div style="background:var(--surf,#f4f8f8);border:1px solid rgba(0,36,48,.08);border-radius:14px;padding:12px 16px;margin-top:14px">'
+    +'<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:13px;color:var(--txt2,#5b6b70)">Prêmio líquido</span><span style="font-size:13px;font-weight:700;color:var(--txt1,#002430)">'+fmtBRL(t.now)+per+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:13px;color:var(--txt2,#5b6b70)">IOF ('+_iofPct('casa')+')</span><span style="font-size:13px;font-weight:700;color:var(--txt1,#002430)">'+fmtBRL(t.iof)+per+'</span></div>'
+    +'<div style="height:1px;background:rgba(0,36,48,.08);margin:7px 0"></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0"><span style="font-size:14px;font-weight:800;color:var(--txt1,#002430)">Total</span><span style="font-size:18px;font-weight:900;color:var(--teal,#279989)">'+fmtBRL(t.total)+per+'</span></div>'
+  +'</div>'; }
+/* QR Code do PIX — idêntico ao app (visual, determinístico) */
+function generateQR(){
+  const s=21, cell=8; let rects='';
+  const fp=(ox,oy)=>{ rects+='<rect x="'+(ox*cell)+'" y="'+(oy*cell)+'" width="'+(7*cell)+'" height="'+(7*cell)+'" fill="#141416" rx="2"/>';
+    rects+='<rect x="'+((ox+1)*cell)+'" y="'+((oy+1)*cell)+'" width="'+(5*cell)+'" height="'+(5*cell)+'" fill="white" rx="1"/>';
+    rects+='<rect x="'+((ox+2)*cell)+'" y="'+((oy+2)*cell)+'" width="'+(3*cell)+'" height="'+(3*cell)+'" fill="#141416" rx="1"/>'; };
+  fp(0,0);fp(14,0);fp(0,14);
+  for(let i=8;i<13;i++){ if(i%2===0){ rects+='<rect x="'+(i*cell)+'" y="'+(6*cell)+'" width="'+cell+'" height="'+cell+'" fill="#141416"/>'; rects+='<rect x="'+(6*cell)+'" y="'+(i*cell)+'" width="'+cell+'" height="'+cell+'" fill="#141416"/>'; } }
+  let seed=12345;
+  for(let y=0;y<s;y++){ for(let x=0;x<s;x++){
+    if((x<8&&y<8)||(x>12&&y<8)||(x<8&&y>12))continue;
+    if(x===6||y===6)continue;
+    seed=(seed*1103515245+12345)&0x7fffffff;
+    if(seed%2===0)rects+='<rect x="'+(x*cell)+'" y="'+(y*cell)+'" width="'+cell+'" height="'+cell+'" fill="#141416"/>';
+  } }
+  const sz=s*cell;
+  return '<svg viewBox="0 0 '+(sz+16)+' '+(sz+16)+'" style="width:200px;height:200px" xmlns="http://www.w3.org/2000/svg"><rect width="'+(sz+16)+'" height="'+(sz+16)+'" fill="white" rx="4"/><g transform="translate(8,8)">'+rects+'</g></svg>';
+}
 function maskMoney(v){
   v=v.replace(/\D/g,'');
   if(!v)return '';
@@ -1009,7 +1041,7 @@ function renderTela3(){
     // Valor
     +'<div class="rc-row price">'
     +'<span class="rr-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>'
-    +'<div class="rr-main"><div class="rr-label">Valores/mês sem taxa de cancelamento</div><div class="rr-val">'+fmtBRL(q.mensal)+'</div></div></div>'
+    +'<div class="rr-main"><div class="rr-label">Valores/mês sem taxa de cancelamento</div><div class="rr-val">'+fmtBRL(q.mensal)+'</div><div style="font-size:12px;color:var(--txt3,#8aa0a4);font-weight:600;margin-top:2px">+ IOF de '+_iofPct('casa')+' no pagamento</div></div></div>'
     +'</div>' // fim resumo-card
     +'<div class="t2-cta-wrap"><button class="co-cta" id="t3-avancar">Avançar<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
     +'</div>';
@@ -1043,16 +1075,24 @@ function payTotais(){
   const q=resPremio();
   const pct=(S.res._cupom&&S.res._cupom.pct)||0;
   const now=q.mensal*(1-pct/100);
-  return {mensal:q.mensal, now:now, pct:pct, anual:now*12};
+  const rate=_iofRate('casa');
+  const iof=now*rate;                 // IOF sobre o prêmio líquido (igual ao app)
+  const total=now+iof;                // total mensal COM IOF
+  const mensalTotal=q.mensal*(1+rate);// preço "de" (sem cupom) já com IOF
+  return {mensal:q.mensal, now:now, pct:pct, anual:now*12,
+          rate:rate, iof:iof, total:total, mensalTotal:mensalTotal, totalAnual:total*12};
 }
 function payAsideHTML(){
   const r=S.res, t=payTotais();
   return '<div class="pa-top">'
-    +(t.pct>0?'<div class="pa-from">'+fmtBRL(t.mensal)+' / mês</div>':'')
-    +'<div class="pa-now">'+fmtBRL(t.now)+' <span>/ mês</span></div>'
+    +(t.pct>0?'<div class="pa-from">'+fmtBRL(t.mensalTotal)+' / mês</div>':'')
+    +'<div class="pa-now">'+fmtBRL(t.total)+' <span>/ mês</span></div>'
+    +'<div style="font-size:12px;color:var(--txt3,#8aa0a4);font-weight:600;margin-top:3px">inclui IOF de '+_iofPct('casa')+'</div>'
     +(t.pct>0?'<div class="pa-cup">Cupom '+r._cupom.code+' · −'+t.pct+'%</div>':'')
     +'</div>'
     +'<div class="pa-body">'
+    +'<div class="pa-row"><span>Prêmio líquido</span><b>'+fmtBRL(t.now)+'</b></div>'
+    +'<div class="pa-row"><span>IOF ('+_iofPct('casa')+')</span><b>'+fmtBRL(t.iof)+'</b></div>'
     +'<div class="pa-row"><span>IS</span><b>'+fmtBRL0(r.lmi)+'</b></div>'
     +'<div class="pa-row"><span>Assistência</span><b>'+assistNome(r.assist)+(r.pet?' + '+petNome(r.pet):'')+'</b></div>'
     +'<div class="pa-row"><span>Pacote de cobertura</span><b>'+pacNome(r.pacote)+'</b></div>'
@@ -1217,13 +1257,14 @@ async function viaCep(cep){
 /* Modal de dados do cartão (demonstração — valida formato, não processa cobrança) */
 function openCardModal(){
   const r=S.res, t=payTotais();
-  const parcOpts=[]; for(let n=1;n<=12;n++)parcOpts.push({v:String(n),n:n+'x de '+fmtBRL(t.anual/n)+' sem juros'});
+  const parcOpts=[]; for(let n=1;n<=12;n++)parcOpts.push({v:String(n),n:n+'x de '+fmtBRL(t.totalAnual/n)+' sem juros'});
   const m=document.getElementById('plan-modal');
   m.innerHTML='<div class="pm-box" style="max-width:560px">'
     +'<button class="pm-close" id="cardf-x" aria-label="Fechar">&times;</button>'
     +'<div class="pm-title">Dados do <b>Cartão de Crédito</b></div>'
     +'<div class="pm-sub">Pagamento em até 12x sem juros. Ambiente de demonstração — os dados não são processados.</div>'
-    +'<div class="addr-grid">'
+    + iofBoxLight(t)
+    +'<div class="addr-grid" style="margin-top:16px">'
     + af('Número do cartão','cf-num','','0000 0000 0000 0000',true)
     + af('Nome impresso no cartão','cf-nome','','Como está no cartão',true)
     + af('Validade','cf-val','','MM/AA')
@@ -1252,19 +1293,29 @@ function openCardModal(){
 /* Modal Débito/PIX automático */
 function openPixModal(){
   const r=S.res, t=payTotais();
+  const pixKey='09.583.712/0001-90';
+  const qr=generateQR();
   const m=document.getElementById('plan-modal');
-  m.innerHTML='<div class="pm-box" style="max-width:520px">'
+  m.innerHTML='<div class="pm-box" style="max-width:430px">'
     +'<button class="pm-close" id="pixf-x" aria-label="Fechar">&times;</button>'
-    +'<div class="pm-title">Débito / <b>PIX Automático</b></div>'
-    +'<div class="pm-sub">O valor é debitado automaticamente todo mês — 12x sem juros. Ambiente de demonstração.</div>'
-    +'<div class="pix-amount">'+fmtBRL(t.now)+' <span>/ mês</span></div>'
-    +'<button class="pay-btn" id="pixf-ok" style="margin-top:20px">'+_check()+'<span>Autorizar débito automático</span></button>'
+    +'<div class="pm-title">Pague com <b>PIX</b></div>'
+    +'<div class="pm-sub">Escaneie o QR Code no app do seu banco ou copie a chave. Ambiente de demonstração.</div>'
+    +'<div style="text-align:center;margin:8px 0 2px"><div style="font-size:30px;font-weight:900;color:var(--teal,#279989)">'+fmtBRL(t.total)+'</div><div style="font-size:12.5px;color:var(--txt2,#5b6b70);margin-top:2px">valor mensal · inclui IOF de '+_iofPct('casa')+'</div></div>'
+    + iofBoxLight(t)
+    +'<div style="background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center;margin:14px 0">'+qr+'</div>'
+    +'<div style="background:var(--surf,#f4f8f8);border:1px solid rgba(0,36,48,.08);border-radius:14px;padding:14px 16px;margin-bottom:14px">'
+    +'<div style="font-size:11px;font-weight:700;color:var(--teal,#279989);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">Chave PIX (CNPJ)</div>'
+    +'<div style="font-size:14px;font-weight:700;color:var(--txt1,#002430);word-break:break-all;margin-bottom:10px">'+pixKey+'</div>'
+    +'<button type="button" id="pix-copy" style="width:100%;background:rgba(39,153,137,.08);border:1px solid rgba(39,153,137,.25);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--teal,#279989);cursor:pointer;font-family:inherit">Copiar chave PIX</button>'
+    +'</div>'
+    +'<button class="pay-btn" id="pixf-ok">'+_check()+'<span>Confirmar pagamento</span></button>'
     +'</div>';
   m.classList.add('show');
   const close=()=>{ m.classList.remove('show'); m.innerHTML=''; };
   document.getElementById('pixf-x').onclick=close;
   m.onclick=e=>{ if(e.target===m)close(); };
-  document.getElementById('pixf-ok').onclick=()=>{ r._parcelas=12; r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
+  document.getElementById('pix-copy').onclick=()=>{ try{navigator.clipboard.writeText(pixKey);}catch(e){} var b=document.getElementById('pix-copy'); if(b){ b.textContent='Chave copiada ✓'; setTimeout(function(){ b.textContent='Copiar chave PIX'; },1600); } };
+  document.getElementById('pixf-ok').onclick=()=>{ r._parcelas=1; r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
 }
 
 /* Baixar a proposta como arquivo (HTML imprimível) — funciona offline */
@@ -1286,7 +1337,9 @@ function baixarProposta(){
     +linha('Tipo de imóvel',tipoNome(r.tipo))
     +linha('Tipo de ocupação',ocupNome(r.ocup))
     +(t.pct>0?linha('Cupom de desconto',r._cupom.code+' (−'+t.pct+'%)'):'')
-    +linha('Valor mensal',fmtBRL(t.now)+' / mês')
+    +linha('Prêmio líquido',fmtBRL(t.now)+' / mês')
+    +linha('IOF ('+_iofPct('casa')+')',fmtBRL(t.iof)+' / mês')
+    +linha('Valor mensal (com IOF)',fmtBRL(t.total)+' / mês')
     +linha('Forma de pagamento',(r._pgto==='cartao'?'Cartão de crédito':'Débito/PIX automático')+' · '+(r._parcelas||12)+'x sem juros')
     +'</table>'
     +'<h3 style="color:#279989">Dados do segurado</h3><table>'
@@ -1327,8 +1380,10 @@ function renderTela5(num){
     +'<div class="ds-row"><span>Pacote</span><b>'+pacNome(r.pacote)+'</b></div>'
     +'<div class="ds-row"><span>Assistência</span><b>'+assistNome(r.assist)+(r.pet?' + '+petNome(r.pet):'')+'</b></div>'
     +'<div class="ds-row"><span>Importância Segurada</span><b>'+fmtBRL0(r.lmi)+'</b></div>'
-    +'<div class="ds-row"><span>Pagamento</span><b>'+(r._pgto==='cartao'?'Cartão de crédito':'Débito/PIX')+' · '+(r._parcelas||12)+'x sem juros</b></div>'
-    +'<div class="ds-row total"><span>Valor mensal</span><b>'+fmtBRL(t.now)+'</b></div>'
+    +'<div class="ds-row"><span>Pagamento</span><b>'+(r._pgto==='cartao'?'Cartão de crédito':'PIX')+' · '+(r._parcelas||12)+'x sem juros</b></div>'
+    +'<div class="ds-row"><span>Prêmio líquido</span><b>'+fmtBRL(t.now)+'</b></div>'
+    +'<div class="ds-row"><span>IOF ('+_iofPct('casa')+')</span><b>'+fmtBRL(t.iof)+'</b></div>'
+    +'<div class="ds-row total"><span>Valor mensal (com IOF)</span><b>'+fmtBRL(t.total)+'</b></div>'
     +'</div>'
     +'<p class="done-note">A cobertura inicia após a aceitação do risco e o pagamento da 1ª parcela. Você receberá a apólice e as Condições Gerais por e-mail.</p>'
     +'<div class="done-actions">'
