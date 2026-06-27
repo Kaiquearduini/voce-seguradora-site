@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s3.0">
+<meta name="site-build" content="s3.1">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Área do Cliente</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2715%27%20fill%3D%27%23013a40%27%2F%3E%3Cpath%20d%3D%27M16%2019%20L32%2045%20L48%2019%27%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2717%27%20r%3D%276.5%27%20fill%3D%27%2346EF80%27%2F%3E%3C%2Fsvg%3E">
@@ -524,6 +524,165 @@ a{color:inherit;text-decoration:none}
 .done-actions .pay-btn.ghost{margin-top:0}
 
 </style>
+<style id="area-css">
+/* ===== Área do cliente (desktop) ===== */
+.area{display:flex;min-height:100vh;background:#eef3f5;font-family:inherit;color:#002430}
+.area-side{width:264px;flex-shrink:0;background:linear-gradient(180deg,#002430,#06303c);color:#fff;display:flex;flex-direction:column;padding:24px 16px;position:sticky;top:0;height:100vh}
+.as-brand{font-size:15px;font-weight:800;letter-spacing:.06em;color:#cfe9df;margin:4px 8px 22px}
+.as-brand .as-logo{color:#46EF80}
+.as-user{display:flex;align-items:center;gap:12px;padding:0 8px 18px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.as-av{width:46px;height:46px;border-radius:50%;background:rgba(70,239,128,.16);color:#46EF80;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0}
+.as-uname{font-size:14px;font-weight:800}
+.as-umail{font-size:11.5px;color:rgba(255,255,255,.5);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.as-nav{display:flex;flex-direction:column;gap:4px;margin-top:8px;flex:1}
+.aside-nav{display:flex;align-items:center;gap:12px;width:100%;background:none;border:none;color:rgba(255,255,255,.74);font-family:inherit;font-size:14.5px;font-weight:600;padding:12px 12px;border-radius:12px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.aside-nav:hover{background:rgba(255,255,255,.06);color:#fff}
+.aside-nav.on{background:rgba(70,239,128,.14);color:#46EF80}
+.aside-nav.out{color:rgba(255,255,255,.6);margin-top:8px}
+.aside-nav.out:hover{color:#fff}
+.area-main{flex:1;min-width:0;padding:34px 40px 70px;max-width:1000px}
+.page-h{font-size:24px;font-weight:900;margin:0 0 20px}
+.sec-h{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#8aa0a4;margin:22px 0 12px}
+.area-body{margin-top:4px}
+/* hero */
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.hero-eye{font-size:13px;color:#7d929a;font-weight:600}
+.hero-name{font-size:30px;font-weight:900;letter-spacing:-.5px}
+.hero-cta{background:#46EF80;color:#002430;border:none;border-radius:14px;padding:13px 22px;font-size:14.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 20px rgba(70,239,128,.35)}
+.hero-cta:hover{filter:brightness(1.03)}
+.hero-card{background:linear-gradient(160deg,#002430,#06303c);border-radius:22px;padding:24px 26px;position:relative;overflow:hidden;color:#fff;box-shadow:0 18px 44px rgba(0,36,48,.22)}
+.hc-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#46EF80,#279989)}
+.hc-eye{font-size:11px;color:rgba(255,255,255,.55);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.hc-total{font-size:38px;font-weight:900;color:#46EF80;letter-spacing:-1px;line-height:1}
+.hc-stats{display:flex;gap:26px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.hc-stats>div b{font-size:24px;font-weight:900;color:#fff;display:block}
+.hc-stats>div span{font-size:12px;color:rgba(255,255,255,.5)}
+.hc-stats>i{width:1px;background:rgba(255,255,255,.1)}
+.dist{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.dist-h{font-size:11px;color:rgba(255,255,255,.55);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.dist-bar{display:flex;height:11px;border-radius:7px;overflow:hidden;background:rgba(255,255,255,.07);gap:2px}
+.dist-bar span{min-width:4px;border-radius:3px}
+.dist-leg{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px}
+.dist-leg .dl{display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.66)}
+.dist-leg .dl i{width:9px;height:9px;border-radius:3px}
+/* policy cards */
+.pol-card{display:flex;align-items:stretch;width:100%;text-align:left;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:18px;overflow:hidden;margin-bottom:14px;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(0,36,48,.06);transition:transform .14s,box-shadow .14s}
+.pol-card:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,36,48,.12)}
+.pc-bar{width:5px;flex-shrink:0}
+.pc-ico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:16px 0 16px 16px}
+.pc-body{flex:1;min-width:0;padding:16px 16px}
+.pc-type{display:block;font-size:16px;font-weight:800}
+.pc-item{display:block;font-size:13px;color:#5b6b70;margin-top:2px}
+.pc-cov{display:block;font-size:12.5px;color:#8aa0a4;margin-top:6px}
+.pc-side{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;padding:16px 18px;text-align:right;flex-shrink:0}
+.pc-badge{font-size:11px;font-weight:800;border-radius:999px;padding:4px 10px}
+.pc-badge.on{color:#0a7d4f;background:rgba(70,239,128,.16)}
+.pc-badge.pend2{color:#9a6a16;background:rgba(232,163,61,.16)}
+.pc-price{font-size:17px;font-weight:900;color:#279989;margin-top:10px}
+/* pending */
+.pend-card{background:#fff;border:1.5px dashed rgba(232,163,61,.5);border-radius:20px;padding:18px 20px;margin-bottom:14px}
+.pend-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.pend-ico{width:44px;height:44px;border-radius:13px;background:rgba(39,153,137,.1);display:flex;align-items:center;justify-content:center}
+.pend-badge{font-size:11px;font-weight:800;letter-spacing:.04em;color:#9a6a16;background:rgba(232,163,61,.14);border-radius:999px;padding:5px 12px}
+.pend-type{font-size:13px;color:#5b6b70;font-weight:600}
+.pend-item{font-size:20px;font-weight:900;margin:2px 0 14px;letter-spacing:-.02em}
+.pend-grid{display:flex;flex-wrap:wrap;gap:14px 30px;margin-bottom:16px}
+.pend-grid>div span{display:block;font-size:12px;color:#5b6b70;margin-bottom:3px}
+.pend-grid>div b{font-size:15px;font-weight:800}
+.pend-cta{width:100%;justify-content:center}
+/* empty */
+.empty{background:#fff;border:1.5px dashed rgba(0,36,48,.16);border-radius:18px;padding:40px 24px;text-align:center}
+.empty-h{font-size:16px;font-weight:800;margin-bottom:6px}
+.empty-s{font-size:13.5px;color:#5b6b70;line-height:1.5}
+/* detail */
+.back-link{background:none;border:none;color:#279989;font-weight:800;font-size:13.5px;cursor:pointer;font-family:inherit;padding:0;margin-bottom:14px}
+.det-hero{display:flex;align-items:center;gap:14px;background:linear-gradient(160deg,#002430,#06303c);border-radius:18px;padding:18px 22px;color:#fff;margin-bottom:14px}
+.det-ico{width:52px;height:52px;border-radius:15px;background:rgba(70,239,128,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.det-type{font-size:18px;font-weight:800}
+.det-item{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
+.det-money{display:flex;justify-content:space-between;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:16px;padding:18px 22px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,36,48,.05)}
+.det-money span{display:block;font-size:11px;color:#8aa0a4;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.det-money b{font-size:20px;font-weight:900}
+.det-money>div:last-child b{color:#279989;font-size:17px}
+.card-digital{position:relative;border-radius:20px;padding:22px;margin-bottom:14px;overflow:hidden;background:linear-gradient(135deg,#0a3d31,#002430 60%,#001a22);color:#fff;box-shadow:0 16px 36px rgba(0,26,18,.4)}
+.cd-glow{position:absolute;right:-30px;top:-34px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(70,239,128,.22),transparent 70%)}
+.cd-eye{font-size:10px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,.6);text-transform:uppercase;position:relative}
+.cd-title{font-size:18px;font-weight:900;margin-top:4px;position:relative}
+.cd-row{margin-top:20px;position:relative}
+.cd-row span,.cd-foot span{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;display:block}
+.cd-row b{font-size:15px;font-weight:700;margin-top:2px;display:block}
+.cd-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px;position:relative}
+.cd-foot b{font-size:13px;font-weight:700;margin-top:2px;display:block}
+.cd-foot .mono{color:#46EF80;font-family:monospace}
+.det-card{background:#fff;border:1px solid rgba(0,36,48,.07);border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,36,48,.05)}
+.det-card-h{font-size:11px;font-weight:800;color:#8aa0a4;letter-spacing:.08em;text-transform:uppercase;padding:16px 20px 6px}
+.det-r{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid #eef2f4;gap:14px}
+.det-r.last{border-bottom:none}
+.det-r span{font-size:13px;color:#5b6b70}
+.det-r b{font-size:13px;font-weight:700;text-align:right}
+.det-actions{display:flex;gap:10px;margin-bottom:12px}
+.btn-soft{flex:1;background:#002430;color:#fff;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
+.btn-soft.danger{background:rgba(220,38,38,.06);color:#dc2626;border:1.5px solid rgba(220,38,38,.2)}
+.det-note{background:rgba(39,153,137,.06);border:1px solid rgba(39,153,137,.18);border-radius:14px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;font-size:12px;color:#5b6b70;line-height:1.5}
+.det-note svg{flex-shrink:0;width:16px;height:16px}
+/* conta */
+.prof-head{text-align:center;margin-bottom:20px}
+.prof-av{width:84px;height:84px;border-radius:50%;background:#002430;color:#46EF80;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;margin:0 auto 12px}
+.prof-name{font-size:20px;font-weight:900}
+.prof-cpf{font-size:13px;color:#5b6b70;margin-top:3px}
+.edit-cta{display:flex;align-items:center;justify-content:space-between;width:100%;background:#effdf5;border:1px solid rgba(70,239,128,.4);border-radius:16px;padding:16px 20px;cursor:pointer;font-family:inherit;margin-bottom:16px}
+.ec-t{font-size:15px;font-weight:800;text-align:left}
+.ec-s{font-size:12.5px;color:#13a55a;font-weight:700;margin-top:2px;text-align:left}
+.ec-arrow{width:36px;height:36px;border-radius:50%;background:#46EF80;color:#002430;display:flex;align-items:center;justify-content:center}
+.conta-group{background:#fff;border:1px solid rgba(0,36,48,.07);border-radius:16px;overflow:hidden;margin-bottom:16px;box-shadow:0 8px 24px rgba(0,36,48,.05)}
+.cg-h{font-size:11px;font-weight:800;color:#8aa0a4;letter-spacing:.1em;text-transform:uppercase;padding:14px 20px 4px}
+.cobr-row{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 16px}
+.cob-mes{font-size:14px;font-weight:700;text-transform:capitalize}
+.cob-sub{font-size:12px;color:#8aa0a4;margin-top:2px}
+.cob-val{font-size:15px;font-weight:800}
+.cob-ok{font-size:11px;font-weight:800;color:#279989;margin-top:2px}
+.conta-row{display:flex;align-items:center;gap:14px;width:100%;background:none;border:none;border-top:1px solid #f0f3f5;padding:15px 20px;cursor:pointer;font-family:inherit;text-align:left}
+.conta-row:hover{background:#f7fafb}
+.cr-ico{width:34px;height:34px;border-radius:10px;background:rgba(0,36,48,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cr-main{flex:1}
+.cr-lbl{display:block;font-size:15px;font-weight:600}
+.cr-sub{display:block;font-size:12px;color:#8aa0a4;margin-top:1px}
+/* forms */
+.form-card{background:#fff;border:1px solid rgba(0,36,48,.07);border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(0,36,48,.05)}
+.ed-f{margin-bottom:14px}
+.ed-f label{display:block;font-size:12.5px;font-weight:700;color:#5b6b70;margin-bottom:6px}
+.ed-f textarea.input{resize:vertical;min-height:80px}
+/* vic chat */
+.vic-wrap{background:#fff;border:1px solid rgba(0,36,48,.07);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,36,48,.05);display:flex;flex-direction:column;max-width:760px}
+.vic-stream{padding:22px;display:flex;flex-direction:column;gap:14px;max-height:52vh;overflow-y:auto;background:#f7fafb}
+.vmsg{display:flex;gap:10px;align-items:flex-end;max-width:80%}
+.vmsg.me{align-self:flex-end;flex-direction:row-reverse}
+.vavatar{width:30px;height:30px;border-radius:50%;background:#002430;color:#46EF80;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
+.vbub{padding:11px 15px;border-radius:16px;font-size:14px;line-height:1.5}
+.vmsg.vic .vbub{background:#fff;border:1px solid rgba(0,36,48,.08);color:#002430;border-bottom-left-radius:5px}
+.vmsg.me .vbub{background:#279989;color:#fff;border-bottom-right-radius:5px}
+.vic-chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px 0}
+.vchip{background:#eef3f5;border:1px solid rgba(0,36,48,.08);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;color:#27575f;cursor:pointer;font-family:inherit}
+.vchip:hover{background:#e2edef}
+.vic-input{display:flex;gap:10px;padding:16px 18px}
+.vic-input .input{flex:1}
+.vic-send{width:48px;height:48px;border-radius:14px;background:#46EF80;color:#002430;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.vic-send svg{width:20px;height:20px}
+/* sinistros */
+.sin-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:14px;padding:14px 18px;margin-bottom:10px;box-shadow:0 6px 18px rgba(0,36,48,.05)}
+.sin-proto{font-size:14px;font-weight:800}
+.sin-desc{font-size:12.5px;color:#5b6b70;margin-top:2px}
+@media(max-width:860px){
+  .area{flex-direction:column}
+  .area-side{width:100%;height:auto;position:relative;flex-direction:column}
+  .as-nav{flex-direction:row;flex-wrap:wrap}
+  .aside-nav span{display:none}
+  .aside-nav{padding:12px;justify-content:center}
+  .as-user{border:none;padding-bottom:10px}
+  .area-main{padding:24px 18px 60px}
+}
+</style>
+
 </head>
 <body>
 <!-- ===================== HOME (ÁREA DO CLIENTE) ===================== -->
@@ -667,6 +826,7 @@ function _digits(v){ return (v||'').replace(/\D/g,''); }
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 async function currentUser(){ if(!SB)return null; try{ const r=await SB.auth.getUser(); return (r&&r.data&&r.data.user)||null; }catch(e){ return null; } }
 async function authSignUp(o){ if(!SB)return {error:{message:'failed to fetch'}}; return await SB.auth.signUp({email:o.email,password:o.senha,options:{data:{nome:o.nome||'',telefone:o.telefone||'',cpf:o.cpf||''}}}); }
+async function authResend(email){ if(!SB)return {error:{message:'failed to fetch'}}; return await SB.auth.resend({type:'signup',email:email}); }
 async function authLogout(){ try{ if(SB)await SB.auth.signOut(); }catch(e){} S.authed=false; S.user=null; S.policies=[]; }
 
 /* ===== Contratações pendentes (visitante) — vinculam ao logar com mesmo e-mail/CPF ===== */
@@ -681,7 +841,7 @@ function addPendingPolicy(email,cpf,phone,pol){ const a=_readPending(); a.push({
 
 /* ===== Apólices no Supabase (MESMA tabela e colunas do app: shared DB) ===== */
 async function savePolicy(p){ if(!SB)return; try{ const u=await currentUser(); if(!u)return;
-  const base={user_id:u.id,tipo:p.type,item:p.item,preco:p.price,cobertura:p.cov,status:'ativa'};
+  const base={user_id:u.id,tipo:p.type,item:p.item,preco:p.price,cobertura:p.cov,status:(p.status||'ativa')};
   const r=await SB.from('policies').insert(Object.assign({},base,{pagamento:p.pagamento||null}));
   if(r&&r.error){ await SB.from('policies').insert(base); } // fallback se a coluna 'pagamento' não existir
   }catch(e){ console.warn('Falha ao salvar apólice:',e); } }
@@ -691,63 +851,311 @@ async function claimPendingPolicies(email,cpf,phone){ const a=_readPending(); if
   for(const it of mine){ try{ await savePolicy(it.pol); }catch(e){} }
   _writePending(a.filter(function(x){return !_matchPending(x,email,cpf,phone);})); }
 
-/* ========= ÁREA DO CLIENTE (desktop) ========= */
-function _areaIco(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="#46EF80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>'; }
-function areaCardHTML(r){
-  var tipo=escapeHtml(r.tipo||'Seguro'), item=escapeHtml(r.item||''), preco=escapeHtml(r.preco||''), cov=escapeHtml(r.cobertura||''), pag=escapeHtml(r.pagamento||''), st=escapeHtml(r.status||'ativa');
-  st=st.charAt(0).toUpperCase()+st.slice(1);
-  return '<div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:18px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,36,48,.06)">'
-    +'<div style="width:46px;height:46px;border-radius:14px;background:var(--navy,#002430);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+_areaIco()+'</div>'
-    +'<div style="flex:1;min-width:0">'
-    +'<div style="font-size:16px;font-weight:800;color:var(--txt1,#002430)">'+tipo+'</div>'
-    +(item?'<div style="font-size:13px;color:var(--txt2,#5b6b70);margin-top:2px">'+item+'</div>':'')
-    +(cov?'<div style="font-size:12.5px;color:var(--txt3,#8aa0a4);margin-top:6px">'+cov+'</div>':'')
-    +(pag?'<div style="font-size:12px;color:var(--txt3,#8aa0a4);margin-top:4px">Pagamento: '+pag+'</div>':'')
-    +'</div>'
-    +'<div style="text-align:right;flex-shrink:0">'
-    +'<div style="display:inline-block;font-size:11px;font-weight:800;color:#0a7d4f;background:rgba(70,239,128,.16);border-radius:999px;padding:4px 10px">● '+st+'</div>'
-    +(preco?'<div style="font-size:17px;font-weight:900;color:var(--teal,#279989);margin-top:10px">'+preco+'</div>':'')
-    +'</div>'
+/* ========= ÁREA DO CLIENTE (desktop) — paridade com o app, UX de site ========= */
+function _money(s){ s=String(s||'').replace(/[^\d,.-]/g,''); if(!s)return 0; s=s.replace(/\./g,'').replace(',','.'); var n=parseFloat(s); return isNaN(n)?0:n; }
+function _profile(){ var u=S.user||{}; var m=(u&&u.user_metadata)||{}; return {email:u.email||'',nome:m.nome||'',cpf:m.cpf||'',telefone:m.telefone||''}; }
+function _initials(nome,email){ var n=(nome||'').trim()|| (email? email.split('@')[0]:'C'); return n.split(' ').slice(0,2).map(function(w){return (w[0]||'');}).join('').toUpperCase(); }
+function _houseSvg(c){ c=c||'#46EF80'; return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>'; }
+var AREA_PAL=['#46EF80','#279989','#1fd1a3','#0a7d72','#00d2a8','#3ddc97'];
+function _isActive(r){ return String(r.status||'ativa').toLowerCase()==='ativa'; }
+
+/* ---- Sidebar / shell ---- */
+function areaShell(active, content){
+  var p=_profile();
+  var nav=[['inicio','Início','M3 11l9-8 9 8 M5 10v10h14V10'],
+           ['apolices','Minhas apólices','M9 12h6 M9 16h6 M7 4h10a1 1 0 011 1v15l-3-2-3 2-3-2-3 2V5a1 1 0 011-1z'],
+           ['conta','Minha conta','M12 12a4 4 0 100-8 4 4 0 000 8z M4 21a8 8 0 0116 0'],
+           ['vic','Falar com a Vic','M21 11.5a8.4 8.4 0 01-9 8.3L3 21l1.2-4.5A8.4 8.4 0 1121 11.5z'],
+           ['sinistros','Sinistros','M12 9v4 M12 17h.01 M10.3 3.9L2 18a2 2 0 001.7 3h16.6A2 2 0 0022 18L13.7 3.9a2 2 0 00-3.4 0z']];
+  var menu=nav.map(function(n){ var on=n[0]===active; return '<button class="aside-nav'+(on?' on':'')+'" data-aa="nav" data-view="'+n[0]+'">'
+    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="'+n[2]+'"/></svg>'
+    +'<span>'+n[1]+'</span></button>'; }).join('');
+  return '<div class="area">'
+    +'<aside class="area-side">'
+    +'<div class="as-brand"><span class="as-logo">VOCÊ</span> SEGURADORA</div>'
+    +'<div class="as-user"><div class="as-av">'+escapeHtml(_initials(p.nome,p.email))+'</div>'
+    +'<div class="as-uinfo"><div class="as-uname">'+escapeHtml((p.nome||'').split(' ')[0]||'Cliente')+'</div><div class="as-umail">'+escapeHtml(p.email)+'</div></div></div>'
+    +'<nav class="as-nav">'+menu+'</nav>'
+    +'<button class="aside-nav out" data-aa="sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M16 17l5-5-5-5 M21 12H9 M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/></svg><span>Sair</span></button>'
+    +'</aside>'
+    +'<main class="area-main">'+content+'</main>'
     +'</div>';
 }
-function renderArea(){
-  var u=S.user||{}; var meta=(u&&u.user_metadata)||{};
-  var nome=(meta.nome||'').trim()||(u.email?u.email.split('@')[0]:'Cliente');
-  var initials=(nome||'C').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase();
+
+/* ---- cards ---- */
+function areaActiveCard(r,i){
+  var col=AREA_PAL[i%AREA_PAL.length];
+  return '<button class="pol-card" data-aa="pol" data-i="'+i+'">'
+    +'<span class="pc-bar" style="background:'+col+'"></span>'
+    +'<span class="pc-ico" style="background:rgba(39,153,137,.1)">'+_houseSvg('#279989')+'</span>'
+    +'<span class="pc-body"><span class="pc-type">'+escapeHtml(r.tipo||'Seguro')+'</span>'
+    +'<span class="pc-item">'+escapeHtml(r.item||'')+'</span>'
+    +'<span class="pc-cov">'+escapeHtml(r.cobertura||'')+'</span></span>'
+    +'<span class="pc-side"><span class="pc-badge on">● Ativa</span><span class="pc-price">'+escapeHtml(r.preco||'')+'</span></span>'
+    +'</button>';
+}
+function areaPendingCard(r,i){
+  return '<div class="pend-card">'
+    +'<div class="pend-head"><span class="pend-ico">'+_houseSvg('#279989')+'</span>'
+    +'<span class="pend-badge">● ATIVAÇÃO PENDENTE</span></div>'
+    +'<div class="pend-type">'+escapeHtml(r.tipo||'Seguro')+'</div>'
+    +'<div class="pend-item">'+escapeHtml(r.item||'—')+'</div>'
+    +'<div class="pend-grid">'
+    +'<div><span>Valor da assinatura</span><b>'+escapeHtml(r.preco||'—')+'</b></div>'
+    +'<div><span>Cobertura</span><b>'+escapeHtml(r.cobertura||'—')+'</b></div>'
+    +'<div><span>Pagamento</span><b>'+escapeHtml(r.pagamento||'—')+'</b></div>'
+    +'</div>'
+    +'<button class="co-cta pend-cta" data-aa="ativar" data-i="'+i+'">Ativar cobertura'+_arrow()+'</button>'
+    +'</div>';
+}
+
+/* ---- views ---- */
+function areaInicio(){
   var pols=S.policies||[];
-  var _num=function(s){ s=String(s||'').replace(/[^\d,.-]/g,''); if(!s)return 0; s=s.replace(/\./g,'').replace(',','.'); var n=parseFloat(s); return isNaN(n)?0:n; };
-  var monthly=pols.reduce(function(a,p){ return a+_num(p.preco); },0);
-  var cards=pols.length
-    ? pols.map(areaCardHTML).join('')
-    : '<div style="background:#fff;border:1px dashed rgba(0,36,48,.18);border-radius:18px;padding:40px 24px;text-align:center">'
-      +'<div style="font-size:15px;font-weight:800;color:var(--txt1,#002430);margin-bottom:6px">Você ainda não tem seguros aqui</div>'
-      +'<div style="font-size:13px;color:var(--txt2,#5b6b70);margin-bottom:18px;line-height:1.5">Contrate o Seguro Residencial e ele aparece automaticamente nesta área.</div>'
-      +'<button class="co-cta" id="area-cotar" style="margin:0 auto">Cotar agora'+_arrow()+'</button>'
-      +'</div>';
-  var page=document.getElementById('wizard');
-  page.innerHTML=''
-    +'<div style="min-height:100%;background:#eef3f5">'
-    +'<div style="background:linear-gradient(135deg,#002430,#0a3a44);padding:30px 32px;display:flex;align-items:center;gap:18px">'
-    +'<div style="width:60px;height:60px;border-radius:50%;background:rgba(70,239,128,.16);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;color:#46EF80;flex-shrink:0">'+escapeHtml(initials)+'</div>'
-    +'<div style="flex:1;min-width:0"><div style="font-size:13px;color:rgba(255,255,255,.6);font-weight:600">Área do cliente</div>'
-    +'<div style="font-size:22px;font-weight:900;color:#fff">Olá, '+escapeHtml(nome)+'</div>'
-    +'<div style="font-size:12.5px;color:rgba(255,255,255,.55);margin-top:2px">'+escapeHtml(u.email||'')+'</div></div>'
-    +'<button id="area-sair" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Sair</button>'
+  var act=pols.filter(_isActive), pend=pols.filter(function(r){return !_isActive(r);});
+  var total=act.reduce(function(a,p){return a+_money(p.cobertura);},0);
+  var p=_profile(); var nome=(p.nome||'').split(' ')[0]||'Cliente';
+  // chart
+  var chart='';
+  if(act.length&&total>0){
+    var segs=act.map(function(r,i){return {pct:_money(r.cobertura)/total*100,label:r.tipo||'Seguro',col:AREA_PAL[i%AREA_PAL.length]};});
+    chart='<div class="dist"><div class="dist-h">Distribuição da proteção</div>'
+      +'<div class="dist-bar">'+segs.map(function(s){return '<span style="width:'+s.pct+'%;background:'+s.col+'"></span>';}).join('')+'</div>'
+      +'<div class="dist-leg">'+segs.map(function(s){return '<span class="dl"><i style="background:'+s.col+'"></i>'+escapeHtml(s.label)+' · '+Math.round(s.pct)+'%</span>';}).join('')+'</div></div>';
+  }
+  var pendHTML = pend.length ? ('<div class="sec-h">Ativações pendentes</div>'+pend.map(areaPendingCard).join('')) : '';
+  var listHTML = act.length ? act.map(areaActiveCard).join('') : '<div class="empty"><div class="empty-h">Você ainda não tem apólices ativas</div><div class="empty-s">Contrate o Seguro Residencial e ele aparece aqui automaticamente.</div><button class="co-cta" data-aa="cotar" style="margin:14px auto 0">Cotar agora'+_arrow()+'</button></div>';
+  return '<div class="hero">'
+    +'<div class="hero-top"><div><div class="hero-eye">Seja bem-vindo</div><div class="hero-name">'+escapeHtml(nome)+'</div></div>'
+    +'<button class="hero-cta" data-aa="cotar">+ Contratar novo seguro</button></div>'
+    +'<div class="hero-card"><div class="hc-line"></div>'
+    +'<div class="hc-eye">Total protegido</div><div class="hc-total">'+fmtBRL(total)+'</div>'
+    +'<div class="hc-stats"><div><b>'+act.length+'</b><span>apólices ativas</span></div><i></i><div><b>'+(S.sinistros?S.sinistros.length:0)+'</b><span>sinistros abertos</span></div><i></i><div><b>100%</b><span>digital</span></div></div>'
+    +chart+'</div></div>'
+    +'<div class="area-body">'+pendHTML+'<div class="sec-h">Minhas apólices</div>'+listHTML+'</div>';
+}
+function areaApolices(){
+  var pols=S.policies||[];
+  var act=pols.filter(_isActive), pend=pols.filter(function(r){return !_isActive(r);});
+  var html='<div class="page-h">Minhas apólices</div><div class="area-body">';
+  if(pend.length) html+='<div class="sec-h">Ativações pendentes</div>'+pend.map(areaPendingCard).join('');
+  html+='<div class="sec-h">Ativas</div>'+(act.length?act.map(areaActiveCard).join(''):'<div class="empty"><div class="empty-h">Nenhuma apólice ativa ainda.</div><button class="co-cta" data-aa="cotar" style="margin:14px auto 0">Cotar agora'+_arrow()+'</button></div>');
+  html+='</div>'; return html;
+}
+function areaApoliceDetail(p){
+  p=p||{}; var num=p.numero||('VS-'+String(p.id||Date.now()).slice(-8).toUpperCase());
+  var prof=_profile(); var holder=prof.nome||'Segurado(a)';
+  var now=new Date(), end=new Date(); end.setMonth(end.getMonth()+12);
+  var fmt=function(d){return d.toLocaleDateString('pt-BR');};
+  var info=[['Número da apólice',num],['Status', _isActive(p)?'Ativa':'Ativação pendente'],['Início da vigência',fmt(now)],['Fim da vigência',fmt(end)],['Forma de pagamento',p.pagamento||'—']];
+  return '<button class="back-link" data-aa="nav" data-view="apolices">‹ Voltar para apólices</button>'
+    +'<div class="det-hero"><div class="det-ico">'+_houseSvg('#46EF80')+'</div>'
+    +'<div><div class="det-type">'+escapeHtml(p.tipo||'Seguro')+'</div><div class="det-item">'+escapeHtml(p.item||'')+'</div></div>'
+    +'<span class="pc-badge '+(_isActive(p)?'on':'pend2')+'" style="margin-left:auto">● '+(_isActive(p)?'Ativa':'Pendente')+'</span></div>'
+    +'<div class="det-money"><div><span>Mensalidade</span><b>'+escapeHtml(p.preco||'—')+'</b></div><div style="text-align:right"><span>Cobertura</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
+    +'<div class="card-digital"><div class="cd-glow"></div><div class="cd-eye">Carteirinha digital</div><div class="cd-title">'+escapeHtml(p.tipo||'Seguro')+'</div>'
+    +'<div class="cd-row"><span>Segurado(a)</span><b>'+escapeHtml(holder)+'</b></div>'
+    +'<div class="cd-foot"><div><span>Apólice</span><b class="mono">'+escapeHtml(num)+'</b></div><div style="text-align:right"><span>Válida até</span><b>'+fmt(end)+'</b></div></div></div>'
+    +'<div class="det-card"><div class="det-card-h">Informações da apólice</div>'+info.map(function(kv,i){return '<div class="det-r'+(i<info.length-1?'':' last')+'"><span>'+kv[0]+'</span><b>'+escapeHtml(kv[1])+'</b></div>';}).join('')+'</div>'
+    +'<div class="det-card"><div class="det-card-h">Cobertura contratada</div><div class="det-r last"><span>Resumo</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
+    +(_isActive(p)?'':'<button class="co-cta" data-aa="ativar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-bottom:10px">Ativar cobertura'+_arrow()+'</button>')
+    +'<div class="det-actions"><button class="btn-soft danger" data-aa="nav" data-view="sinistros">Abrir sinistro</button><button class="btn-soft" data-aa="baixar-apolice">Baixar resumo</button></div>'
+    +'<div class="det-note">'+_lock()+'<span>Regulada pela SUSEP e protegida pela LGPD. Dados criptografados ponta a ponta.</span></div>';
+}
+function areaConta(){
+  var p=_profile();
+  var pols=S.policies||[]; var act=pols.filter(_isActive);
+  var monthly=act.reduce(function(a,x){return a+_money(x.preco);},0);
+  var mes=new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  var row=function(icon,lbl,sub,view){ return '<button class="conta-row" data-aa="nav" data-view="'+view+'">'
+    +'<span class="cr-ico">'+icon+'</span><span class="cr-main"><span class="cr-lbl">'+lbl+'</span>'+(sub?'<span class="cr-sub">'+sub+'</span>':'')+'</span>'
+    +'<svg viewBox="0 0 24 24" fill="none" stroke="#9fb2bb" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px"><path d="M9 6l6 6-6 6"/></svg></button>'; };
+  var doc='<svg viewBox="0 0 24 24" fill="none" stroke="#002430" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
+  var lock='<svg viewBox="0 0 24 24" fill="none" stroke="#002430" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
+  var chat='<svg viewBox="0 0 24 24" fill="none" stroke="#002430" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M21 11.5a8.4 8.4 0 01-9 8.3L3 21l1.2-4.5A8.4 8.4 0 1121 11.5z"/></svg>';
+  var alert='<svg viewBox="0 0 24 24" fill="none" stroke="#002430" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M12 9v4 M12 17h.01 M10.3 3.9L2 18a2 2 0 001.7 3h16.6A2 2 0 0022 18L13.7 3.9a2 2 0 00-3.4 0z"/></svg>';
+  var trash='<svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M3 6h18 M8 6V4h8v2 M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>';
+  return '<div class="page-h">Minha conta</div><div class="area-body">'
+    +'<div class="prof-head"><div class="prof-av">'+escapeHtml(_initials(p.nome,p.email))+'</div>'
+    +'<div class="prof-name">'+escapeHtml(p.nome||'Cliente')+'</div><div class="prof-cpf">'+escapeHtml(p.cpf||p.email)+'</div></div>'
+    +'<button class="edit-cta" data-aa="nav" data-view="editar"><div><div class="ec-t">Editar informações</div><div class="ec-s">Atualize seu cadastro →</div></div><div class="ec-arrow">'+_arrow()+'</div></button>'
+    +'<div class="conta-group"><div class="cg-h">Cobranças</div>'
+    +'<div class="cobr-row"><div><div class="cob-mes">'+mes.charAt(0).toUpperCase()+mes.slice(1)+'</div><div class="cob-sub">'+act.length+' '+(act.length===1?'apólice':'apólices')+'</div></div>'
+    +'<div style="text-align:right"><div class="cob-val">'+fmtBRL(monthly)+'</div><div class="cob-ok">Em dia</div></div></div></div>'
+    +'<div class="conta-group"><div class="cg-h">Ajuda</div>'
+    +row(chat,'Converse com a Vic','Tire dúvidas sobre seguros','vic')
+    +row(lock,'Alterar senha','Trocar sua senha de acesso','senha')
+    +row(alert,'Central de sinistros','Abrir ou acompanhar um sinistro','sinistros')
+    +'<button class="conta-row danger" data-aa="nav" data-view="excluir"><span class="cr-ico" style="background:rgba(220,38,38,.08)">'+trash+'</span><span class="cr-main"><span class="cr-lbl" style="color:#dc2626">Excluir minha conta</span></span></button>'
     +'</div>'
-    +'<div style="max-width:920px;margin:0 auto;padding:28px 24px 60px">'
-    +'<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px">'
-    +'<div style="flex:1;min-width:200px;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:16px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,36,48,.06)"><div style="font-size:12px;color:var(--txt3,#8aa0a4);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Total mensal</div><div style="font-size:24px;font-weight:900;color:var(--txt1,#002430);margin-top:6px">'+fmtBRL(monthly)+'</div></div>'
-    +'<div style="flex:1;min-width:200px;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:16px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,36,48,.06)"><div style="font-size:12px;color:var(--txt3,#8aa0a4);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Seguros ativos</div><div style="font-size:24px;font-weight:900;color:var(--txt1,#002430);margin-top:6px">'+pols.length+'</div></div>'
-    +'</div>'
-    +'<div style="font-size:16px;font-weight:800;color:var(--txt1,#002430);margin-bottom:14px">Meus seguros</div>'
-    +'<div style="display:flex;flex-direction:column;gap:14px">'+cards+'</div>'
+    +'<div class="conta-group"><div class="cg-h">Mais informações</div>'
+    +row(doc,'Política de privacidade','','privacidade')
+    +row(doc,'Termos de uso','','termos')
+    +row(doc,'Licenças de código aberto','','licencas')
     +'</div></div>';
+}
+function areaEditar(){
+  var p=_profile();
+  var f=function(lbl,id,val,ph){ return '<div class="ed-f"><label>'+lbl+'</label><input class="input" id="'+id+'" value="'+escapeHtml(val||'').replace(/"/g,'&quot;')+'" placeholder="'+ph+'"></div>'; };
+  return '<button class="back-link" data-aa="nav" data-view="conta">‹ Voltar para a conta</button><div class="page-h">Editar informações</div>'
+    +'<div class="area-body" style="max-width:620px">'
+    +'<div class="form-card">'+f('Nome completo','ed-nome',p.nome,'Seu nome')+f('CPF','ed-cpf',p.cpf,'000.000.000-00')+f('Telefone','ed-tel',p.telefone,'(00) 00000-0000')
+    +'<div class="ed-f"><label>E-mail</label><input class="input" value="'+escapeHtml(p.email)+'" disabled style="opacity:.6"></div>'
+    +'<div class="msg" id="ed-msg" style="margin:6px 0"></div>'
+    +'<button class="co-cta" data-aa="perfil-save" style="width:100%">Salvar alterações'+_arrow()+'</button></div></div>';
+}
+function areaSenha(){
+  return '<button class="back-link" data-aa="nav" data-view="conta">‹ Voltar para a conta</button><div class="page-h">Alterar senha</div>'
+    +'<div class="area-body" style="max-width:520px"><div class="form-card">'
+    +'<div class="ed-f"><label>Nova senha</label><input class="input" id="pw-1" type="password" placeholder="Mín. 6 caracteres"></div>'
+    +'<div class="ed-f"><label>Repita a nova senha</label><input class="input" id="pw-2" type="password" placeholder="Repita a senha"></div>'
+    +'<div class="msg" id="pw-msg" style="margin:6px 0"></div>'
+    +'<button class="co-cta" data-aa="senha-save" style="width:100%">Alterar senha'+_arrow()+'</button></div></div>';
+}
+function areaExcluir(){
+  return '<button class="back-link" data-aa="nav" data-view="conta">‹ Voltar para a conta</button><div class="page-h">Excluir minha conta</div>'
+    +'<div class="area-body" style="max-width:560px"><div class="form-card">'
+    +'<p style="font-size:14px;color:var(--txt2,#5b6b70);line-height:1.6;margin:0 0 16px">Esta ação encerra seu acesso. Por segurança, a exclusão definitiva dos dados é concluída pela nossa equipe após a solicitação, conforme a LGPD. Você será desconectado agora.</p>'
+    +'<div class="msg" id="del-msg" style="margin-bottom:10px"></div>'
+    +'<button class="btn-soft danger" data-aa="excluir-confirm" style="width:100%">Confirmar e sair</button></div></div>';
+}
+function areaDoc(which){
+  var T={privacidade:['Política de privacidade','A Você Seguradora trata seus dados pessoais conforme a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018). Coletamos apenas o necessário para cotação, contratação e gestão das suas apólices: nome, CPF, contato, endereço do imóvel e dados de pagamento. Seus dados são armazenados de forma criptografada e nunca são vendidos a terceiros. Você pode solicitar acesso, correção ou exclusão a qualquer momento pela Central de Atendimento.'],
+    termos:['Termos de uso','Ao usar a plataforma Você Seguradora você concorda em fornecer informações verdadeiras e atualizadas. As cotações são estimativas sujeitas à aceitação do risco. A cobertura inicia somente após a aceitação e o pagamento da 1ª parcela. Os produtos são regulados pela SUSEP e regidos pelas respectivas Condições Gerais, que prevalecem em caso de divergência. O uso indevido da plataforma pode resultar em suspensão do acesso.'],
+    licencas:['Licenças de código aberto','Esta aplicação utiliza bibliotecas de código aberto, incluindo o cliente JavaScript do Supabase (MIT License). Agradecemos à comunidade open-source. Os textos completos das licenças estão disponíveis mediante solicitação.']};
+  var d=T[which]||T.privacidade;
+  return '<button class="back-link" data-aa="nav" data-view="conta">‹ Voltar para a conta</button><div class="page-h">'+d[0]+'</div>'
+    +'<div class="area-body" style="max-width:680px"><div class="form-card"><p style="font-size:14px;color:var(--txt2,#5b6b70);line-height:1.7;margin:0">'+escapeHtml(d[1])+'</p></div></div>';
+}
+function areaVic(){
+  if(!S.chat||!S.chat.length){ S.chat=[{who:'vic',text:'Oi! Eu sou a Vic, sua assistente da Você Seguradora. 😊 Posso explicar coberturas, assistências, pagamento, sinistro e muito mais. Como posso ajudar?'}]; }
+  var chips=['Coberturas do residencial','Como abrir sinistro','Formas de pagamento','Assistência e pet','Cancelamento'];
+  var msgs=S.chat.map(function(m){ return '<div class="vmsg '+(m.who==='vic'?'vic':'me')+'">'+(m.who==='vic'?'<span class="vavatar">V</span>':'')+'<span class="vbub">'+escapeHtml(m.text)+'</span></div>'; }).join('');
+  return '<div class="page-h">Falar com a Vic</div>'
+    +'<div class="vic-wrap"><div class="vic-stream" id="vic-stream">'+msgs+'</div>'
+    +'<div class="vic-chips">'+chips.map(function(c){return '<button class="vchip" data-aa="vic-chip" data-q="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';}).join('')+'</div>'
+    +'<div class="vic-input"><input id="vic-input" class="input" placeholder="Escreva sua pergunta..." autocomplete="off"><button class="vic-send" data-aa="vic-send" aria-label="Enviar">'+_arrow()+'</button></div></div>';
+}
+function vicReply(q){
+  var t=(q||'').toLowerCase();
+  if(/cobertur|incend|roubo|danos|eletric|vendaval/.test(t)) return 'O Seguro Residencial cobre incêndio/raio/explosão (cobertura básica) e você pode incluir: danos elétricos, roubo/furto de bens, vendaval, responsabilidade civil familiar, quebra de vidros e mais. A Importância Segurada (IS) define o limite de indenização.';
+  if(/sinistr|acionar|ocorr/.test(t)) return 'Para abrir um sinistro, vá em "Sinistros" no menu, escolha a apólice, descreva o ocorrido e a data. Você recebe um número de protocolo e nossa equipe dá sequência. Em emergência, a assistência 24h também pode ser acionada.';
+  if(/pag|pix|cart|boleto|parcel|iof/.test(t)) return 'Você pode pagar por Cartão de Crédito ou PIX, em até 12x sem juros. O valor mensal já inclui o IOF (7,38% no residencial), mostrado de forma detalhada antes de finalizar.';
+  if(/assist|pet|encan|chaveir|eletric/.test(t)) return 'As assistências incluem serviços como encanador, eletricista, chaveiro e vidraceiro. A assistência Pet (opcional) cobre atendimentos e emergências do seu animal. Dá para escolher o pacote na etapa "Personalizar".';
+  if(/cancel|desistir|reembols/.test(t)) return 'Você pode cancelar a apólice quando quiser. Abra o detalhe da apólice e escolha cancelar, ou fale comigo. Eventuais valores são ajustados conforme as Condições Gerais do produto.';
+  if(/ola|olá|oi|bom dia|boa tarde|boa noite|tudo bem/.test(t)) return 'Oi! Tudo ótimo por aqui. 😊 Como posso te ajudar com seus seguros hoje?';
+  return 'Boa pergunta! Posso ajudar com coberturas, assistências, pagamento, sinistro e cancelamento. Você também pode contratar um novo seguro pela área "Início". Quer que eu detalhe algum desses pontos?';
+}
+function areaSinistros(){
+  var pols=(S.policies||[]).filter(_isActive);
+  var opts=pols.length?pols.map(function(p,i){return '<option value="'+i+'">'+escapeHtml((p.tipo||'Seguro')+' — '+(p.item||''))+'</option>';}).join(''):'<option value="">Nenhuma apólice ativa</option>';
+  var list=(S.sinistros||[]).map(function(s){return '<div class="sin-item"><div><div class="sin-proto">Protocolo '+escapeHtml(s.proto)+'</div><div class="sin-desc">'+escapeHtml(s.apol)+' · '+escapeHtml(s.data)+'</div></div><span class="pc-badge pend2">● Em análise</span></div>';}).join('');
+  return '<div class="page-h">Sinistros</div><div class="area-body" style="max-width:640px">'
+    +(list?('<div class="sec-h">Em andamento</div>'+list+'<div style="height:18px"></div>'):'')
+    +'<div class="form-card"><div class="cg-h" style="padding:0 0 10px">Abrir um sinistro</div>'
+    +'<div class="ed-f"><label>Apólice</label><select class="input" id="sin-apol">'+opts+'</select></div>'
+    +'<div class="ed-f"><label>Tipo de ocorrência</label><select class="input" id="sin-tipo"><option>Incêndio</option><option>Roubo / furto</option><option>Danos elétricos</option><option>Vendaval</option><option>Danos a terceiros</option><option>Outro</option></select></div>'
+    +'<div class="ed-f"><label>Data da ocorrência</label><input class="input" id="sin-data" type="date"></div>'
+    +'<div class="ed-f"><label>Descrição</label><textarea class="input" id="sin-desc" rows="3" placeholder="Conte o que aconteceu..."></textarea></div>'
+    +'<div class="msg" id="sin-msg" style="margin:6px 0"></div>'
+    +'<button class="co-cta" data-aa="sin-open" style="width:100%"'+(pols.length?'':' disabled')+'>Abrir sinistro'+_arrow()+'</button></div></div>';
+}
+
+function areaContent(){
+  switch(S.areaView){
+    case 'apolices': return areaApolices();
+    case 'apolice': return areaApoliceDetail(S.curPol||{});
+    case 'conta': return areaConta();
+    case 'editar': return areaEditar();
+    case 'senha': return areaSenha();
+    case 'excluir': return areaExcluir();
+    case 'vic': return areaVic();
+    case 'sinistros': return areaSinistros();
+    case 'privacidade': return areaDoc('privacidade');
+    case 'termos': return areaDoc('termos');
+    case 'licencas': return areaDoc('licencas');
+    default: return areaInicio();
+  }
+}
+function renderArea(){
+  var active=(['apolices','apolice'].indexOf(S.areaView)>=0)?'apolices':(['conta','editar','senha','excluir','privacidade','termos','licencas'].indexOf(S.areaView)>=0?'conta':(S.areaView==='vic'?'vic':(S.areaView==='sinistros'?'sinistros':'inicio')));
+  var page=document.getElementById('wizard');
+  page.innerHTML=areaShell(active, areaContent());
   show('page');
-  var sx=document.getElementById('area-sair'); if(sx)sx.onclick=async function(){ await authLogout(); show('home'); var e=document.getElementById('li-email'); if(e)e.value=''; var s=document.getElementById('li-senha'); if(s)s.value=''; var m=document.getElementById('li-msg'); if(m){m.className='msg';m.textContent='';} };
-  var ac=document.getElementById('area-cotar'); if(ac)ac.onclick=function(){ startSeg('residencial'); };
+  areaBind();
+  var st=document.getElementById('vic-stream'); if(st)st.scrollTop=st.scrollHeight;
   window.scrollTo(0,0);
 }
-async function openArea(){ try{ S.policies=await loadPolicies(); }catch(e){ S.policies=[]; } if(!S.user){ S.user=await currentUser(); } S.resStep=0; renderArea(); }
+function areaGo(view,pol){ if(pol!==undefined)S.curPol=pol; S.areaView=view; renderArea(); }
+async function _areaSair(){ await authLogout(); show('home'); var e=document.getElementById('li-email'); if(e)e.value=''; var s=document.getElementById('li-senha'); if(s)s.value=''; var m=document.getElementById('li-msg'); if(m){m.className='msg';m.textContent='';} }
+async function _activateRow(row){ if(!row)return; try{ if(SB&&row.id){ await SB.from('policies').update({status:'ativa'}).eq('id',row.id); } row.status='ativa'; }catch(e){} S.policies=await loadPolicies().catch(function(){return S.policies;}); renderArea(); }
+function areaBind(){
+  var w=document.getElementById('wizard');
+  w.onclick=async function(e){
+    var el=e.target.closest('[data-aa]'); if(!el)return;
+    var act=el.getAttribute('data-aa');
+    if(act==='nav'){ areaGo(el.getAttribute('data-view')); }
+    else if(act==='pol'){ var i=+el.getAttribute('data-i'); areaGo('apolice',(S.policies||[])[i]); }
+    else if(act==='sair'){ _areaSair(); }
+    else if(act==='cotar'){ startSeg('residencial'); }
+    else if(act==='ativar'){ var i2=+el.getAttribute('data-i'); var pend=(S.policies||[]).filter(function(r){return !_isActive(r);}); _activateRow(pend[i2]); }
+    else if(act==='ativar-id'){ var id=el.getAttribute('data-id'); _activateRow((S.policies||[]).find(function(r){return String(r.id)===String(id);})); }
+    else if(act==='baixar-apolice'){ _baixarResumo(); }
+    else if(act==='vic-chip'){ vicPush(el.getAttribute('data-q')); }
+    else if(act==='vic-send'){ var inp=document.getElementById('vic-input'); if(inp&&inp.value.trim()){ vicPush(inp.value.trim()); } }
+    else if(act==='perfil-save'){ _perfilSave(); }
+    else if(act==='senha-save'){ _senhaSave(); }
+    else if(act==='excluir-confirm'){ _areaSair(); }
+    else if(act==='sin-open'){ _sinOpen(); }
+  };
+  var vi=document.getElementById('vic-input'); if(vi)vi.addEventListener('keydown',function(ev){ if(ev.key==='Enter'&&this.value.trim()){ vicPush(this.value.trim()); } });
+}
+function vicPush(q){ S.chat=S.chat||[]; S.chat.push({who:'me',text:q}); S.chat.push({who:'vic',text:vicReply(q)}); renderArea(); }
+async function _perfilSave(){
+  var nome=(document.getElementById('ed-nome')||{}).value||'';
+  var cpf=(document.getElementById('ed-cpf')||{}).value||'';
+  var tel=(document.getElementById('ed-tel')||{}).value||'';
+  var msg=document.getElementById('ed-msg'); if(msg){msg.className='msg';}
+  try{
+    if(SB){ var u=(S.user&&S.user.user_metadata)||{}; var merged=Object.assign({},u,{nome:nome,cpf:cpf,telefone:tel});
+      var r=await SB.auth.updateUser({data:merged}); if(r&&r.error){ if(msg){msg.className='msg show err';msg.textContent='Não foi possível salvar agora.';} return; }
+      S.user=(r&&r.data&&r.data.user)||await currentUser(); }
+    if(msg){msg.className='msg show ok';msg.textContent='Informações atualizadas ✓';}
+  }catch(e){ if(msg){msg.className='msg show err';msg.textContent='Erro ao salvar. Tente novamente.';} }
+}
+async function _senhaSave(){
+  var a=(document.getElementById('pw-1')||{}).value||'', b=(document.getElementById('pw-2')||{}).value||'';
+  var msg=document.getElementById('pw-msg'); if(msg)msg.className='msg';
+  if(a.length<6){ if(msg){msg.className='msg show err';msg.textContent='A senha precisa ter ao menos 6 caracteres.';} return; }
+  if(a!==b){ if(msg){msg.className='msg show err';msg.textContent='As senhas não conferem.';} return; }
+  try{ var r=await SB.auth.updateUser({password:a}); if(r&&r.error){ if(msg){msg.className='msg show err';msg.textContent='Não foi possível alterar a senha agora.';} return; }
+    if(msg){msg.className='msg show ok';msg.textContent='Senha alterada com sucesso ✓';} document.getElementById('pw-1').value='';document.getElementById('pw-2').value='';
+  }catch(e){ if(msg){msg.className='msg show err';msg.textContent='Erro ao alterar a senha.';} }
+}
+function _sinOpen(){
+  var apolSel=document.getElementById('sin-apol'); var i=apolSel?apolSel.value:'';
+  var pols=(S.policies||[]).filter(_isActive); var p=pols[+i]||{};
+  var data=(document.getElementById('sin-data')||{}).value||new Date().toLocaleDateString('pt-BR');
+  var msg=document.getElementById('sin-msg');
+  var proto='SIN-'+Date.now().toString(36).toUpperCase().slice(-7);
+  S.sinistros=S.sinistros||[]; S.sinistros.unshift({proto:proto,apol:(p.tipo||'Seguro')+' — '+(p.item||''),data:data});
+  if(msg){msg.className='msg show ok';msg.textContent='Sinistro aberto! Protocolo '+proto+'. Nossa equipe vai te contatar.';}
+  setTimeout(function(){ renderArea(); },1200);
+}
+function _baixarResumo(){
+  var p=S.curPol||{}; var num=p.numero||('VS-'+String(p.id||Date.now()).slice(-8).toUpperCase());
+  var prof=_profile();
+  var rows=[['Segurado(a)',prof.nome||'—'],['CPF',prof.cpf||'—'],['Apólice',num],['Produto',p.tipo||'Seguro'],['Item',p.item||'—'],['Cobertura',p.cobertura||'—'],['Mensalidade',p.preco||'—'],['Pagamento',p.pagamento||'—'],['Status',_isActive(p)?'Ativa':'Ativação pendente']];
+  var html='<!doctype html><meta charset="utf-8"><title>Apólice '+escapeHtml(num)+'</title>'
+    +'<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:40px auto;color:#002430">'
+    +'<h2 style="color:#279989">Você Seguradora — Resumo da apólice</h2><table style="width:100%;border-collapse:collapse">'
+    +rows.map(function(r){return '<tr><td style="padding:8px 0;color:#5b6b70;border-bottom:1px solid #eee">'+r[0]+'</td><td style="padding:8px 0;text-align:right;font-weight:700;border-bottom:1px solid #eee">'+escapeHtml(r[1])+'</td></tr>';}).join('')
+    +'</table><p style="font-size:12px;color:#8aa0a4;margin-top:16px">Documento de resumo. A cobertura segue as Condições Gerais do produto, reguladas pela SUSEP.</p></div>';
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='apolice-'+num+'.html';
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500);
+}
+async function openArea(){ try{ S.policies=await loadPolicies(); }catch(e){ S.policies=[]; } if(!S.user){ S.user=await currentUser(); } S.resStep=0; S.areaView='inicio'; renderArea(); }
 
 /* ========= CADASTRO (modal) ========= */
 function openSignupModal(){
@@ -1514,7 +1922,8 @@ function finalizarContratacao(){
     price:fmtBRL(t.total)+'/mês',
     cov:pacNome(r.pacote)+' · IS '+fmtBRL0(r.lmi)+' · '+assistNome(r.assist)+(r.pet?(' + '+petNome(r.pet)):''),
     pagamento:(r._pgto==='cartao'?'Cartão de crédito':'PIX')+' · '+(r._parcelas||12)+'x sem juros',
-    numero:num
+    numero:num,
+    status:'pendente'
   };
   const email=((A.email||r.email||'')+'').trim();
   const cpf=(r.cpf||'');
@@ -1760,7 +2169,17 @@ async function doLogin(){
   const btn=document.getElementById('li-btn'); btn.style.opacity='.5'; btn.style.pointerEvents='none';
   const {data,error}=await authLogin(email,senha);
   btn.style.opacity='1'; btn.style.pointerEvents='auto';
-  if(error){ msg.className='msg show err'; msg.textContent=authError(error.message); return; }
+  if(error){
+    const raw=(error.message||'').toLowerCase();
+    msg.className='msg show err';
+    if(raw.includes('email not confirmed')||raw.includes('not confirmed')){
+      msg.innerHTML='Sua conta existe, mas o e-mail ainda não foi confirmado. Verifique sua caixa de entrada (e o spam). <a id="li-resend" style="color:var(--teal,#279989);font-weight:700;cursor:pointer;text-decoration:underline">Reenviar e-mail de confirmação</a>';
+      var rs=document.getElementById('li-resend'); if(rs)rs.onclick=async function(){ rs.textContent='Enviando…'; try{ await authResend(email); rs.outerHTML='E-mail de confirmação reenviado ✓'; }catch(e){ rs.textContent='Não foi possível reenviar agora.'; } };
+    } else {
+      msg.textContent=authError(error.message)+(raw&&!raw.includes('invalid login')&&!raw.includes('invalid credentials')&&!raw.includes('failed to fetch')?(' ('+error.message+')'):'');
+    }
+    return;
+  }
   msg.className='msg show ok'; msg.textContent='Bem-vindo de volta! Abrindo sua área do cliente…';
   S.authed=true;
   S.user=(data&&data.user)||await currentUser();
