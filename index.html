@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s3.4">
+<meta name="site-build" content="s3.5">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Área do Cliente</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2715%27%20fill%3D%27%23013a40%27%2F%3E%3Cpath%20d%3D%27M16%2019%20L32%2045%20L48%2019%27%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2717%27%20r%3D%276.5%27%20fill%3D%27%2346EF80%27%2F%3E%3C%2Fsvg%3E">
@@ -893,6 +893,13 @@ async function claimPendingPolicies(email,cpf,phone){ const a=_readPending(); if
   const mine=a.filter(function(x){return _matchPending(x,email,cpf,phone);});
   for(const it of mine){ try{ await savePolicy(it.pol); }catch(e){} }
   _writePending(a.filter(function(x){return !_matchPending(x,email,cpf,phone);})); }
+/* Proposta de visitante (sem conta): grava no servidor (cross-device) com fallback local */
+async function persistGuestQuote(email,cpf,phone,pol){
+  if(SB){ try{ var r=await SB.from('guest_quotes').insert({cpf:_digits(cpf),email:(email||'').toLowerCase(),phone:_digits(phone),tipo:pol.type,item:pol.item,preco:pol.price,cobertura:pol.cov,pagamento:pol.pagamento||null,status:(pol.status||'pendente')}); if(!(r&&r.error))return true; }catch(e){} }
+  addPendingPolicy(email,cpf,phone,pol); return false;
+}
+/* Vincula tudo: propostas no servidor (por CPF/e-mail, qualquer aparelho) + pendentes locais */
+async function claimAll(email,cpf,phone){ try{ if(SB)await SB.rpc('claim_guest_quotes'); }catch(e){} try{ await claimPendingPolicies(email,cpf,phone); }catch(e){} }
 
 /* ========= ÁREA DO CLIENTE (desktop) — paridade com o app, UX de site ========= */
 function _money(s){ s=String(s||'').replace(/[^\d,.-]/g,''); if(!s)return 0; s=s.replace(/\./g,'').replace(',','.'); var n=parseFloat(s); return isNaN(n)?0:n; }
@@ -1228,7 +1235,7 @@ function openSegPopup(){
   }
   if(typeof openModal==='function')openModal();
 }
-async function openArea(){ try{ S.policies=await loadPolicies(); }catch(e){ S.policies=[]; } if(!S.user){ S.user=await currentUser(); } S.resStep=0; S.areaView='inicio'; renderArea(); }
+async function openArea(){ try{ if(SB)await SB.rpc('claim_guest_quotes'); }catch(e){} try{ S.policies=await loadPolicies(); }catch(e){ S.policies=[]; } if(!S.user){ S.user=await currentUser(); } S.resStep=0; S.areaView='inicio'; renderArea(); }
 
 /* ========= CADASTRO (modal) ========= */
 function openSignupModal(){
@@ -1276,7 +1283,7 @@ function openSignupModal(){
     if(hasSession){
       S.authed=true; S.user=(res.data&&res.data.user)||await currentUser();
       var meta=(S.user&&S.user.user_metadata)||{};
-      try{ await claimPendingPolicies(email, meta.cpf||cpf, meta.telefone||tel); }catch(e){}
+      try{ await claimAll(email, meta.cpf||cpf, meta.telefone||tel); }catch(e){}
       close(); await openArea();
     } else {
       msg.className='msg show ok';
@@ -2006,7 +2013,7 @@ function finalizarContratacao(){
     try{
       const u=await currentUser();
       if(u){ await savePolicy(pol); if(S.authed){ try{ S.policies=await loadPolicies(); }catch(e){} } }
-      else { addPendingPolicy(email,cpf,phone,pol); }
+      else { await persistGuestQuote(email,cpf,phone,pol); }
     }catch(e){ try{ addPendingPolicy(email,cpf,phone,pol); }catch(_){} }
   })();
   S.resStep=5; renderTela5(num);
@@ -2256,7 +2263,7 @@ async function doLogin(){
   msg.className='msg show ok'; msg.textContent='Bem-vindo de volta! Abrindo sua área do cliente…';
   S.authed=true;
   S.user=(data&&data.user)||await currentUser();
-  try{ var _meta=(S.user&&S.user.user_metadata)||{}; await claimPendingPolicies(email,_meta.cpf||'',_meta.telefone||''); }catch(e){}
+  try{ var _meta=(S.user&&S.user.user_metadata)||{}; await claimAll(email,_meta.cpf||'',_meta.telefone||''); }catch(e){}
   await openArea();
 }
 
