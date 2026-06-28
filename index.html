@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s4.1">
+<meta name="site-build" content="s4.2">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -698,9 +698,15 @@ a{color:inherit;text-decoration:none}
 .ed-f label{display:block;font-size:12.5px;font-weight:700;color:#5b6b70;margin-bottom:6px}
 .ed-f textarea.input{resize:vertical;min-height:80px}
 /* vic chat */
-.vic-wrap{background:#fff;border:1px solid rgba(0,36,48,.07);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,36,48,.05);display:flex;flex-direction:column;max-width:760px}
-.vic-stream{padding:22px;display:flex;flex-direction:column;gap:14px;max-height:52vh;overflow-y:auto;background:#f7fafb}
-.vmsg{display:flex;gap:10px;align-items:flex-end;max-width:80%}
+.vic-wrap{background:#fff;border:1px solid rgba(0,36,48,.07);border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,36,48,.07);display:flex;flex-direction:column;width:100%;max-width:1060px}
+.vic-head{display:flex;align-items:center;gap:13px;padding:16px 22px;background:#002430;color:#fff}
+.vic-head .vavatar.big{width:42px;height:42px;font-size:17px}
+.vic-head .vh-meta b{display:block;font-size:15.5px;font-weight:800;line-height:1.1}
+.vic-head .vh-meta span{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,.66);margin-top:3px}
+.vic-head .vdoton{width:8px;height:8px;border-radius:50%;background:#46EF80;display:inline-block;animation:vpulse 1.8s infinite}
+@keyframes vpulse{0%{box-shadow:0 0 0 0 rgba(70,239,128,.6)}70%{box-shadow:0 0 0 7px rgba(70,239,128,0)}100%{box-shadow:0 0 0 0 rgba(70,239,128,0)}}
+.vic-stream{padding:26px 28px;display:flex;flex-direction:column;gap:16px;min-height:440px;max-height:60vh;overflow-y:auto;background:#f4f8f9;scroll-behavior:smooth}
+.vmsg{display:flex;gap:10px;align-items:flex-end;max-width:70%}
 .vmsg.me{align-self:flex-end;flex-direction:row-reverse}
 .vavatar{width:30px;height:30px;border-radius:50%;background:#002430;color:#46EF80;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
 .vbub{padding:11px 15px;border-radius:16px;font-size:14px;line-height:1.5}
@@ -713,6 +719,12 @@ a{color:inherit;text-decoration:none}
 .vic-input .input{flex:1}
 .vic-send{width:48px;height:48px;border-radius:14px;background:#46EF80;color:#002430;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .vic-send svg{width:20px;height:20px}
+.vbub-typing{display:inline-flex;gap:5px;align-items:center;padding:14px 16px!important}
+.vdot{width:7px;height:7px;border-radius:50%;background:#9fb3bb;display:inline-block;animation:vblink 1.25s infinite ease-in-out}
+.vdot:nth-child(2){animation-delay:.18s}.vdot:nth-child(3){animation-delay:.36s}
+@keyframes vblink{0%,65%,100%{opacity:.28;transform:translateY(0)}32%{opacity:1;transform:translateY(-3px)}}
+.vfade{animation:vfade .28s ease}
+@keyframes vfade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 /* sinistros */
 .sin-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:14px;padding:14px 18px;margin-bottom:10px;box-shadow:0 6px 18px rgba(0,36,48,.05)}
 .sin-proto{font-size:14px;font-weight:800}
@@ -1443,7 +1455,9 @@ function areaVic(){
   var chips=['Coberturas do residencial','Como abrir sinistro','Formas de pagamento','Assistência e pet','Cancelamento'];
   var msgs=S.chat.map(function(m){ return '<div class="vmsg '+(m.who==='vic'?'vic':'me')+'">'+(m.who==='vic'?'<span class="vavatar">V</span>':'')+'<span class="vbub">'+escapeHtml(m.text)+'</span></div>'; }).join('');
   return '<div class="page-h">Falar com a Vic</div>'
-    +'<div class="vic-wrap"><div class="vic-stream" id="vic-stream">'+msgs+'</div>'
+    +'<div class="vic-wrap">'
+    +'<div class="vic-head"><span class="vavatar big">V</span><div class="vh-meta"><b>Vic</b><span><i class="vdoton"></i> Assistente virtual · online agora</span></div></div>'
+    +'<div class="vic-stream" id="vic-stream">'+msgs+'</div>'
     +'<div class="vic-chips">'+chips.map(function(c){return '<button class="vchip" data-aa="vic-chip" data-q="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';}).join('')+'</div>'
     +'<div class="vic-input"><input id="vic-input" class="input" placeholder="Escreva sua pergunta..." autocomplete="off"><button class="vic-send" data-aa="vic-send" aria-label="Enviar">'+_arrow()+'</button></div></div>';
 }
@@ -1532,8 +1546,32 @@ function areaBind(){
     else if(act==='sin-open'){ _sinOpen(); }
   };
   var vi=document.getElementById('vic-input'); if(vi)vi.addEventListener('keydown',function(ev){ if(ev.key==='Enter'&&this.value.trim()){ vicPush(this.value.trim()); } });
+  var _vs=document.getElementById('vic-stream'); if(_vs)_vs.scrollTop=_vs.scrollHeight;
 }
-function vicPush(q){ S.chat=S.chat||[]; S.chat.push({who:'me',text:q}); S.chat.push({who:'vic',text:vicReply(q)}); renderArea(); }
+function _vicAppend(stream,who,text,fade){ if(!stream)return; var d=document.createElement('div'); d.className='vmsg '+(who==='vic'?'vic':'me')+(fade?' vfade':''); d.innerHTML=(who==='vic'?'<span class="vavatar">V</span>':'')+'<span class="vbub">'+escapeHtml(text)+'</span>'; stream.appendChild(d); stream.scrollTop=stream.scrollHeight; }
+function vicPush(q){
+  S.chat=S.chat||[];
+  var stream=document.getElementById('vic-stream');
+  if(!stream){ S.chat.push({who:'me',text:q}); S.chat.push({who:'vic',text:vicReply(q)}); renderArea(); return; }
+  // mensagem do usuário (aparece na hora)
+  S.chat.push({who:'me',text:q});
+  var inp=document.getElementById('vic-input'); if(inp)inp.value='';
+  _vicAppend(stream,'me',q,true);
+  // "digitando..." animado
+  var typing=document.createElement('div'); typing.className='vmsg vic vfade'; typing.id='vic-typing';
+  typing.innerHTML='<span class="vavatar">V</span><span class="vbub vbub-typing"><span class="vdot"></span><span class="vdot"></span><span class="vdot"></span></span>';
+  stream.appendChild(typing); stream.scrollTop=stream.scrollHeight;
+  // resposta após um tempo proporcional ao tamanho (parece alguém escrevendo)
+  var reply=vicReply(q);
+  var delay=800+Math.min(1600, reply.length*15);
+  if(S._vicT)clearTimeout(S._vicT);
+  S._vicT=setTimeout(function(){
+    var t=document.getElementById('vic-typing'); if(t)t.remove();
+    S.chat.push({who:'vic',text:reply});
+    var st=document.getElementById('vic-stream');
+    if(st)_vicAppend(st,'vic',reply,true); else renderArea();
+  },delay);
+}
 async function _perfilSave(){
   var nome=(document.getElementById('ed-nome')||{}).value||'';
   var cpf=(document.getElementById('ed-cpf')||{}).value||'';
