@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s3.5">
+<meta name="site-build" content="s3.6">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Área do Cliente</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2715%27%20fill%3D%27%23013a40%27%2F%3E%3Cpath%20d%3D%27M16%2019%20L32%2045%20L48%2019%27%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2717%27%20r%3D%276.5%27%20fill%3D%27%2346EF80%27%2F%3E%3C%2Fsvg%3E">
@@ -900,6 +900,28 @@ async function persistGuestQuote(email,cpf,phone,pol){
 }
 /* Vincula tudo: propostas no servidor (por CPF/e-mail, qualquer aparelho) + pendentes locais */
 async function claimAll(email,cpf,phone){ try{ if(SB)await SB.rpc('claim_guest_quotes'); }catch(e){} try{ await claimPendingPolicies(email,cpf,phone); }catch(e){} }
+/* ===== Rascunhos: simulou mas NÃO pagou (pendente, resgatável no mesmo aparelho) ===== */
+function _readDrafts(){ try{ return JSON.parse(localStorage.getItem('vs_drafts')||'[]'); }catch(e){ return []; } }
+function _writeDrafts(a){ try{ localStorage.setItem('vs_drafts',JSON.stringify(a)); }catch(e){} }
+function _saveQuoteDraft(){
+  try{
+    var r=S.res; if(!r)return;
+    if(!r._ref)r._ref='Q'+Date.now().toString(36);
+    var A=r._addr||{}; var t=payTotais();
+    var d={ref:r._ref,
+      email:((A.email||r.email||'')+'').toLowerCase(),
+      cpf:_digits(r.cpf||''),
+      res:JSON.parse(JSON.stringify(r)),
+      tipo:'Seguro Residencial',
+      item:(A.endereco?(A.endereco+', '+(A.numero||'s/n')):'Residência')+(A.cidade?(' — '+A.cidade+'/'+(A.uf||'')):''),
+      preco:fmtBRL(t.total)+'/mês',
+      cobertura:pacNome(r.pacote)+' · IS '+fmtBRL0(r.lmi),
+      ts:Date.now()};
+    var a=_readDrafts().filter(function(x){return x.ref!==r._ref;}); a.push(d); _writeDrafts(a);
+  }catch(e){}
+}
+function _removeQuoteDraft(ref){ if(!ref)return; try{ _writeDrafts(_readDrafts().filter(function(x){return x.ref!==ref;})); }catch(e){} }
+function _myDrafts(){ var p=_profile(); var email=(p.email||'').toLowerCase(); var cpf=_digits(p.cpf||''); return _readDrafts().filter(function(d){ return (email&&d.email===email)||(cpf&&cpf.length>=11&&d.cpf===cpf); }).sort(function(a,b){return b.ts-a.ts;}); }
 
 /* ========= ÁREA DO CLIENTE (desktop) — paridade com o app, UX de site ========= */
 function _money(s){ s=String(s||'').replace(/[^\d,.-]/g,''); if(!s)return 0; s=s.replace(/\./g,'').replace(',','.'); var n=parseFloat(s); return isNaN(n)?0:n; }
@@ -948,21 +970,21 @@ function areaPendingCard(r,i){
   return '<div class="pend-card">'
     +'<div class="pend-head"><span class="pend-ico">'+_houseSvg('#279989')+'</span>'
     +'<span class="pend-badge">● ATIVAÇÃO PENDENTE</span></div>'
-    +'<div class="pend-type">'+escapeHtml(r.tipo||'Seguro')+'</div>'
-    +'<div class="pend-item">'+escapeHtml(r.item||'—')+'</div>'
+    +'<div class="pend-type">'+escapeHtml(r.tipo||'Seguro Residencial')+'</div>'
+    +'<div class="pend-item">'+escapeHtml(r.item||'Simulação não finalizada')+'</div>'
     +'<div class="pend-grid">'
-    +'<div><span>Valor da assinatura</span><b>'+escapeHtml(r.preco||'—')+'</b></div>'
+    +'<div><span>Valor estimado</span><b>'+escapeHtml(r.preco||'—')+'</b></div>'
     +'<div><span>Cobertura</span><b>'+escapeHtml(r.cobertura||'—')+'</b></div>'
-    +'<div><span>Pagamento</span><b>'+escapeHtml(r.pagamento||'—')+'</b></div>'
     +'</div>'
-    +'<button class="co-cta pend-cta" data-aa="ativar" data-i="'+i+'">Ativar cobertura'+_arrow()+'</button>'
+    +'<div style="font-size:12.5px;color:#9a6a16;margin:-4px 0 14px;line-height:1.5">Você simulou mas ainda não finalizou o pagamento. Continue de onde parou para ativar a cobertura.</div>'
+    +'<button class="co-cta pend-cta" data-aa="continuar" data-ref="'+escapeHtml(r.ref||'')+'">Continuar contratação'+_arrow()+'</button>'
     +'</div>';
 }
 
 /* ---- views ---- */
 function areaInicio(){
   var pols=S.policies||[];
-  var act=pols.filter(_isActive), pend=pols.filter(function(r){return !_isActive(r);});
+  var act=pols.filter(_isActive), pend=_myDrafts();
   var total=act.reduce(function(a,p){return a+_money(p.cobertura);},0);
   var monthly=act.reduce(function(a,p){return a+_money(p.preco);},0);
   var p=_profile(); var nome=(p.nome||'').split(' ')[0]||'Cliente';
@@ -994,7 +1016,7 @@ function areaInicio(){
 }
 function areaApolices(){
   var pols=S.policies||[];
-  var act=pols.filter(_isActive), pend=pols.filter(function(r){return !_isActive(r);});
+  var act=pols.filter(_isActive), pend=_myDrafts();
   var html='<div class="page-h">Minhas apólices</div><div class="area-body">';
   if(pend.length) html+='<div class="sec-h">Ativações pendentes</div><div class="pend-grid-wrap">'+pend.map(areaPendingCard).join('')+'</div>';
   html+='<div class="sec-h">Ativas</div>'+(act.length?('<div class="pol-grid">'+act.map(areaActiveCard).join('')+'</div>'):'<div class="empty"><div class="empty-h">Nenhuma apólice ativa ainda.</div><button class="co-cta" data-aa="cotar" style="margin:14px auto 0">Cotar agora'+_arrow()+'</button></div>');
@@ -1169,8 +1191,8 @@ function areaBind(){
     else if(act==='pol'){ var i=+el.getAttribute('data-i'); areaGo('apolice',(S.policies||[])[i]); }
     else if(act==='sair'){ _areaSair(); }
     else if(act==='cotar'){ openSegPopup(); }
-    else if(act==='ativar'){ var i2=+el.getAttribute('data-i'); var pend=(S.policies||[]).filter(function(r){return !_isActive(r);}); _activateRow(pend[i2]); }
-    else if(act==='ativar-id'){ var id=el.getAttribute('data-id'); _activateRow((S.policies||[]).find(function(r){return String(r.id)===String(id);})); }
+    else if(act==='continuar'){ var ref=el.getAttribute('data-ref'); var d=_readDrafts().find(function(x){return x.ref===ref;}); if(d&&d.res){ S.res=d.res; S.resStep=4; show('page'); renderTela4(); } else { startSeg('residencial'); } }
+    else if(act==='ativar-id'){ startSeg('residencial'); }
     else if(act==='baixar-apolice'){ _baixarResumo(); }
     else if(act==='vic-chip'){ vicPush(el.getAttribute('data-q')); }
     else if(act==='vic-send'){ var inp=document.getElementById('vic-input'); if(inp&&inp.value.trim()){ vicPush(inp.value.trim()); } }
@@ -1758,6 +1780,7 @@ function renderTela4(){
   if(r._pgtoOk===undefined)r._pgtoOk=false;
   if(r._terms===undefined)r._terms=false;
   if(!r._addr)r._addr={cep:r.cep||'',endereco:'',numero:'',compl:'',bairro:'',cidade:'',uf:'',tel:r.wa||'',email:r.email||'',nomeSocial:''};
+  _saveQuoteDraft();
   const ini=new Date(), fim=new Date(); fim.setMonth(fim.getMonth()+(r.vig||36));
   const dt=d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
 
@@ -2003,12 +2026,13 @@ function finalizarContratacao(){
     cov:pacNome(r.pacote)+' · IS '+fmtBRL0(r.lmi)+' · '+assistNome(r.assist)+(r.pet?(' + '+petNome(r.pet)):''),
     pagamento:(r._pgto==='cartao'?'Cartão de crédito':'PIX')+' · '+(r._parcelas||12)+'x sem juros',
     numero:num,
-    status:'pendente'
+    status:'ativa'
   };
   const email=((A.email||r.email||'')+'').trim();
   const cpf=(r.cpf||'');
   const phone=(A.tel||r.wa||'');
-  // grava no MESMO banco do app: logado → direto; visitante → pendente (vincula ao logar com mesmo e-mail/CPF)
+  _removeQuoteDraft(r._ref);
+  // pago = CONTRATADO: grava como 'ativa'. logado → banco; visitante → servidor (vincula ao logar pelo CPF)
   (async function(){
     try{
       const u=await currentUser();
