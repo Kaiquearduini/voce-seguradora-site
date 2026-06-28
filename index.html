@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s3.2">
+<meta name="site-build" content="s3.3">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Área do Cliente</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2715%27%20fill%3D%27%23013a40%27%2F%3E%3Cpath%20d%3D%27M16%2019%20L32%2045%20L48%2019%27%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2717%27%20r%3D%276.5%27%20fill%3D%27%2346EF80%27%2F%3E%3C%2Fsvg%3E">
@@ -692,6 +692,26 @@ a{color:inherit;text-decoration:none}
 .sin-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:14px;padding:14px 18px;margin-bottom:10px;box-shadow:0 6px 18px rgba(0,36,48,.05)}
 .sin-proto{font-size:14px;font-weight:800}
 .sin-desc{font-size:12.5px;color:#5b6b70;margin-top:2px}
+/* dropdown premium (custom select) */
+.csel{position:relative}
+.csel-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;background:#fff;border:1.5px solid rgba(0,36,48,.14);border-radius:14px;padding:14px 16px;font-size:14.5px;font-weight:600;color:#002430;cursor:pointer;font-family:inherit;text-align:left;transition:border-color .15s,box-shadow .15s}
+.csel-btn:hover{border-color:#279989}
+.csel-btn:focus{outline:none;border-color:#279989;box-shadow:0 0 0 3px rgba(39,153,137,.14)}
+.csel-btn svg{width:18px;height:18px;color:#8aa0a4;flex-shrink:0;transition:transform .18s}
+.csel-list{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:14px;box-shadow:0 20px 48px rgba(0,36,48,.20);padding:6px;z-index:60;max-height:280px;overflow:auto}
+.csel-list.open{display:block;animation:cselIn .14s ease}
+@keyframes cselIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.csel-opt{display:block;width:100%;text-align:left;background:none;border:none;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;color:#002430;cursor:pointer;font-family:inherit;transition:background .12s}
+.csel-opt:hover{background:rgba(70,239,128,.16);color:#0a7d4f}
+.csel-val[data-value=""]{color:#9fb2bb;font-weight:500}
+textarea.input{resize:vertical;min-height:96px;line-height:1.5}
+input[type=date].input{color:#002430}
+/* banner Vic (rodapé do início) */
+.vic-banner{display:flex;align-items:center;justify-content:space-between;gap:26px;background:linear-gradient(135deg,#0a3d31,#002430);border-radius:20px;padding:28px 32px;margin-top:28px;color:#fff;box-shadow:0 16px 40px rgba(0,26,18,.26)}
+.vic-banner .vb-h{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px}
+.vic-banner .vb-p{font-size:14.5px;color:rgba(255,255,255,.8);line-height:1.55;max-width:580px}
+.vic-banner .btn-soft{flex:none}
+@media(max-width:760px){.vic-banner{flex-direction:column;align-items:flex-start}.vic-banner .btn-soft{width:100%;max-width:none!important}}
 @media(max-width:860px){
   .area{flex-direction:column}
   .area-side{width:100%;height:auto;position:relative;flex-direction:column}
@@ -954,16 +974,14 @@ function areaInicio(){
       +'<div class="rail-row"><span>Ativações pendentes</span><b>'+pend.length+'</b></div>'
       +'<button class="co-cta" data-aa="cotar" style="width:100%;margin-top:16px;justify-content:center">+ Novo seguro</button>'
     +'</div>'
-    +'<div class="rail-card vic-rail"><div class="rail-h">Precisa de ajuda?</div>'
-      +'<p>Fale com a Vic, sua assistente digital, sobre coberturas, sinistro e pagamento — 100% online.</p>'
-      +'<button class="btn-soft" data-aa="nav" data-view="vic" style="width:100%;background:#46EF80;color:#002430">Falar com a Vic</button></div>'
     +'</div>';
+  var vicBanner='<div class="vic-banner"><div><div class="vb-h">Precisa de ajuda?</div><div class="vb-p">Fale com a Vic, sua assistente digital, sobre coberturas, sinistro e pagamento — 100% online.</div></div><button class="btn-soft" data-aa="nav" data-view="vic" style="background:#46EF80;color:#002430;max-width:240px">Falar com a Vic</button></div>';
   var pendHTML = pend.length ? ('<div class="sec-h">Ativações pendentes</div><div class="pend-grid-wrap">'+pend.map(areaPendingCard).join('')+'</div>') : '';
   var listHTML = act.length ? ('<div class="pol-grid">'+act.map(areaActiveCard).join('')+'</div>') : '<div class="empty"><div class="empty-h">Você ainda não tem apólices ativas</div><div class="empty-s">Contrate o Seguro Residencial e ele aparece aqui automaticamente.</div><button class="co-cta" data-aa="cotar" style="margin:14px auto 0">Cotar agora'+_arrow()+'</button></div>';
   return '<div class="hero-top"><div><div class="hero-eye">Seja bem-vindo</div><div class="hero-name">'+escapeHtml(nome)+'</div></div>'
     +'<button class="hero-cta" data-aa="cotar">+ Contratar novo seguro</button></div>'
     +'<div class="dash-grid"><div class="dash-main">'+heroCard+'</div>'+rail+'</div>'
-    +'<div class="area-body">'+pendHTML+'<div class="sec-h">Minhas apólices</div>'+listHTML+'</div>';
+    +'<div class="area-body">'+pendHTML+'<div class="sec-h">Minhas apólices</div>'+listHTML+vicBanner+'</div>';
 }
 function areaApolices(){
   var pols=S.policies||[];
@@ -1078,19 +1096,28 @@ function vicReply(q){
   if(/ola|olá|oi|bom dia|boa tarde|boa noite|tudo bem/.test(t)) return 'Oi! Tudo ótimo por aqui. 😊 Como posso te ajudar com seus seguros hoje?';
   return 'Boa pergunta! Posso ajudar com coberturas, assistências, pagamento, sinistro e cancelamento. Você também pode contratar um novo seguro pela área "Início". Quer que eu detalhe algum desses pontos?';
 }
+function _chev(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'; }
+function customSelect(id,opts,ph,sel){
+  sel=(sel!==undefined&&sel!==null)?sel:((opts[0]&&opts[0].v)||'');
+  var selLab=''; opts.forEach(function(o){ if(String(o.v)===String(sel))selLab=o.label; });
+  return '<div class="csel" id="'+id+'">'
+    +'<button type="button" class="csel-btn" data-aa="csel-toggle" data-id="'+id+'"><span class="csel-val" id="'+id+'-val" data-value="'+escapeHtml(String(sel))+'">'+(selLab?escapeHtml(selLab):escapeHtml(ph))+'</span>'+_chev()+'</button>'
+    +'<div class="csel-list" id="'+id+'-list">'+opts.map(function(o){return '<button type="button" class="csel-opt" data-aa="csel-opt" data-id="'+id+'" data-value="'+escapeHtml(String(o.v))+'" data-label="'+escapeHtml(o.label)+'">'+escapeHtml(o.label)+'</button>';}).join('')+'</div></div>';
+}
 function areaSinistros(){
   var pols=(S.policies||[]).filter(_isActive);
-  var opts=pols.length?pols.map(function(p,i){return '<option value="'+i+'">'+escapeHtml((p.tipo||'Seguro')+' — '+(p.item||''))+'</option>';}).join(''):'<option value="">Nenhuma apólice ativa</option>';
+  var apOpts=pols.length?pols.map(function(p,i){return {v:i,label:(p.tipo||'Seguro')+' — '+(p.item||'')};}):[{v:'',label:'Nenhuma apólice ativa'}];
+  var tipoOpts=['Incêndio','Roubo / furto','Danos elétricos','Vendaval','Danos a terceiros','Outro'].map(function(t){return {v:t,label:t};});
   var list=(S.sinistros||[]).map(function(s){return '<div class="sin-item"><div><div class="sin-proto">Protocolo '+escapeHtml(s.proto)+'</div><div class="sin-desc">'+escapeHtml(s.apol)+' · '+escapeHtml(s.data)+'</div></div><span class="pc-badge pend2">● Em análise</span></div>';}).join('');
-  return '<div class="page-h">Sinistros</div><div class="area-body" style="max-width:640px">'
+  return '<div class="page-h">Sinistros</div><div class="area-body" style="max-width:680px">'
     +(list?('<div class="sec-h">Em andamento</div>'+list+'<div style="height:18px"></div>'):'')
-    +'<div class="form-card"><div class="cg-h" style="padding:0 0 10px">Abrir um sinistro</div>'
-    +'<div class="ed-f"><label>Apólice</label><select class="input" id="sin-apol">'+opts+'</select></div>'
-    +'<div class="ed-f"><label>Tipo de ocorrência</label><select class="input" id="sin-tipo"><option>Incêndio</option><option>Roubo / furto</option><option>Danos elétricos</option><option>Vendaval</option><option>Danos a terceiros</option><option>Outro</option></select></div>'
+    +'<div class="form-card"><div class="cg-h" style="padding:0 0 14px">Abrir um sinistro</div>'
+    +'<div class="ed-f"><label>Apólice</label>'+customSelect('sin-apol',apOpts,'Selecione a apólice')+'</div>'
+    +'<div class="ed-f"><label>Tipo de ocorrência</label>'+customSelect('sin-tipo',tipoOpts,'Selecione o tipo')+'</div>'
     +'<div class="ed-f"><label>Data da ocorrência</label><input class="input" id="sin-data" type="date"></div>'
-    +'<div class="ed-f"><label>Descrição</label><textarea class="input" id="sin-desc" rows="3" placeholder="Conte o que aconteceu..."></textarea></div>'
+    +'<div class="ed-f"><label>Descrição</label><textarea class="input" id="sin-desc" rows="4" placeholder="Conte o que aconteceu..."></textarea></div>'
     +'<div class="msg" id="sin-msg" style="margin:6px 0"></div>'
-    +'<button class="co-cta" data-aa="sin-open" style="width:100%"'+(pols.length?'':' disabled')+'>Abrir sinistro'+_arrow()+'</button></div></div>';
+    +'<button class="co-cta" data-aa="sin-open" style="width:100%;justify-content:center"'+(pols.length?'':' disabled')+'>Abrir sinistro'+_arrow()+'</button></div></div>';
 }
 
 function areaContent(){
@@ -1124,8 +1151,11 @@ async function _activateRow(row){ if(!row)return; try{ if(SB&&row.id){ await SB.
 function areaBind(){
   var w=document.getElementById('wizard');
   w.onclick=async function(e){
+    if(!e.target.closest('.csel')){ var _op=w.querySelectorAll('.csel-list.open'); for(var _k=0;_k<_op.length;_k++)_op[_k].classList.remove('open'); }
     var el=e.target.closest('[data-aa]'); if(!el)return;
     var act=el.getAttribute('data-aa');
+    if(act==='csel-toggle'){ var cid=el.getAttribute('data-id'); var cl=document.getElementById(cid+'-list'); var was=cl.classList.contains('open'); var all=w.querySelectorAll('.csel-list.open'); for(var z=0;z<all.length;z++)all[z].classList.remove('open'); if(!was)cl.classList.add('open'); return; }
+    if(act==='csel-opt'){ var cid2=el.getAttribute('data-id'); var vEl=document.getElementById(cid2+'-val'); vEl.setAttribute('data-value',el.getAttribute('data-value')); vEl.textContent=el.getAttribute('data-label'); var ls=document.getElementById(cid2+'-list'); if(ls)ls.classList.remove('open'); return; }
     if(act==='nav'){ areaGo(el.getAttribute('data-view')); }
     else if(act==='pol'){ var i=+el.getAttribute('data-i'); areaGo('apolice',(S.policies||[])[i]); }
     else if(act==='sair'){ _areaSair(); }
@@ -1165,9 +1195,10 @@ async function _senhaSave(){
   }catch(e){ if(msg){msg.className='msg show err';msg.textContent='Erro ao alterar a senha.';} }
 }
 function _sinOpen(){
-  var apolSel=document.getElementById('sin-apol'); var i=apolSel?apolSel.value:'';
+  var apVal=document.getElementById('sin-apol-val'); var i=apVal?apVal.getAttribute('data-value'):'';
   var pols=(S.policies||[]).filter(_isActive); var p=pols[+i]||{};
-  var data=(document.getElementById('sin-data')||{}).value||new Date().toLocaleDateString('pt-BR');
+  var raw=(document.getElementById('sin-data')||{}).value||'';
+  var data=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw.split('-').reverse().join('/'):(raw||new Date().toLocaleDateString('pt-BR'));
   var msg=document.getElementById('sin-msg');
   var proto='SIN-'+Date.now().toString(36).toUpperCase().slice(-7);
   S.sinistros=S.sinistros||[]; S.sinistros.unshift({proto:proto,apol:(p.tipo||'Seguro')+' — '+(p.item||''),data:data});
