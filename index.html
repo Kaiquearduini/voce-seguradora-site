@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s4.4">
+<meta name="site-build" content="s4.7">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -400,6 +400,7 @@ a{color:inherit;text-decoration:none}
 .pm-card.on{border-color:var(--neon);box-shadow:0 10px 30px rgba(70,239,128,.22)}
 .pm-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 14px;border-radius:0 0 10px 10px;white-space:nowrap;z-index:2}
 .pm-head{background:linear-gradient(120deg,var(--teal),var(--neon));color:#fff;text-align:center;font-size:16px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:16px 12px}
+.pm-badge + .pm-head{padding-top:34px}
 .pm-body{padding:18px 16px;display:flex;flex-direction:column;flex:1}
 .pm-list{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:9px;flex:1}
 .pm-list li{font-size:13px;color:var(--txt2);line-height:1.35;display:flex;align-items:flex-start;gap:8px}
@@ -981,13 +982,13 @@ textarea.input{resize:vertical;min-height:96px;line-height:1.5}
   <!-- Como funciona -->
   <section class="lp-sec" id="como-funciona">
     <div class="lp-wrap lp-center">
-      <div class="lp-eyebrow">Simples assim</div>
+      <div class="lp-eyebrow">Seguro Residencial · Simples assim</div>
       <h2 class="lp-h2">Contrate em 3 passos</h2>
-      <p class="lp-sub">Do "quanto custa?" ao "estou protegido" em poucos minutos — tudo online.</p>
+      <p class="lp-sub">Do "quanto custa?" ao "estou protegido" em poucos minutos — tudo online, para o seu Seguro Residencial.</p>
     </div>
     <div class="lp-wrap">
       <div class="lp-steps">
-        <div class="lp-step"><div class="n">1</div><h3>Simule</h3><p>Informe o CEP e alguns dados do imóvel. Em segundos você vê o preço, sem precisar criar conta.</p></div>
+        <div class="lp-step"><div class="n">1</div><h3>Simule</h3><p>Informe o CEP e alguns dados do seu imóvel residencial. Em segundos você vê o preço, sem precisar criar conta.</p></div>
         <div class="lp-step"><div class="n">2</div><h3>Personalize</h3><p>Escolha o valor de cobertura, as assistências e os adicionais que fazem sentido para o seu lar.</p></div>
         <div class="lp-step"><div class="n">3</div><h3>Contrate</h3><p>Pague no cartão ou PIX e pronto: sua apólice digital fica disponível na hora, no site e no app.</p></div>
       </div>
@@ -1279,6 +1280,8 @@ function _initials(nome,email){ var n=(nome||'').trim()|| (email? email.split('@
 function _houseSvg(c){ c=c||'#46EF80'; return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>'; }
 var AREA_PAL=['#46EF80','#279989','#1fd1a3','#0a7d72','#00d2a8','#3ddc97'];
 function _isActive(r){ return String(r.status||'ativa').toLowerCase()==='ativa'; }
+function _isCancelled(r){ return String((r&&r.status)||'').toLowerCase()==='cancelada'; }
+function _statusLabel(p){ if(_isCancelled(p))return 'Cancelada'; return _isActive(p)?'Ativa':'Pendente'; }
 
 /* ---- Sidebar / shell ---- */
 function areaShell(active, content){
@@ -1306,7 +1309,7 @@ function areaShell(active, content){
 /* ---- cards ---- */
 function areaActiveCard(r,i){
   var col=AREA_PAL[i%AREA_PAL.length];
-  return '<button class="pol-card" data-aa="pol" data-i="'+i+'">'
+  return '<button class="pol-card" data-aa="pol" data-i="'+i+'" data-id="'+escapeHtml(String(r.id||''))+'">'
     +'<span class="pc-bar" style="background:'+col+'"></span>'
     +'<span class="pc-ico" style="background:rgba(39,153,137,.1)">'+_houseSvg('#279989')+'</span>'
     +'<span class="pc-body"><span class="pc-type">'+escapeHtml(r.tipo||'Seguro')+'</span>'
@@ -1355,7 +1358,7 @@ function areaInicio(){
       +'<div class="rail-row"><span>Ativações pendentes</span><b>'+pend.length+'</b></div>'
       +'<div style="flex:1;min-height:12px"></div>'
       +'<div style="border-top:1px solid rgba(0,36,48,.08);margin:14px -24px 0"></div>'
-      +'<button class="hero-cta" data-aa="cotar" style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:18px">Fazer nova cotação</button>'
+      +'<button class="hero-cta" data-aa="nav" data-view="apolices" style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:18px;background:#fff;color:var(--navy);border:1px solid var(--border);box-shadow:none">Ver minhas apólices</button>'
     +'</div>'
     +'</div>';
   var vicBanner='<div class="vic-banner"><div><div class="vb-h">Precisa de ajuda?</div><div class="vb-p">Fale com a Vic, sua assistente digital, sobre coberturas, sinistro e pagamento — 100% online.</div></div><button class="btn-soft" data-aa="nav" data-view="vic" style="background:#46EF80;color:#002430;max-width:240px">Falar com a Vic</button></div>';
@@ -1372,27 +1375,41 @@ function areaApolices(){
   var html='<div class="page-h">Minhas apólices</div><div class="area-body">';
   if(pend.length) html+='<div class="sec-h">Ativações pendentes</div><div class="pend-grid-wrap">'+pend.map(areaPendingCard).join('')+'</div>';
   html+='<div class="sec-h">Ativas</div>'+(act.length?('<div class="pol-grid">'+act.map(areaActiveCard).join('')+'</div>'):'<div class="empty"><div class="empty-h">Nenhuma apólice ativa ainda.</div><button class="co-cta" data-aa="cotar" style="margin:14px auto 0">Cotar agora'+_arrow()+'</button></div>');
+  var canc=pols.filter(_isCancelled);
+  if(canc.length) html+='<div class="sec-h" style="margin-top:26px">Canceladas</div><div class="pol-grid">'+canc.map(areaCancelledCard).join('')+'</div>';
   html+='</div>'; return html;
+}
+function areaCancelledCard(r){
+  return '<button class="pol-card" data-aa="pol" data-id="'+escapeHtml(String(r.id||''))+'" style="opacity:.72">'
+    +'<span class="pc-bar" style="background:#c2cdd2"></span>'
+    +'<span class="pc-ico" style="background:rgba(120,140,150,.12)">'+_houseSvg('#7c9098')+'</span>'
+    +'<span class="pc-body"><span class="pc-type">'+escapeHtml(r.tipo||'Seguro')+'</span>'
+    +'<span class="pc-item">'+escapeHtml(r.item||'')+'</span>'
+    +'<span class="pc-cov">'+escapeHtml(r.cobertura||'')+'</span></span>'
+    +'<span class="pc-side"><span class="pc-badge" style="background:#eef1f2;color:#7c9098">● Cancelada</span><span class="pc-price" style="color:#9aa7ac">'+escapeHtml(r.preco||'')+'</span></span>'
+    +'</button>';
 }
 function areaApoliceDetail(p){
   p=p||{}; var num=p.numero||('VS-'+String(p.id||Date.now()).slice(-8).toUpperCase());
   var prof=_profile(); var holder=prof.nome||'Segurado(a)';
   var now=new Date(), end=new Date(); end.setMonth(end.getMonth()+12);
   var fmt=function(d){return d.toLocaleDateString('pt-BR');};
-  var info=[['Número da apólice',num],['Status', _isActive(p)?'Ativa':'Ativação pendente'],['Início da vigência',fmt(now)],['Fim da vigência',fmt(end)],['Forma de pagamento',p.pagamento||'—']];
+  var info=[['Número da apólice',num],['Status', _statusLabel(p)],['Início da vigência',fmt(now)],['Fim da vigência',fmt(end)],['Forma de pagamento',p.pagamento||'—']];
   var left='<div class="card-digital"><div class="cd-glow"></div><div class="cd-eye">Carteirinha digital</div><div class="cd-title">'+escapeHtml(p.tipo||'Seguro')+'</div>'
     +'<div class="cd-row"><span>Segurado(a)</span><b>'+escapeHtml(holder)+'</b></div>'
     +'<div class="cd-foot"><div><span>Apólice</span><b class="mono">'+escapeHtml(num)+'</b></div><div style="text-align:right"><span>Válida até</span><b>'+fmt(end)+'</b></div></div></div>'
     +'<div class="det-card"><div class="det-card-h">Informações da apólice</div>'+info.map(function(kv,i){return '<div class="det-r'+(i<info.length-1?'':' last')+'"><span>'+kv[0]+'</span><b>'+escapeHtml(kv[1])+'</b></div>';}).join('')+'</div>'
     +'<div class="det-card"><div class="det-card-h">Cobertura contratada</div><div class="det-r last"><span>Resumo</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>';
   var right='<div class="det-money"><div><span>Mensalidade</span><b>'+escapeHtml(p.preco||'—')+'</b></div><div style="text-align:right"><span>Cobertura</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
-    +(_isActive(p)?'':'<button class="co-cta" data-aa="ativar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-bottom:16px;justify-content:center">Ativar cobertura'+_arrow()+'</button>')
+    +((!_isActive(p)&&!_isCancelled(p))?'<button class="co-cta" data-aa="ativar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-bottom:16px;justify-content:center">Ativar cobertura'+_arrow()+'</button>':'')
     +'<div class="det-actions"><button class="btn-soft danger" data-aa="nav" data-view="sinistros">Abrir sinistro</button><button class="btn-soft" data-aa="baixar-apolice">Baixar resumo</button></div>'
+    +(_isActive(p)?'<button class="btn-soft" data-aa="cancelar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-top:10px;justify-content:center;color:#dc2626;border-color:rgba(220,38,38,.25)">Cancelar apólice</button>':'')
+    +(_isCancelled(p)?'<div class="det-note" style="background:rgba(220,38,38,.06);color:#b91c1c">'+_lock()+'<span>Esta apólice está cancelada. Para reativar, fale com o atendimento.</span></div>':'')
     +'<div class="det-note">'+_lock()+'<span>Regulada pela SUSEP e protegida pela LGPD. Dados criptografados ponta a ponta.</span></div>';
   return '<button class="back-link" data-aa="nav" data-view="apolices">‹ Voltar para apólices</button>'
     +'<div class="det-hero"><div class="det-ico">'+_houseSvg('#46EF80')+'</div>'
     +'<div><div class="det-type">'+escapeHtml(p.tipo||'Seguro')+'</div><div class="det-item">'+escapeHtml(p.item||'')+'</div></div>'
-    +'<span class="pc-badge '+(_isActive(p)?'on':'pend2')+'" style="margin-left:auto">● '+(_isActive(p)?'Ativa':'Pendente')+'</span></div>'
+    +'<span class="pc-badge '+(_isActive(p)?'on':'pend2')+'" style="margin-left:auto'+(_isCancelled(p)?';background:#eef1f2;color:#7c9098':'')+'">● '+_statusLabel(p)+'</span></div>'
     +'<div class="det-grid"><div>'+left+'</div><div class="det-rail">'+right+'</div></div>';
 }
 function areaConta(){
@@ -1400,6 +1417,7 @@ function areaConta(){
   var pols=S.policies||[]; var act=pols.filter(_isActive);
   var monthly=act.reduce(function(a,x){return a+_money(x.preco);},0);
   var mes=new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  var _du=new Date(); _du.setDate(10); if(_du<new Date())_du.setMonth(_du.getMonth()+1); var venc=_du.toLocaleDateString('pt-BR');
   var row=function(icon,lbl,sub,view){ return '<button class="conta-row" data-aa="nav" data-view="'+view+'">'
     +'<span class="cr-ico">'+icon+'</span><span class="cr-main"><span class="cr-lbl">'+lbl+'</span>'+(sub?'<span class="cr-sub">'+sub+'</span>':'')+'</span>'
     +'<svg viewBox="0 0 24 24" fill="none" stroke="#9fb2bb" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px"><path d="M9 6l6 6-6 6"/></svg></button>'; };
@@ -1413,7 +1431,11 @@ function areaConta(){
     +'<div class="prof-name">'+escapeHtml(p.nome||'Cliente')+'</div><div class="prof-cpf">'+escapeHtml(p.cpf||p.email)+'</div></div>'
     +'<button class="edit-cta" data-aa="nav" data-view="editar"><div><div class="ec-t">Editar informações</div><div class="ec-s">Atualize seu cadastro →</div></div><div class="ec-arrow">'+_arrow()+'</div></button>'
     +'<div class="conta-group"><div class="cg-h">Cobranças</div>'
-    +'<div class="cobr-row"><div><div class="cob-mes">'+mes.charAt(0).toUpperCase()+mes.slice(1)+'</div><div class="cob-sub">'+act.length+' '+(act.length===1?'apólice':'apólices')+'</div></div>'
+    +'<div style="padding:2px 2px 12px;font-size:12.5px;color:#8aa0a4;font-weight:600">'+mes.charAt(0).toUpperCase()+mes.slice(1)+' · '+act.length+' '+(act.length===1?'prêmio':'prêmios')+'</div>'
+    +(act.length ? act.map(function(x){ return '<div class="cobr-row"><div><div class="cob-mes" style="font-size:14px">'+escapeHtml(x.tipo||'Seguro')+'</div><div class="cob-sub">'+escapeHtml((x.item||'Prêmio mensal').slice(0,46))+' · vence '+venc+'</div></div>'
+      +'<div style="text-align:right"><div class="cob-val">'+escapeHtml(x.preco||'—')+'</div><div class="cob-ok" style="color:#b8860b">Em aberto</div></div></div>'; }).join('')
+      : '<div class="cobr-row"><div><div class="cob-mes">Sem cobranças</div><div class="cob-sub">Você ainda não tem prêmios em aberto.</div></div></div>')
+    +'<div class="cobr-row" style="border-top:1px solid #eef2f4;margin-top:2px"><div><div class="cob-mes">Total do mês</div><div class="cob-sub">Soma dos prêmios ativos</div></div>'
     +'<div style="text-align:right"><div class="cob-val">'+fmtBRL(monthly)+'</div><div class="cob-ok">Em dia</div></div></div></div>'
     +'<div class="conta-group"><div class="cg-h">Ajuda</div>'
     +row(chat,'Converse com a Vic','Tire dúvidas sobre seguros','vic')
@@ -1534,6 +1556,14 @@ function renderArea(){
 function areaGo(view,pol){ if(pol!==undefined)S.curPol=pol; S.areaView=view; renderArea(); }
 async function _areaSair(){ await authLogout(); show('home'); var e=document.getElementById('li-email'); if(e)e.value=''; var s=document.getElementById('li-senha'); if(s)s.value=''; var m=document.getElementById('li-msg'); if(m){m.className='msg';m.textContent='';} }
 async function _activateRow(row){ if(!row)return; try{ if(SB&&row.id){ await SB.from('policies').update({status:'ativa'}).eq('id',row.id); } row.status='ativa'; }catch(e){} S.policies=await loadPolicies().catch(function(){return S.policies;}); renderArea(); }
+async function _cancelarApolice(id){
+  if(!id)return;
+  if(!confirm('Tem certeza que deseja cancelar esta apólice?\n\nA cobertura deixa de valer e a apólice vai para a aba "Canceladas". Para reativar, será necessário falar com o atendimento.'))return;
+  try{ if(SB){ await SB.from('policies').update({status:'cancelada'}).eq('id',id); } }catch(e){}
+  var p=(S.policies||[]).find(function(x){return String(x.id)===String(id);}); if(p)p.status='cancelada';
+  try{ S.policies=await loadPolicies(); }catch(e){}
+  S.areaView='apolices'; renderArea();
+}
 function areaBind(){
   var w=document.getElementById('wizard');
   w.onclick=async function(e){
@@ -1543,7 +1573,8 @@ function areaBind(){
     if(act==='csel-toggle'){ var cid=el.getAttribute('data-id'); var cl=document.getElementById(cid+'-list'); var was=cl.classList.contains('open'); var all=w.querySelectorAll('.csel-list.open'); for(var z=0;z<all.length;z++)all[z].classList.remove('open'); if(!was)cl.classList.add('open'); return; }
     if(act==='csel-opt'){ var cid2=el.getAttribute('data-id'); var vEl=document.getElementById(cid2+'-val'); vEl.setAttribute('data-value',el.getAttribute('data-value')); vEl.textContent=el.getAttribute('data-label'); var ls=document.getElementById(cid2+'-list'); if(ls)ls.classList.remove('open'); return; }
     if(act==='nav'){ areaGo(el.getAttribute('data-view')); }
-    else if(act==='pol'){ var i=+el.getAttribute('data-i'); areaGo('apolice',(S.policies||[])[i]); }
+    else if(act==='pol'){ var pid=el.getAttribute('data-id'); var pol=null; if(pid){ pol=(S.policies||[]).find(function(x){return String(x.id)===String(pid);}); } if(!pol){ var i=+el.getAttribute('data-i'); pol=(S.policies||[])[i]; } areaGo('apolice',pol); }
+    else if(act==='cancelar-id'){ _cancelarApolice(el.getAttribute('data-id')); }
     else if(act==='sair'){ _areaSair(); }
     else if(act==='cotar'){ openSegPopup(); }
     else if(act==='continuar'){ var ref=el.getAttribute('data-ref'); var d=_readDrafts().find(function(x){return x.ref===ref;}); if(d&&d.res){ S.res=d.res; S.resStep=4; show('page'); var _tt=document.getElementById('tb-title'); if(_tt)_tt.style.display='flex'; renderTela4(); } else { startSeg('residencial'); } }
@@ -2182,8 +2213,9 @@ function renderTela4(){
     +'<div class="pay-methods">'
     +'<button type="button" class="pmeth'+(r._pgto==='cartao'?' on':'')+'" data-pg="cartao"><span class="rdo"></span><span class="pm-txt">Cartão de Crédito</span></button>'
     +'<button type="button" class="pmeth'+(r._pgto==='pix'?' on':'')+'" data-pg="pix"><span class="rdo"></span><span class="pm-txt">Débito / PIX Automático</span></button>'
+    +'<button type="button" class="pmeth'+(r._pgto==='boleto'?' on':'')+'" data-pg="boleto"><span class="rdo"></span><span class="pm-txt">Boleto bancário</span></button>'
     +'</div>'
-    +'<div class="titular-wrap" id="titular-wrap"><label class="field-lbl">'+(r._pgto==='cartao'?'Titular do cartão':'Titular da conta')+'</label>'
+    +'<div class="titular-wrap" id="titular-wrap"><label class="field-lbl">'+(r._pgto==='cartao'?'Titular do cartão':(r._pgto==='boleto'?'Pagador do boleto':'Titular da conta'))+'</label>'
     + cselBare('sel-titular',[{v:'proprio',n:'Próprio Segurado'},{v:'outro',n:'Outro'}],r._titular)+'</div>'
     +'<button type="button" class="pay-btn'+(r._pgtoOk?' done':'')+'" id="pay-dados">'+(r._pgtoOk?_check()+'<span>Dados confirmados</span>':_card()+'<span>Dados de pagamento</span>')+'</button>'
     +'<button type="button" class="pay-btn ghost" id="pay-proposta">Fazer download da proposta</button>'
@@ -2233,12 +2265,12 @@ function bindTela4(){
       r._pgto=b.dataset.pg;
       document.querySelectorAll('.pmeth').forEach(x=>x.classList.toggle('on',x===b));
       r._pgtoOk=false; // troca de método pede nova confirmação
-      const dl=document.querySelector('.titular-wrap .field-lbl'); if(dl)dl.textContent=(r._pgto==='cartao'?'Titular do cartão':'Titular da conta');
+      const dl=document.querySelector('.titular-wrap .field-lbl'); if(dl)dl.textContent=(r._pgto==='cartao'?'Titular do cartão':(r._pgto==='boleto'?'Pagador do boleto':'Titular da conta'));
       paintDados(); checkFinalize();
     };
   });
   bindCsel('sel-titular',v=>{ r._titular=v; });
-  document.getElementById('pay-dados').onclick=()=>{ r._pgto==='cartao'?openCardModal():openPixModal(); };
+  document.getElementById('pay-dados').onclick=()=>{ if(r._pgto==='cartao'){ openCardModal(); } else if(r._pgto==='pix'){ openPixModal(); } else { r._pgtoOk=true; paintDados(); checkFinalize(); alert('Boleto selecionado. Após finalizar a contratação, o boleto é gerado e enviado ao seu e-mail. O vencimento da 1ª parcela é exibido na proposta.'); } };
   document.getElementById('pay-proposta').onclick=baixarProposta;
   // endereço
   const A=r._addr;
@@ -2403,7 +2435,7 @@ function finalizarContratacao(){
     item:(A.endereco?(A.endereco+', '+(A.numero||'s/n')):'Residência')+(A.cidade?(' — '+A.cidade+'/'+(A.uf||'')):''),
     price:fmtBRL(t.total)+'/mês',
     cov:pacNome(r.pacote)+' · IS '+fmtBRL0(r.lmi)+' · '+assistNome(r.assist)+(r.pet?(' + '+petNome(r.pet)):''),
-    pagamento:(r._pgto==='cartao'?'Cartão de crédito':'PIX')+' · '+(r._parcelas||12)+'x sem juros',
+    pagamento:(r._pgto==='cartao'?'Cartão de crédito · '+(r._parcelas||12)+'x sem juros':(r._pgto==='boleto'?'Boleto bancário · mensal':'PIX · mensal')),
     numero:num,
     status:'ativa'
   };
@@ -2558,10 +2590,11 @@ function planModalData(grupo){
       cards:RES.assist.map(a=>({v:a.v,name:a.n,price:precoComAssist(a.v),list:a.servicos}))
     };
   }
-  // pet
+  // pet — mostra APENAS o valor adicional do pet (não o total com residencial)
+  const semPet=precoComPet('');
   const arr=[{v:'',name:'Não Contratado',price:null,list:['Sem assistência pet']}];
-  RES.pet.filter(p=>p.v).forEach(p=>arr.push({v:p.v,name:p.n,price:precoComPet(p.v),list:p.servicos}));
-  return { titulo:'Escolha o Plano Pet.', sub:'Cuidados para o seu pet — opcional.', sel:r.pet, recomendado:'pet_sossego', cards:arr };
+  RES.pet.filter(p=>p.v).forEach(p=>arr.push({v:p.v,name:p.n,price:Math.max(0,precoComPet(p.v)-semPet),list:p.servicos,addon:true}));
+  return { titulo:'Escolha o Plano Pet.', sub:'Valor adicional ao seu plano — opcional.', sel:r.pet, recomendado:'pet_sossego', cards:arr };
 }
 /* preços totais (mensais) simulando cada opção, pra mostrar dentro do modal como a Tokio */
 function precoPacote(v){ const o=S.res.pacote; aplicaPacote(v); const m=resPremio().mensal; aplicaPacote(o); return m; }
@@ -2577,8 +2610,7 @@ function openPlanModal(grupo){
     const isRec=(it.v===d.recomendado);
     const lista=(it.list||[]).map(s=>'<li>'+check+'<span>'+s+'</span></li>').join('');
     const precoBlock = it.price===null ? '<div class="pm-price free">Sem custo adicional</div>'
-      : '<div class="pm-price"><span class="cur">R$</span> <b>'+fmtBRL(it.price).replace('R$ ','')+'</b> <span class="per">/mês</span></div>'
-        +'<div class="pm-vig">Pagamento mensal com vigência de '+vigNome+'.</div>';
+      : '<div class="pm-price"><span class="cur">R$</span> <b>'+fmtBRL(it.price).replace('R$ ','')+'</b> <span class="per">/mês</span></div>';
     return '<div class="pm-card'+(on?' on':'')+'">'
       +(isRec?'<div class="pm-badge">PLANO MAIS ESCOLHIDO</div>':'')
       +'<div class="pm-head">'+it.name+'</div>'
