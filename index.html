@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s5.7">
+<meta name="site-build" content="s5.8">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -2586,7 +2586,7 @@ function baixarProposta(){
     +linha('Prêmio líquido',fmtBRL(t.now)+' / mês')
     +linha('IOF ('+_iofPct('casa')+')',fmtBRL(t.iof)+' / mês')
     +linha('Valor mensal (com IOF)',fmtBRL(t.total)+' / mês')
-    +linha('Forma de pagamento',(r._pgto==='cartao'?'Cartão de crédito':'Débito/PIX automático')+' · '+(r._parcelas||12)+'x sem juros')
+    +linha('Forma de pagamento',_pagLabel(r))
     +'</table>'
     +'<h3 style="color:#279989">Dados do segurado</h3><table>'
     +linha('CEP',A.cep||'—')+linha('Endereço',(A.endereco||'—')+', '+(A.numero||'s/n')+(A.compl?' — '+A.compl:''))
@@ -2600,6 +2600,12 @@ function baixarProposta(){
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
 }
 
+function _pagLabel(r){
+  r=r||S.res||{};
+  if(r._pgto==='cartao') return 'Cartão de crédito · '+(r._parcelas||12)+'x sem juros';
+  if(r._pgto==='boleto') return 'Boleto bancário · mensal';
+  return 'Débito / PIX Automático · mensal';
+}
 function finalizarContratacao(){
   const r=S.res; const t=payTotais();
   const num='VS-'+Date.now().toString(36).toUpperCase().slice(-8);
@@ -2610,7 +2616,7 @@ function finalizarContratacao(){
     item:(A.endereco?(A.endereco+', '+(A.numero||'s/n')):'Residência')+(A.cidade?(' — '+A.cidade+'/'+(A.uf||'')):''),
     price:fmtBRL(t.total)+'/mês',
     cov:pacNome(r.pacote)+' · IS '+fmtBRL0(r.lmi)+' · '+assistNome(r.assist)+(r.pet?(' + '+petNome(r.pet)):''),
-    pagamento:(r._pgto==='cartao'?'Cartão de crédito · '+(r._parcelas||12)+'x sem juros':(r._pgto==='boleto'?'Boleto bancário · mensal':'PIX · mensal')),
+    pagamento:_pagLabel(r),
     numero:num,
     status:'ativa'
   };
@@ -2644,7 +2650,7 @@ function renderTela5(num){
     +'<div class="ds-row"><span>Pacote</span><b>'+pacNome(r.pacote)+'</b></div>'
     +'<div class="ds-row"><span>Assistência</span><b>'+assistNome(r.assist)+(r.pet?' + '+petNome(r.pet):'')+'</b></div>'
     +'<div class="ds-row"><span>Importância Segurada</span><b>'+fmtBRL0(r.lmi)+'</b></div>'
-    +'<div class="ds-row"><span>Pagamento</span><b>'+(r._pgto==='cartao'?'Cartão de crédito':'PIX')+' · '+(r._parcelas||12)+'x sem juros</b></div>'
+    +'<div class="ds-row"><span>Pagamento</span><b>'+_pagLabel(r)+'</b></div>'
     +'<div class="ds-row"><span>Prêmio líquido</span><b>'+fmtBRL(t.now)+'</b></div>'
     +'<div class="ds-row"><span>IOF ('+_iofPct('casa')+')</span><b>'+fmtBRL(t.iof)+'</b></div>'
     +'<div class="ds-row total"><span>Valor mensal (com IOF)</span><b>'+fmtBRL(t.total)+'</b></div>'
