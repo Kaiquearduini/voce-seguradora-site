@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s4.7">
+<meta name="site-build" content="s4.8">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -391,17 +391,16 @@ a{color:inherit;text-decoration:none}
 .pm-title{font-size:21px;font-weight:800;color:var(--txt1);margin-bottom:4px;padding-right:40px}
 .pm-title b{color:var(--teal)}
 .pm-sub{font-size:14px;color:var(--txt2);margin-bottom:24px}
-.pm-grid{display:grid;gap:16px}
+.pm-grid{display:grid;gap:16px;padding-top:13px}
 .pm-grid.cols-3{grid-template-columns:repeat(3,1fr)}
 .pm-grid.cols-4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:820px){.pm-grid.cols-3,.pm-grid.cols-4{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.pm-grid.cols-3,.pm-grid.cols-4{grid-template-columns:1fr}}
-.pm-card{position:relative;background:#fff;border:2px solid rgba(0,36,48,.08);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:all .18s}
+.pm-card{position:relative;background:#fff;border:2px solid rgba(0,36,48,.08);border-radius:16px;display:flex;flex-direction:column;transition:all .18s}
 .pm-card.on{border-color:var(--neon);box-shadow:0 10px 30px rgba(70,239,128,.22)}
-.pm-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 14px;border-radius:0 0 10px 10px;white-space:nowrap;z-index:2}
-.pm-head{background:linear-gradient(120deg,var(--teal),var(--neon));color:#fff;text-align:center;font-size:16px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:16px 12px}
-.pm-badge + .pm-head{padding-top:34px}
-.pm-body{padding:18px 16px;display:flex;flex-direction:column;flex:1}
+.pm-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:10px;font-weight:800;letter-spacing:.06em;padding:6px 16px;border-radius:999px;white-space:nowrap;z-index:5;box-shadow:0 6px 16px rgba(0,36,48,.28)}
+.pm-head{background:linear-gradient(120deg,var(--teal),var(--neon));color:#fff;text-align:center;font-size:16px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:16px 12px;border-radius:14px 14px 0 0}
+.pm-body{padding:18px 16px;display:flex;flex-direction:column;flex:1;border-radius:0 0 14px 14px}
 .pm-list{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:9px;flex:1}
 .pm-list li{font-size:13px;color:var(--txt2);line-height:1.35;display:flex;align-items:flex-start;gap:8px}
 .pm-list li svg{width:14px;height:14px;color:var(--teal);flex-shrink:0;margin-top:2px}
