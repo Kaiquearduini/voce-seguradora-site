@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s5.4">
+<meta name="site-build" content="s5.6">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -261,21 +261,21 @@ a{color:inherit;text-decoration:none}
 .l-steps{width:100%;max-width:360px;text-align:left}
 .l-step{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px;opacity:0;animation:lup .4s ease both}
 @keyframes lup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.l-step .ls-ico{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .4s,border-color .4s,box-shadow .4s}
-.l-step .ls-ico svg{width:20px;height:20px;color:rgba(255,255,255,.34);transition:color .4s}
-.l-step .ls-txt{color:rgba(255,255,255,.5);font-weight:500;transition:all .4s}
-.l-step .ls-check{position:absolute;right:-5px;bottom:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--teal));display:flex;align-items:center;justify-content:center;transform:scale(0);opacity:0;transition:transform .4s cubic-bezier(.34,1.7,.5,1),opacity .25s;box-shadow:0 3px 9px rgba(70,239,128,.5)}
-.l-step .ls-check svg{width:11px;height:11px;color:#04231a}
-.l-step.active .ls-ico{background:linear-gradient(135deg,rgba(70,239,128,.22),rgba(39,153,137,.14));border-color:rgba(70,239,128,.6);animation:lpop .5s cubic-bezier(.34,1.5,.6,1),lpulse 1.15s ease-out infinite}
-.l-step.active .ls-ico svg{color:var(--neon);animation:ldraw .55s cubic-bezier(.34,1.5,.6,1) both}
+.l-step .ls-ico{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .45s,border-color .45s,box-shadow .45s}
+.l-step .ls-ico svg{width:20px;height:20px;color:rgba(255,255,255,.34);transition:color .45s}
+.l-step .ls-txt{flex:1;color:rgba(255,255,255,.5);font-weight:500;transition:color .45s}
+.l-step .ls-status{position:relative;width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.l-step .ls-spin{position:absolute;width:20px;height:20px;color:var(--neon);opacity:0;transition:opacity .3s}
+.l-step .ls-done{position:absolute;width:22px;height:22px;color:var(--neon);opacity:0;transform:scale(.4);transition:opacity .3s,transform .5s cubic-bezier(.34,1.45,.5,1)}
+.l-step.active .ls-ico{background:linear-gradient(135deg,rgba(70,239,128,.20),rgba(39,153,137,.12));border-color:rgba(70,239,128,.55);box-shadow:0 8px 22px rgba(70,239,128,.16)}
+.l-step.active .ls-ico svg{color:var(--neon)}
 .l-step.active .ls-txt{color:#fff;font-weight:600}
-.l-step.done .ls-ico{background:linear-gradient(135deg,rgba(70,239,128,.16),rgba(39,153,137,.1));border-color:rgba(70,239,128,.42)}
+.l-step.active .ls-spin{opacity:1;animation:lspin .75s linear infinite}
+.l-step.done .ls-ico{background:linear-gradient(135deg,rgba(70,239,128,.14),rgba(39,153,137,.09));border-color:rgba(70,239,128,.38)}
 .l-step.done .ls-ico svg{color:var(--neon)}
-.l-step.done .ls-txt{color:rgba(255,255,255,.9);font-weight:600}
-.l-step.done .ls-check{transform:scale(1);opacity:1}
-@keyframes lpop{0%{transform:scale(.76)}55%{transform:scale(1.13)}100%{transform:scale(1)}}
-@keyframes lpulse{0%{box-shadow:0 0 0 0 rgba(70,239,128,.42)}70%{box-shadow:0 0 0 11px rgba(70,239,128,0)}100%{box-shadow:0 0 0 0 rgba(70,239,128,0)}}
-@keyframes ldraw{0%{opacity:0;transform:scale(.55) rotate(-14deg)}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(0)}}
+.l-step.done .ls-txt{color:rgba(255,255,255,.92);font-weight:600}
+.l-step.done .ls-done{opacity:1;transform:scale(1)}
+@keyframes lspin{to{transform:rotate(360deg)}}
 /* ===== COTADOR — 2 TELAS AMPLAS (estilo site/desktop, igual Tokio) ===== */
 .coast{max-width:1340px;margin:0 auto;padding:20px 48px 40px}
 @media(max-width:680px){.coast{padding:18px 18px 50px}}
@@ -1295,6 +1295,7 @@ function _houseSvg(c){ c=c||'#46EF80'; return '<svg viewBox="0 0 24 24" fill="no
 var AREA_PAL=['#279989','#3b82f6','#8b5cf6','#f59e0b','#ec4899','#06b6d4'];
 /* Identidade visual por produto: cor fixa + ícone específico (não usar casa pra tudo) */
 function _prodKey(t){ t=(t||'').toLowerCase();
+  if(/fian[çc]a|locat[íi]|aluguel garant|garantia de alug/.test(t))return 'fianca';
   if(/resid|casa|im[óo]v|condom|alug|lar\b|home/.test(t))return 'casa';
   if(/vida/.test(t))return 'vida';
   if(/acid|\bap\b|invalid/.test(t))return 'ap';
@@ -1320,7 +1321,8 @@ var PROD={
   pix:{c:'#0ea5e9',ic:'<path d="M12 3l4 4-4 4-4-4z"/><path d="M3 12l4-4 4 4-4 4z"/><path d="M13 12l4-4 4 4-4 4z"/><path d="M12 13l4 4-4 4-4-4z"/>'},
   emprestimo:{c:'#10b981',ic:'<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/>'},
   viagem:{c:'#6366f1',ic:'<path d="M2 16l20-7-7 13-3-6z"/>'},
-  default:{c:'#279989',ic:'<path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'}
+  fianca:{c:'#e11d48',ic:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'},
+  default:{c:'#64748b',ic:'<path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'}
 };
 function prodColor(t){ return PROD[_prodKey(t)].c; }
 function prodIcon(t,c,sz){ var k=_prodKey(t); c=c||PROD[k].c; sz=sz||22; return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:'+sz+'px;height:'+sz+'px">'+PROD[k].ic+'</svg>'; }
@@ -1390,7 +1392,9 @@ function areaInicio(){
   var p=_profile(); var nome=(p.nome||'').split(' ')[0]||'Cliente';
   var chart='';
   if(act.length&&total>0){
-    var segs=act.map(function(r,i){return {pct:_money(r.cobertura)/total*100,label:r.tipo||'Seguro',col:prodColor(r.tipo)};});
+    var grp={}, order=[];
+    act.forEach(function(r){ var k=(r.tipo||'Seguro'); if(!grp[k]){grp[k]={label:k,val:0};order.push(k);} grp[k].val+=_money(r.cobertura); });
+    var segs=order.map(function(k){ var g=grp[k]; return {pct:g.val/total*100,label:k,col:prodColor(k)}; });
     chart='<div class="dist"><div class="dist-h">Distribuição da proteção</div>'
       +'<div class="dist-bar">'+segs.map(function(s){return '<span style="width:'+s.pct+'%;background:'+s.col+'"></span>';}).join('')+'</div>'
       +'<div class="dist-leg">'+segs.map(function(s){return '<span class="dl"><i style="background:'+s.col+'"></i>'+escapeHtml(s.label)+' · '+Math.round(s.pct)+'%</span>';}).join('')+'</div></div>';
@@ -2848,7 +2852,7 @@ function goLoading(){
   // monta as 3 etapas (mesmos ícones do app: family, calc, ranking)
   const items=[{ico:'lsperfil',txt:'Analisando seu perfil de risco'},{ico:'lscobertura',txt:'Calculando a melhor cobertura'},{ico:'lsplanos',txt:'Comparando planos disponíveis'}];
   const cont=document.getElementById('l-steps');
-  cont.innerHTML=items.map((it,i)=>'<div class="l-step" id="lstep'+i+'" style="animation-delay:'+(i*.16+.08)+'s"><div class="ls-ico">'+ico(it.ico,20)+'<span class="ls-check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><span class="ls-txt">'+it.txt+'</span></div>').join('');
+  cont.innerHTML=items.map((it,i)=>'<div class="l-step" id="lstep'+i+'" style="animation-delay:'+(i*.16+.08)+'s"><div class="ls-ico">'+ico(it.ico,20)+'</div><span class="ls-txt">'+it.txt+'</span><span class="ls-status"><svg class="ls-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,.16)" stroke-width="2.5"/><path d="M21 12a9 9 0 00-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><svg class="ls-done" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4 10-10.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>').join('');
   var T=820;
   [0,1,2].forEach(function(i){
     setTimeout(function(){ var e=document.getElementById('lstep'+i); if(e){e.classList.remove('done');e.classList.add('active');} },280+i*T);
