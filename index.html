@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s6.3">
+<meta name="site-build" content="s6.4">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -527,6 +527,8 @@ a{color:inherit;text-decoration:none}
 .pmeth.on .rdo{border-color:var(--teal)}
 .pmeth.on .rdo::after{content:"";width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--teal))}
 .pmeth .pm-txt{font-size:13px;font-weight:700;color:var(--txt1);line-height:1.25}
+.af.req input{border-bottom-color:rgba(225,29,72,.4)}
+.af.req::after{content:"Obrigatório";display:block;font-size:11px;color:rgba(225,29,72,.7);font-weight:600;margin-top:4px}
 .af.inv input{border-bottom-color:#e11d48!important}
 .af.inv label{color:#e11d48}
 .af.inv::after{content:"Obrigatório";display:block;font-size:11px;color:#e11d48;font-weight:700;margin-top:4px}
@@ -2475,7 +2477,7 @@ function bindTela4(){
   // finalizar
   document.getElementById('pay-finalizar').onclick=function(){
     var miss=_missingFinalize();
-    document.querySelectorAll('.af.inv').forEach(function(el){el.classList.remove('inv');});
+    document.querySelectorAll('.af.inv,.af.req').forEach(function(el){el.classList.remove('inv');el.classList.remove('req');});
     var box=document.getElementById('pay-missing');
     if(!miss.length){ if(box)box.style.display='none'; finalizarContratacao(); return; }
     miss.forEach(function(m){ var el=document.getElementById(m.f); if(el&&el.closest('.af'))el.closest('.af').classList.add('inv'); });
@@ -2514,7 +2516,9 @@ function checkFinalize(){
   var miss=_missingFinalize();
   var missF={}; miss.forEach(function(m){missF[m.f]=1;});
   ['af-cep','af-end','af-num','af-bairro','af-cidade','af-uf'].forEach(function(id){
-    var el=document.getElementById(id); if(el&&el.closest('.af')&&!missF[id])el.closest('.af').classList.remove('inv');
+    var el=document.getElementById(id); if(!el)return; var af=el.closest('.af'); if(!af)return;
+    if(missF[id]){ if(!af.classList.contains('inv'))af.classList.add('req'); }
+    else { af.classList.remove('req'); af.classList.remove('inv'); }
   });
   var box=document.getElementById('pay-missing');
   if(box && box.style.display!=='none'){
