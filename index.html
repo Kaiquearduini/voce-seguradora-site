@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s5.8">
+<meta name="site-build" content="s5.9">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -2445,7 +2445,7 @@ function bindTela4(){
     };
   });
   bindCsel('sel-titular',v=>{ r._titular=v; });
-  document.getElementById('pay-dados').onclick=()=>{ if(r._pgto==='cartao'){ openCardModal(); } else if(r._pgto==='pix'){ openPixModal(); } else { r._pgtoOk=true; paintDados(); checkFinalize(); alert('Boleto selecionado. Após finalizar a contratação, o boleto é gerado e enviado ao seu e-mail. O vencimento da 1ª parcela é exibido na proposta.'); } };
+  document.getElementById('pay-dados').onclick=()=>{ if(r._pgto==='cartao'){ openCardModal(); } else if(r._pgto==='pix'){ openPixModal(); } else { openBoletoModal(); } };
   document.getElementById('pay-proposta').onclick=baixarProposta;
   // endereço
   const A=r._addr;
@@ -2562,6 +2562,75 @@ function openPixModal(){
   m.onclick=e=>{ if(e.target===m)close(); };
   document.getElementById('pix-copy').onclick=()=>{ try{navigator.clipboard.writeText(pixKey);}catch(e){} var b=document.getElementById('pix-copy'); if(b){ b.textContent='Chave copiada ✓'; setTimeout(function(){ b.textContent='Copiar chave PIX'; },1600); } };
   document.getElementById('pixf-ok').onclick=()=>{ r._parcelas=1; r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
+}
+
+/* Modal Boleto bancário (demonstrativo) */
+function _boletoBarcode(seed){
+  var s=0,i; for(i=0;i<seed.length;i++)s=(s*31+seed.charCodeAt(i))>>>0;
+  var bars=''; for(var k=0;k<72;k++){ s=(s*1103515245+12345)>>>0; var w=1+(s%3); var on=(s>>5)&1; bars+='<span style="display:inline-block;width:'+w+'px;height:46px;background:'+(on?'#06121a':'#fff')+'"></span>'; }
+  return '<div style="display:flex;gap:1px;align-items:flex-end;justify-content:center;padding:8px 0;overflow:hidden">'+bars+'</div>';
+}
+function _linhaDigitavel(t){
+  var cents=Math.round((t.total||0)*100); var v=('0000000000'+cents).slice(-10);
+  function g(n){var o='';for(var i=0;i<n;i++)o+=Math.floor(Math.random()*10);return o;}
+  return '23793.'+g(5)+' '+g(5)+'.'+g(6)+' '+g(5)+'.'+g(6)+' '+g(1)+' 9'+g(3)+v;
+}
+function abrirBoletoDoc(linha,vencStr,pagador,t){
+  var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Boleto — Você Seguradora</title>'
+    +'<style>body{font-family:Arial,Helvetica,sans-serif;color:#002430;max-width:760px;margin:24px auto;padding:0 18px}'
+    +'.bk{border:1px solid #002430;border-radius:8px;padding:18px}.hd{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #002430;padding-bottom:8px;margin-bottom:10px}'
+    +'.hd b{font-size:20px}.ld{font-family:monospace;font-size:15px;text-align:center;letter-spacing:.5px;margin:6px 0}'
+    +'.bc{display:flex;gap:1px;align-items:flex-end;justify-content:center;margin:14px 0 4px}.bc span{display:inline-block}'
+    +'.row{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px dashed #cfd9dc}'
+    +'.btn{display:inline-block;margin:16px 0;background:#279989;color:#fff;border:none;border-radius:8px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:14px}'
+    +'@media print{.btn{display:none}}</style></head><body>'
+    +'<div class="bk"><div class="hd"><b>Você Seguradora</b><span>Banco 237-2</span></div>'
+    +'<div class="ld">'+linha+'</div>'+_boletoBarcode(linha)
+    +'<div class="row"><span>Vencimento</span><b>'+vencStr+'</b></div>'
+    +'<div class="row"><span>Pagador</span><b>'+pagador+'</b></div>'
+    +'<div class="row"><span>Beneficiário</span><b>VOCÊ SEGURADORA S.A. · CNPJ 45.233.931/0001-78</b></div>'
+    +'<div class="row"><span>Valor do documento</span><b>'+fmtBRL(t.total)+'</b></div>'
+    +'<div class="row"><span>Instruções</span><b>Após o pagamento, a apólice é ativada e enviada por e-mail.</b></div>'
+    +'</div><button class="btn" onclick="window.print()">Imprimir / Salvar em PDF</button>'
+    +'<p style="font-size:12px;color:#7c9098">Documento de demonstração — não possui valor fiscal.</p></body></html>';
+  try{ var w=window.open('','_blank'); if(w){ w.document.open(); w.document.write(html); w.document.close(); return; } }catch(e){}
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='boleto-voce-seguradora.html'; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500);
+}
+function openBoletoModal(){
+  const r=S.res, t=payTotais();
+  const venc=new Date(); venc.setDate(venc.getDate()+5);
+  const vencStr=('0'+venc.getDate()).slice(-2)+'/'+('0'+(venc.getMonth()+1)).slice(-2)+'/'+venc.getFullYear();
+  if(!r._boletoLinha) r._boletoLinha=_linhaDigitavel(t);
+  const linha=r._boletoLinha;
+  const pagador=(r._titular==='outro'?'Outro':'Próprio Segurado');
+  const m=document.getElementById('plan-modal');
+  m.innerHTML='<div class="pm-box" style="max-width:460px">'
+    +'<button class="pm-close" id="bolf-x" aria-label="Fechar">&times;</button>'
+    +'<div class="pm-title">Pague com <b>Boleto</b></div>'
+    +'<div class="pm-sub">Boleto da 1ª parcela. Ambiente de demonstração.</div>'
+    +'<div style="text-align:center;margin:8px 0 2px"><div style="font-size:30px;font-weight:900;color:var(--teal,#279989)">'+fmtBRL(t.total)+'</div><div style="font-size:12.5px;color:var(--txt2,#5b6b70);margin-top:2px">valor mensal · inclui IOF de '+_iofPct('casa')+'</div></div>'
+    + iofBoxLight(t)
+    +'<div style="background:#fff;border:1px solid rgba(0,36,48,.12);border-radius:14px;padding:16px;margin:14px 0">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #002430;padding-bottom:8px;margin-bottom:10px"><div style="font-weight:900;color:#002430;font-size:15px">Você Seguradora</div><div style="font-weight:800;color:#002430;font-size:13px">237-2</div></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:4px"><span>Vencimento</span><b style="color:#002430">'+vencStr+'</b></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:4px"><span>Pagador</span><b style="color:#002430">'+escapeHtml(pagador)+'</b></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:8px"><span>Valor do documento</span><b style="color:#002430">'+fmtBRL(t.total)+'</b></div>'
+      +_boletoBarcode(linha)
+      +'<div style="font-family:monospace;font-size:12.5px;text-align:center;color:#002430;word-break:break-all;margin-top:6px">'+linha+'</div>'
+    +'</div>'
+    +'<button type="button" id="bol-copy" style="width:100%;background:rgba(39,153,137,.08);border:1px solid rgba(39,153,137,.25);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--teal,#279989);cursor:pointer;font-family:inherit;margin-bottom:8px">Copiar linha digitável</button>'
+    +'<button type="button" class="pay-btn ghost" id="bol-pdf" style="margin-bottom:8px">Abrir boleto (PDF)</button>'
+    +'<button class="pay-btn" id="bolf-ok">'+_check()+'<span>Confirmar pagamento</span></button>'
+    +'</div>';
+  m.classList.add('show');
+  const close=()=>{ m.classList.remove('show'); m.innerHTML=''; };
+  document.getElementById('bolf-x').onclick=close;
+  m.onclick=e=>{ if(e.target===m)close(); };
+  document.getElementById('bol-copy').onclick=()=>{ try{navigator.clipboard.writeText(linha);}catch(e){} var b=document.getElementById('bol-copy'); if(b){ b.textContent='Linha copiada ✓'; setTimeout(function(){ b.textContent='Copiar linha digitável'; },1600); } };
+  document.getElementById('bol-pdf').onclick=()=>{ abrirBoletoDoc(linha,vencStr,pagador,t); };
+  document.getElementById('bolf-ok').onclick=()=>{ r._parcelas=1; r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
 }
 
 /* Baixar a proposta como arquivo (HTML imprimível) — funciona offline */
