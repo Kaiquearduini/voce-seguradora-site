@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s6.4">
+<meta name="site-build" content="s6.5">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -536,6 +536,8 @@ a{color:inherit;text-decoration:none}
 .pay-missing .pm-miss-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13.5px;margin-bottom:7px;color:#e11d48}
 .pay-missing .pm-miss-h svg{width:18px;height:18px;flex-shrink:0}
 .pay-missing ul{margin:0;padding-left:20px;font-size:13px;color:#b91c1c;line-height:1.65;font-weight:600}
+.co-cta.locked{opacity:.5;cursor:not-allowed;box-shadow:none;filter:saturate(.35)}
+.co-cta.locked:hover{transform:none}
 .field-lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:9px;display:block}
 .titular-wrap{margin-bottom:22px;max-width:420px}
 .pay-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:13px;background:linear-gradient(135deg,var(--neon),var(--teal));color:var(--navy);font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;transition:all .18s;box-shadow:0 8px 20px rgba(70,239,128,.28)}
@@ -2525,6 +2527,8 @@ function checkFinalize(){
     if(!miss.length){ box.style.display='none'; }
     else { box.innerHTML='<div class="pm-miss-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Falta preencher para avançar:</div><ul>'+miss.map(function(m){return '<li>'+m.l+'</li>';}).join('')+'</ul>'; }
   }
+  var btnF=document.getElementById('pay-finalizar');
+  if(btnF)btnF.classList.toggle('locked', miss.length>0);
 }
 
 /* Consulta ViaCEP (roda no navegador do cliente; offline = ignora silenciosamente) */
@@ -2728,6 +2732,7 @@ function _pagLabel(r){
   return 'Débito / PIX Automático · mensal';
 }
 function finalizarContratacao(){
+  if(_missingFinalize().length){ checkFinalize(); var bx=document.getElementById('pay-missing'); if(bx)bx.style.display='block'; checkFinalize(); return; }
   const r=S.res; const t=payTotais();
   const num='VS-'+Date.now().toString(36).toUpperCase().slice(-8);
   const A=r._addr||{};
