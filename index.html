@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s6.0">
+<meta name="site-build" content="s6.2">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -470,11 +470,11 @@ a{color:inherit;text-decoration:none}
 .pay-page .co-greet p{font-size:13px}
 .pay-page .co-skyline{margin-bottom:10px}
 .pay-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px 26px;max-width:1180px;margin:0 auto;align-items:start}
-.pay-wrap .pay-summary{grid-column:2;grid-row:1;border-radius:18px;overflow:hidden;box-shadow:var(--card-sh);background:#fff}
+.pay-wrap .pay-summary{grid-column:2;grid-row:1/3;border-radius:18px;overflow:hidden;box-shadow:var(--card-sh);background:#fff;position:sticky;top:88px;align-self:start}
 .pay-wrap .coupon-card{grid-column:1;grid-row:1;max-width:640px;margin:0 auto;width:100%}
-.pay-wrap .pay-cols{grid-column:1;grid-row:2;margin-top:20px}
+.pay-wrap .pay-cols{grid-column:1;grid-row:2;margin-top:4px}
 .pay-wrap .pay-foot{grid-column:1;grid-row:3}
-@media(max-width:1080px){.pay-wrap{grid-template-columns:1fr}.pay-wrap>*{grid-column:1!important}.pay-wrap .pay-summary{grid-row:1!important;max-width:440px;margin:0 auto 2px;width:100%}.pay-wrap .coupon-card{grid-row:2!important}.pay-wrap .pay-cols{grid-row:3!important}.pay-wrap .pay-foot{grid-row:4!important}}
+@media(max-width:1080px){.pay-wrap{grid-template-columns:1fr}.pay-wrap>*{grid-column:1!important}.pay-wrap .pay-summary{grid-row:1!important;max-width:440px;margin:0 auto 2px;width:100%;position:static!important}.pay-wrap .coupon-card{grid-row:2!important}.pay-wrap .pay-cols{grid-row:3!important}.pay-wrap .pay-foot{grid-row:4!important}}
 .pay-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 @media(max-width:760px){.pay-cols{grid-template-columns:1fr}}
 .pay-page .pay-card{padding:18px 22px}
