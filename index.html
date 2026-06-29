@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s5.6">
+<meta name="site-build" content="s5.7">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -2111,15 +2111,15 @@ function renderTela1(){
     + fcard('Telefone','t1-tel','(00) 00000-0000',r.wa||'')
     + fcard('E-mail','t1-email','voce@email.com',r.email||'')
     +'</div>'
-    +'<p class="co-hint">Qual é o valor que você deseja contratar como cobertura? Leve em conta o necessário para reconstrução do imóvel e de tudo o que há nele: móveis, eletrodomésticos, eletroeletrônicos e seus bens.</p>'
-    +'<p class="co-hint-sub">Valores entre '+fmtBRL0(RES.lmi.min)+' e '+fmtBRL0(RES.lmi.max)+' são permitidos.</p>'
-    +'<div class="is-card"><div class="is-head">Informe o valor desejado</div>'
-    +'<div class="is-body"><div class="is-cap">Importância Segurada</div>'
+    +'<div class="is-card"><div class="is-head">Importância Segurada</div>'
+    +'<div class="is-body">'
     +'<div class="is-stepper">'
     +'<button class="is-btn" id="is-minus" aria-label="Diminuir"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>'
     +'<div class="is-val" id="is-val">'+fmtBRL(r.lmi)+'</div>'
     +'<button class="is-btn" id="is-plus" aria-label="Aumentar"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>'
-    +'</div></div></div>'
+    +'</div>'
+    +'<div class="is-range" style="font-size:12.5px;color:#8aa0a4;font-weight:600;margin-top:12px;text-align:center">Entre '+fmtBRL0(RES.lmi.min)+' e '+fmtBRL0(RES.lmi.max)+'</div>'
+    +'</div></div>'
     +'<label class="consent'+(r._contato?' on':'')+'" id="t1-contato"><span class="ck"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Aceito que a Você Seguradora entre em contato comigo.</span></label>'
     +'<div class="co-cta-wrap"><button class="co-cta" id="t1-calc">Calcular<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
     +'</div>';
