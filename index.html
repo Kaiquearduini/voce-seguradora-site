@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s6.2">
+<meta name="site-build" content="s6.3">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -527,6 +527,13 @@ a{color:inherit;text-decoration:none}
 .pmeth.on .rdo{border-color:var(--teal)}
 .pmeth.on .rdo::after{content:"";width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--teal))}
 .pmeth .pm-txt{font-size:13px;font-weight:700;color:var(--txt1);line-height:1.25}
+.af.inv input{border-bottom-color:#e11d48!important}
+.af.inv label{color:#e11d48}
+.af.inv::after{content:"Obrigatório";display:block;font-size:11px;color:#e11d48;font-weight:700;margin-top:4px}
+.pay-missing{background:rgba(225,29,72,.06);border:1px solid rgba(225,29,72,.35);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.pay-missing .pm-miss-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13.5px;margin-bottom:7px;color:#e11d48}
+.pay-missing .pm-miss-h svg{width:18px;height:18px;flex-shrink:0}
+.pay-missing ul{margin:0;padding-left:20px;font-size:13px;color:#b91c1c;line-height:1.65;font-weight:600}
 .field-lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:9px;display:block}
 .titular-wrap{margin-bottom:22px;max-width:420px}
 .pay-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:13px;background:linear-gradient(135deg,var(--neon),var(--teal));color:var(--navy);font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;transition:all .18s;box-shadow:0 8px 20px rgba(70,239,128,.28)}
@@ -2412,7 +2419,8 @@ function renderTela4(){
     +'</div>'
     +'<div class="pay-foot">'
     +'<label class="consent pay-terms'+(r._terms?' on':'')+'" id="pay-terms"><span class="ck">'+_check()+'</span><span>Eu concordo com os <a href="#" onclick="return false" style="color:var(--teal);font-weight:700;text-decoration:underline">Termos e Condições</a> do seguro.</span></label>'
-    +'<div class="co-cta-wrap"><button class="co-cta" id="pay-finalizar" disabled>Finalizar contratação'+_arrow()+'</button></div>'
+    +'<div class="pay-missing" id="pay-missing" style="display:none"></div>'
+    +'<div class="co-cta-wrap"><button class="co-cta" id="pay-finalizar">Finalizar contratação'+_arrow()+'</button></div>'
     +'</div>'
     +'</div>'
     +'</div>'; // coast
@@ -2465,7 +2473,19 @@ function bindTela4(){
   // termos
   document.getElementById('pay-terms').onclick=()=>{ r._terms=!r._terms; document.getElementById('pay-terms').classList.toggle('on',r._terms); checkFinalize(); };
   // finalizar
-  document.getElementById('pay-finalizar').onclick=finalizarContratacao;
+  document.getElementById('pay-finalizar').onclick=function(){
+    var miss=_missingFinalize();
+    document.querySelectorAll('.af.inv').forEach(function(el){el.classList.remove('inv');});
+    var box=document.getElementById('pay-missing');
+    if(!miss.length){ if(box)box.style.display='none'; finalizarContratacao(); return; }
+    miss.forEach(function(m){ var el=document.getElementById(m.f); if(el&&el.closest('.af'))el.closest('.af').classList.add('inv'); });
+    if(box){
+      box.innerHTML='<div class="pm-miss-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Falta preencher para avançar:</div><ul>'+miss.map(function(m){return '<li>'+m.l+'</li>';}).join('')+'</ul>';
+      box.style.display='block';
+    }
+    var first=document.getElementById(miss[0].f);
+    if(first){ first.scrollIntoView({behavior:'smooth',block:'center'}); if(first.tagName==='INPUT'){try{first.focus();}catch(e){}} }
+  };
   document.addEventListener('click',cselCloseAll);
   // se o CEP já veio da Tela 1, tenta preencher endereço
   if(A.cep && A.cep.replace(/\D/g,'').length===8 && !A.endereco)viaCep(A.cep);
@@ -2477,11 +2497,30 @@ function paintDados(){
   b.classList.toggle('done',S.res._pgtoOk);
   b.innerHTML=S.res._pgtoOk?(_check()+'<span>Dados confirmados</span>'):(_card()+'<span>Dados de pagamento</span>');
 }
-function checkFinalize(){
+function _missingFinalize(){
   const r=S.res, A=r._addr||{};
-  const addrOk=(A.cep||'').replace(/\D/g,'').length===8 && A.endereco && A.numero && A.bairro && A.cidade && (A.uf||'').length===2;
-  const btn=document.getElementById('pay-finalizar');
-  if(btn)btn.disabled=!(r._pgtoOk && r._terms && addrOk);
+  var miss=[];
+  if((A.cep||'').replace(/\D/g,'').length!==8) miss.push({f:'af-cep',l:'CEP'});
+  if(!(A.endereco||'').trim()) miss.push({f:'af-end',l:'Endereço'});
+  if(!(A.numero||'').trim()) miss.push({f:'af-num',l:'Número do imóvel'});
+  if(!(A.bairro||'').trim()) miss.push({f:'af-bairro',l:'Bairro'});
+  if(!(A.cidade||'').trim()) miss.push({f:'af-cidade',l:'Cidade'});
+  if((A.uf||'').length!==2) miss.push({f:'af-uf',l:'Estado (UF)'});
+  if(!r._pgtoOk) miss.push({f:'pay-dados',l:'Confirmar os dados de pagamento'});
+  if(!r._terms) miss.push({f:'pay-terms',l:'Aceitar os Termos e Condições'});
+  return miss;
+}
+function checkFinalize(){
+  var miss=_missingFinalize();
+  var missF={}; miss.forEach(function(m){missF[m.f]=1;});
+  ['af-cep','af-end','af-num','af-bairro','af-cidade','af-uf'].forEach(function(id){
+    var el=document.getElementById(id); if(el&&el.closest('.af')&&!missF[id])el.closest('.af').classList.remove('inv');
+  });
+  var box=document.getElementById('pay-missing');
+  if(box && box.style.display!=='none'){
+    if(!miss.length){ box.style.display='none'; }
+    else { box.innerHTML='<div class="pm-miss-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Falta preencher para avançar:</div><ul>'+miss.map(function(m){return '<li>'+m.l+'</li>';}).join('')+'</ul>'; }
+  }
 }
 
 /* Consulta ViaCEP (roda no navegador do cliente; offline = ignora silenciosamente) */
@@ -2600,23 +2639,25 @@ function abrirBoletoDoc(linha,vencStr,pagador,t){
 }
 function openBoletoModal(){
   const r=S.res, t=payTotais();
+  if(r._parcelas===undefined)r._parcelas=12;
   const venc=new Date(); venc.setDate(venc.getDate()+5);
   const vencStr=('0'+venc.getDate()).slice(-2)+'/'+('0'+(venc.getMonth()+1)).slice(-2)+'/'+venc.getFullYear();
   if(!r._boletoLinha) r._boletoLinha=_linhaDigitavel(t);
   const linha=r._boletoLinha;
   const pagador=(r._titular==='outro'?'Outro':'Próprio Segurado');
+  const parcOpts=[]; for(let n=1;n<=12;n++)parcOpts.push({v:String(n),n:(n===1?'À vista — ':n+'x de ')+fmtBRL(t.totalAnual/n)+(n===1?'':' sem juros')});
   const m=document.getElementById('plan-modal');
   m.innerHTML='<div class="pm-box" style="max-width:460px">'
     +'<button class="pm-close" id="bolf-x" aria-label="Fechar">&times;</button>'
     +'<div class="pm-title">Pague com <b>Boleto</b></div>'
-    +'<div class="pm-sub">Boleto da 1ª parcela. Ambiente de demonstração.</div>'
-    +'<div style="text-align:center;margin:8px 0 2px"><div style="font-size:30px;font-weight:900;color:var(--teal,#279989)">'+fmtBRL(t.total)+'</div><div style="font-size:12.5px;color:var(--txt2,#5b6b70);margin-top:2px">valor mensal · inclui IOF de '+_iofPct('casa')+'</div></div>'
-    + iofBoxLight(t)
+    +'<div class="pm-sub">Escolha o parcelamento. Ambiente de demonstração.</div>'
+    +'<div style="text-align:center;margin:8px 0 2px"><div id="bol-val" style="font-size:30px;font-weight:900;color:var(--teal,#279989)">'+fmtBRL(t.totalAnual/(r._parcelas||12))+'</div><div id="bol-nx" style="font-size:12.5px;color:var(--txt2,#5b6b70);margin-top:2px">'+((r._parcelas||12)===1?'pagamento único':'1ª de '+(r._parcelas||12)+'x')+' · inclui IOF de '+_iofPct('casa')+'</div></div>'
+    +'<div class="af full" style="margin:14px 0 4px"><label>Parcelamento do boleto</label>'+cselBare('bol-parc',parcOpts,String(r._parcelas||12))+'</div>'
     +'<div style="background:#fff;border:1px solid rgba(0,36,48,.12);border-radius:14px;padding:16px;margin:14px 0">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #002430;padding-bottom:8px;margin-bottom:10px"><div style="font-weight:900;color:#002430;font-size:15px">Você Seguradora</div><div style="font-weight:800;color:#002430;font-size:13px">237-2</div></div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:4px"><span>Vencimento</span><b style="color:#002430">'+vencStr+'</b></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:4px"><span>Vencimento (1ª parcela)</span><b style="color:#002430">'+vencStr+'</b></div>'
       +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:4px"><span>Pagador</span><b style="color:#002430">'+escapeHtml(pagador)+'</b></div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:8px"><span>Valor do documento</span><b style="color:#002430">'+fmtBRL(t.total)+'</b></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2,#5b6b70);margin-bottom:8px"><span>Valor do documento</span><b id="bol-doc" style="color:#002430">'+fmtBRL(t.totalAnual/(r._parcelas||12))+'</b></div>'
       +_boletoBarcode(linha)
       +'<div style="font-family:monospace;font-size:12.5px;text-align:center;color:#002430;word-break:break-all;margin-top:6px">'+linha+'</div>'
     +'</div>'
@@ -2625,12 +2666,19 @@ function openBoletoModal(){
     +'<button class="pay-btn" id="bolf-ok">'+_check()+'<span>Confirmar pagamento</span></button>'
     +'</div>';
   m.classList.add('show');
+  const setBolView=function(){
+    var N=r._parcelas||12, pv=t.totalAnual/N;
+    var v=document.getElementById('bol-val'); if(v)v.textContent=fmtBRL(pv);
+    var nx=document.getElementById('bol-nx'); if(nx)nx.textContent=(N===1?'pagamento único':'1ª de '+N+'x')+' · inclui IOF de '+_iofPct('casa');
+    var doc=document.getElementById('bol-doc'); if(doc)doc.textContent=fmtBRL(pv);
+  };
+  bindCsel('bol-parc',function(v){ r._parcelas=parseInt(v,10)||12; setBolView(); });
   const close=()=>{ m.classList.remove('show'); m.innerHTML=''; };
   document.getElementById('bolf-x').onclick=close;
   m.onclick=e=>{ if(e.target===m)close(); };
   document.getElementById('bol-copy').onclick=()=>{ try{navigator.clipboard.writeText(linha);}catch(e){} var b=document.getElementById('bol-copy'); if(b){ b.textContent='Linha copiada ✓'; setTimeout(function(){ b.textContent='Copiar linha digitável'; },1600); } };
   document.getElementById('bol-pdf').onclick=()=>{ abrirBoletoDoc(linha,vencStr,pagador,t); };
-  document.getElementById('bolf-ok').onclick=()=>{ r._parcelas=1; r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
+  document.getElementById('bolf-ok').onclick=()=>{ r._pgtoOk=true; close(); paintDados(); checkFinalize(); };
 }
 
 /* Baixar a proposta como arquivo (HTML imprimível) — funciona offline */
@@ -2672,7 +2720,7 @@ function baixarProposta(){
 function _pagLabel(r){
   r=r||S.res||{};
   if(r._pgto==='cartao') return 'Cartão de crédito · '+(r._parcelas||12)+'x sem juros';
-  if(r._pgto==='boleto') return 'Boleto bancário · mensal';
+  if(r._pgto==='boleto') return 'Boleto bancário · '+((r._parcelas||12)===1?'à vista':(r._parcelas||12)+'x');
   return 'Débito / PIX Automático · mensal';
 }
 function finalizarContratacao(){
