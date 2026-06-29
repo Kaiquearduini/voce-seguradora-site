@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s4.8">
+<meta name="site-build" content="s5.4">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -343,11 +343,6 @@ a{color:inherit;text-decoration:none}
 .pc-now{font-size:34px;font-weight:900;line-height:1}
 .pc-now span{font-size:18px;font-weight:600}
 .pc-vig{font-size:13px;color:rgba(255,255,255,.85);margin-top:4px}
-.pc-mid{background:#fff;padding:13px 26px;text-align:center;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
-.pc-mid .l{font-size:13.5px;font-weight:700;color:var(--txt1);margin:0}
-.pc-mid .v{font-size:20px;font-weight:900;color:var(--teal);margin:0}
-.pc-edit{display:inline-block;padding:9px 24px;border:2px solid var(--teal);border-radius:30px;color:var(--teal);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;transition:all .18s}
-.pc-edit:hover{background:var(--teal);color:#fff}
 
 .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;max-width:1180px;margin:0 auto}
 @media(max-width:680px){.opts-grid{grid-template-columns:1fr}}
@@ -370,8 +365,8 @@ a{color:inherit;text-decoration:none}
 .csel-opt.sel{background:linear-gradient(135deg,rgba(70,239,128,.14),rgba(39,153,137,.1));color:var(--teal);font-weight:700}
 .csel-opt .csel-sub{display:block;font-size:12px;font-weight:500;color:var(--txt3);margin-top:2px}
 .csel-opt.sel .csel-sub{color:var(--teal);opacity:.7}
-.csel-opt .csel-check{width:18px;height:18px;color:var(--teal);flex-shrink:0;opacity:0;transition:opacity .15s}
-.csel-opt.sel .csel-check{opacity:1}
+.csel-opt .csel-check{display:none!important}
+.csel-opt.sel .csel-check{display:none!important}
 .csel-opt-txt{flex:1;min-width:0}
 .t2-cta-wrap{text-align:center;margin-top:18px}
 
@@ -404,6 +399,26 @@ a{color:inherit;text-decoration:none}
 .pm-list{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:9px;flex:1}
 .pm-list li{font-size:13px;color:var(--txt2);line-height:1.35;display:flex;align-items:flex-start;gap:8px}
 .pm-list li svg{width:14px;height:14px;color:var(--teal);flex-shrink:0;margin-top:2px}
+.pm-list li.pm-li{cursor:pointer;border-radius:9px;padding:4px 7px;margin:0 -7px;transition:background .15s;align-items:center}
+.pm-list li.pm-li:hover{background:rgba(39,153,137,.09)}
+.pm-list li.pm-li .pm-i{margin-left:auto;width:15px;height:15px;color:#b3c4ca;flex-shrink:0;margin-top:0;transition:color .15s}
+.pm-list li.pm-li:hover .pm-i{color:var(--teal)}
+.pm-info{position:relative;background:#fff;border:1px solid rgba(0,36,48,.09);border-radius:16px;padding:20px 22px 20px 26px;margin-bottom:20px;box-shadow:0 14px 38px rgba(0,36,48,.12);overflow:hidden;animation:pmInfoIn .25s ease}
+.pm-info::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--neon),var(--teal))}
+.pm-info-head{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.pm-info-ic{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,rgba(70,239,128,.16),rgba(39,153,137,.16));display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pm-info-ic svg{width:18px;height:18px;color:var(--teal)}
+.pm-info-ey{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:2px}
+.pm-info-t{font-size:16.5px;font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.2}
+@keyframes pmInfoIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.pm-info-d{font-size:13.5px;color:var(--txt2);line-height:1.66}
+.pm-info-ok{margin-top:15px;background:var(--navy);color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:10px;padding:10px 22px;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.pm-info-ok:hover{background:#013a2f;transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,36,48,.18)}
+.rc-collapse li.rc-li{cursor:pointer;align-items:center}
+.rc-collapse li.rc-li .rc-i{margin-left:auto;width:14px;height:14px;color:#b3c4ca;flex-shrink:0;transition:color .15s}
+.rc-collapse li.rc-li:hover .rc-i{color:var(--teal)}
+.rc-collapse li.rc-li:hover span{color:var(--teal)}
+.rc-collapse li.rc-li-desc{font-size:12.5px;color:var(--txt2);line-height:1.6;list-style:none;margin:3px 0 9px 0;padding:12px 15px;background:#fff;border:1px solid rgba(0,36,48,.08);border-left:3px solid var(--teal);border-radius:11px;box-shadow:0 8px 22px rgba(0,36,48,.07);animation:pmInfoIn .2s ease}
 .pm-price{text-align:center;color:var(--teal);font-weight:700;margin-bottom:2px}
 .pm-price .cur{font-size:16px;vertical-align:top}
 .pm-price b{font-size:30px;font-weight:900}
@@ -1277,7 +1292,40 @@ function _money(s){ s=String(s||'').replace(/[^\d,.-]/g,''); if(!s)return 0; s=s
 function _profile(){ var u=S.user||{}; var m=(u&&u.user_metadata)||{}; return {email:u.email||'',nome:m.nome||'',cpf:m.cpf||'',telefone:m.telefone||''}; }
 function _initials(nome,email){ var n=(nome||'').trim()|| (email? email.split('@')[0]:'C'); return n.split(' ').slice(0,2).map(function(w){return (w[0]||'');}).join('').toUpperCase(); }
 function _houseSvg(c){ c=c||'#46EF80'; return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>'; }
-var AREA_PAL=['#46EF80','#279989','#1fd1a3','#0a7d72','#00d2a8','#3ddc97'];
+var AREA_PAL=['#279989','#3b82f6','#8b5cf6','#f59e0b','#ec4899','#06b6d4'];
+/* Identidade visual por produto: cor fixa + ícone específico (não usar casa pra tudo) */
+function _prodKey(t){ t=(t||'').toLowerCase();
+  if(/resid|casa|im[óo]v|condom|alug|lar\b|home/.test(t))return 'casa';
+  if(/vida/.test(t))return 'vida';
+  if(/acid|\bap\b|invalid/.test(t))return 'ap';
+  if(/cart[ãa]o|card/.test(t))return 'cartao';
+  if(/auto|ve[íi]c|carro|franquia|moto/.test(t))return 'auto';
+  if(/celular|phone|smart|aparelho/.test(t))return 'celular';
+  if(/pet|animal/.test(t))return 'pet';
+  if(/bolsa|mochila/.test(t))return 'bolsa';
+  if(/pix/.test(t))return 'pix';
+  if(/empr[ée]st|emprest|prestam|consign|financ/.test(t))return 'emprestimo';
+  if(/viag|viagem/.test(t))return 'viagem';
+  return 'default';
+}
+var PROD={
+  casa:{c:'#279989',ic:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>'},
+  vida:{c:'#ec4899',ic:'<path d="M12 21s-7-4.5-9.5-9A5 5 0 0112 5a5 5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/>'},
+  ap:{c:'#f59e0b',ic:'<path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'},
+  cartao:{c:'#3b82f6',ic:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>'},
+  auto:{c:'#8b5cf6',ic:'<path d="M5 16l1.4-5.2A2 2 0 018.3 9.3h7.4a2 2 0 011.9 1.5L19 16M4 16h16v3h-3v-1.5H7V19H4z"/><circle cx="7.5" cy="16" r="1.4"/><circle cx="16.5" cy="16" r="1.4"/>'},
+  celular:{c:'#06b6d4',ic:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'},
+  pet:{c:'#14b8a6',ic:'<circle cx="6.5" cy="11" r="1.7"/><circle cx="10" cy="7" r="1.7"/><circle cx="14" cy="7" r="1.7"/><circle cx="17.5" cy="11" r="1.7"/><path d="M12 12c-2.6 0-4.5 1.8-4.5 4S9.4 21 12 21s4.5-1.3 4.5-3.5S14.6 12 12 12z"/>'},
+  bolsa:{c:'#a855f7',ic:'<path d="M6 8h12l1 12H5z"/><path d="M9 8a3 3 0 016 0"/>'},
+  pix:{c:'#0ea5e9',ic:'<path d="M12 3l4 4-4 4-4-4z"/><path d="M3 12l4-4 4 4-4 4z"/><path d="M13 12l4-4 4 4-4 4z"/><path d="M12 13l4 4-4 4-4-4z"/>'},
+  emprestimo:{c:'#10b981',ic:'<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/>'},
+  viagem:{c:'#6366f1',ic:'<path d="M2 16l20-7-7 13-3-6z"/>'},
+  default:{c:'#279989',ic:'<path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'}
+};
+function prodColor(t){ return PROD[_prodKey(t)].c; }
+function prodIcon(t,c,sz){ var k=_prodKey(t); c=c||PROD[k].c; sz=sz||22; return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:'+sz+'px;height:'+sz+'px">'+PROD[k].ic+'</svg>'; }
+function _polStart(p){ var s=p&&(p.created_at||p.inicio||p.data||p.criada||p.data_inicio); var d=s?new Date(s):new Date(); if(isNaN(d.getTime()))d=new Date(); return d; }
+function _tint(hex,a){ hex=(hex||'#279989').replace('#',''); if(hex.length===3)hex=hex.replace(/./g,'$&$&'); var n=parseInt(hex,16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+(a==null?1:a)+')'; }
 function _isActive(r){ return String(r.status||'ativa').toLowerCase()==='ativa'; }
 function _isCancelled(r){ return String((r&&r.status)||'').toLowerCase()==='cancelada'; }
 function _statusLabel(p){ if(_isCancelled(p))return 'Cancelada'; return _isActive(p)?'Ativa':'Pendente'; }
@@ -1307,10 +1355,10 @@ function areaShell(active, content){
 
 /* ---- cards ---- */
 function areaActiveCard(r,i){
-  var col=AREA_PAL[i%AREA_PAL.length];
+  var col=prodColor(r.tipo);
   return '<button class="pol-card" data-aa="pol" data-i="'+i+'" data-id="'+escapeHtml(String(r.id||''))+'">'
     +'<span class="pc-bar" style="background:'+col+'"></span>'
-    +'<span class="pc-ico" style="background:rgba(39,153,137,.1)">'+_houseSvg('#279989')+'</span>'
+    +'<span class="pc-ico" style="background:'+_tint(col,.12)+'">'+prodIcon(r.tipo,col)+'</span>'
     +'<span class="pc-body"><span class="pc-type">'+escapeHtml(r.tipo||'Seguro')+'</span>'
     +'<span class="pc-item">'+escapeHtml(r.item||'')+'</span>'
     +'<span class="pc-cov">'+escapeHtml(r.cobertura||'')+'</span></span>'
@@ -1319,7 +1367,7 @@ function areaActiveCard(r,i){
 }
 function areaPendingCard(r,i){
   return '<div class="pend-card">'
-    +'<div class="pend-head"><span class="pend-ico">'+_houseSvg('#279989')+'</span>'
+    +'<div class="pend-head"><span class="pend-ico">'+prodIcon(r.tipo)+'</span>'
     +'<span class="pend-badge">● ATIVAÇÃO PENDENTE</span></div>'
     +'<div class="pend-type">'+escapeHtml(r.tipo||'Seguro Residencial')+'</div>'
     +'<div class="pend-item">'+escapeHtml(r.item||'Simulação não finalizada')+'</div>'
@@ -1336,12 +1384,13 @@ function areaPendingCard(r,i){
 function areaInicio(){
   var pols=S.policies||[];
   var act=pols.filter(_isActive), pend=_myDrafts();
+  var canc=pols.filter(_isCancelled);
   var total=act.reduce(function(a,p){return a+_money(p.cobertura);},0);
   var monthly=act.reduce(function(a,p){return a+_money(p.preco);},0);
   var p=_profile(); var nome=(p.nome||'').split(' ')[0]||'Cliente';
   var chart='';
   if(act.length&&total>0){
-    var segs=act.map(function(r,i){return {pct:_money(r.cobertura)/total*100,label:r.tipo||'Seguro',col:AREA_PAL[i%AREA_PAL.length]};});
+    var segs=act.map(function(r,i){return {pct:_money(r.cobertura)/total*100,label:r.tipo||'Seguro',col:prodColor(r.tipo)};});
     chart='<div class="dist"><div class="dist-h">Distribuição da proteção</div>'
       +'<div class="dist-bar">'+segs.map(function(s){return '<span style="width:'+s.pct+'%;background:'+s.col+'"></span>';}).join('')+'</div>'
       +'<div class="dist-leg">'+segs.map(function(s){return '<span class="dl"><i style="background:'+s.col+'"></i>'+escapeHtml(s.label)+' · '+Math.round(s.pct)+'%</span>';}).join('')+'</div></div>';
@@ -1355,6 +1404,7 @@ function areaInicio(){
       +'<div class="rail-row"><span>Mensalidade total</span><b>'+fmtBRL(monthly)+'</b></div>'
       +'<div class="rail-row"><span>Apólices ativas</span><b>'+act.length+'</b></div>'
       +'<div class="rail-row"><span>Ativações pendentes</span><b>'+pend.length+'</b></div>'
+      +'<div class="rail-row"><span>Apólices canceladas</span><b>'+canc.length+'</b></div>'
       +'<div style="flex:1;min-height:12px"></div>'
       +'<div style="border-top:1px solid rgba(0,36,48,.08);margin:14px -24px 0"></div>'
       +'<button class="hero-cta" data-aa="nav" data-view="apolices" style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:18px;background:#fff;color:var(--navy);border:1px solid var(--border);box-shadow:none">Ver minhas apólices</button>'
@@ -1375,13 +1425,13 @@ function areaApolices(){
   if(pend.length) html+='<div class="sec-h">Ativações pendentes</div><div class="pend-grid-wrap">'+pend.map(areaPendingCard).join('')+'</div>';
   html+='<div class="sec-h">Ativas</div>'+(act.length?('<div class="pol-grid">'+act.map(areaActiveCard).join('')+'</div>'):'<div class="empty"><div class="empty-h">Nenhuma apólice ativa ainda.</div><button class="co-cta" data-aa="cotar" style="margin:14px auto 0">Cotar agora'+_arrow()+'</button></div>');
   var canc=pols.filter(_isCancelled);
-  if(canc.length) html+='<div class="sec-h" style="margin-top:26px">Canceladas</div><div class="pol-grid">'+canc.map(areaCancelledCard).join('')+'</div>';
+  if(canc.length) html+='<div class="sec-h" style="margin-top:26px">Canceladas ('+canc.length+')</div><div class="pol-grid">'+canc.map(areaCancelledCard).join('')+'</div>';
   html+='</div>'; return html;
 }
 function areaCancelledCard(r){
   return '<button class="pol-card" data-aa="pol" data-id="'+escapeHtml(String(r.id||''))+'" style="opacity:.72">'
     +'<span class="pc-bar" style="background:#c2cdd2"></span>'
-    +'<span class="pc-ico" style="background:rgba(120,140,150,.12)">'+_houseSvg('#7c9098')+'</span>'
+    +'<span class="pc-ico" style="background:rgba(120,140,150,.12)">'+prodIcon(r.tipo,'#7c9098')+'</span>'
     +'<span class="pc-body"><span class="pc-type">'+escapeHtml(r.tipo||'Seguro')+'</span>'
     +'<span class="pc-item">'+escapeHtml(r.item||'')+'</span>'
     +'<span class="pc-cov">'+escapeHtml(r.cobertura||'')+'</span></span>'
@@ -1391,14 +1441,21 @@ function areaCancelledCard(r){
 function areaApoliceDetail(p){
   p=p||{}; var num=p.numero||('VS-'+String(p.id||Date.now()).slice(-8).toUpperCase());
   var prof=_profile(); var holder=prof.nome||'Segurado(a)';
-  var now=new Date(), end=new Date(); end.setMonth(end.getMonth()+12);
+  var ini=_polStart(p), end=new Date(ini); end.setMonth(end.getMonth()+12);
   var fmt=function(d){return d.toLocaleDateString('pt-BR');};
-  var info=[['Número da apólice',num],['Status', _statusLabel(p)],['Início da vigência',fmt(now)],['Fim da vigência',fmt(end)],['Forma de pagamento',p.pagamento||'—']];
+  var info=[['Número da apólice',num],['Status', _statusLabel(p)],['Início da vigência',fmt(ini)],['Fim da vigência',fmt(end)],['Forma de pagamento',p.pagamento||'—']];
+  var myClaims=(S.sinistros||[]).filter(function(s){return s.polId&&String(s.polId)===String(p.id||'');});
+  var ocorr='<div class="det-card"><div class="det-card-h">Ocorrências (sinistros)</div>'
+    +(myClaims.length
+        ? myClaims.map(function(s,i){return '<div class="det-r'+(i<myClaims.length-1?'':' last')+'"><span>Protocolo '+escapeHtml(s.proto)+' · '+escapeHtml(s.data)+'</span><b style="color:#b8860b">● Em análise</b></div>';}).join('')
+        : '<div class="det-r last"><span style="color:var(--txt2)">Nenhuma ocorrência registrada para esta apólice.</span><b></b></div>')
+    +'</div>';
   var left='<div class="card-digital"><div class="cd-glow"></div><div class="cd-eye">Carteirinha digital</div><div class="cd-title">'+escapeHtml(p.tipo||'Seguro')+'</div>'
     +'<div class="cd-row"><span>Segurado(a)</span><b>'+escapeHtml(holder)+'</b></div>'
     +'<div class="cd-foot"><div><span>Apólice</span><b class="mono">'+escapeHtml(num)+'</b></div><div style="text-align:right"><span>Válida até</span><b>'+fmt(end)+'</b></div></div></div>'
     +'<div class="det-card"><div class="det-card-h">Informações da apólice</div>'+info.map(function(kv,i){return '<div class="det-r'+(i<info.length-1?'':' last')+'"><span>'+kv[0]+'</span><b>'+escapeHtml(kv[1])+'</b></div>';}).join('')+'</div>'
-    +'<div class="det-card"><div class="det-card-h">Cobertura contratada</div><div class="det-r last"><span>Resumo</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>';
+    +'<div class="det-card"><div class="det-card-h">Cobertura contratada</div><div class="det-r last"><span>Resumo</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
+    +ocorr;
   var right='<div class="det-money"><div><span>Mensalidade</span><b>'+escapeHtml(p.preco||'—')+'</b></div><div style="text-align:right"><span>Cobertura</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
     +((!_isActive(p)&&!_isCancelled(p))?'<button class="co-cta" data-aa="ativar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-bottom:16px;justify-content:center">Ativar cobertura'+_arrow()+'</button>':'')
     +'<div class="det-actions"><button class="btn-soft danger" data-aa="nav" data-view="sinistros">Abrir sinistro</button><button class="btn-soft" data-aa="baixar-apolice">Baixar resumo</button></div>'
@@ -1406,7 +1463,7 @@ function areaApoliceDetail(p){
     +(_isCancelled(p)?'<div class="det-note" style="background:rgba(220,38,38,.06);color:#b91c1c">'+_lock()+'<span>Esta apólice está cancelada. Para reativar, fale com o atendimento.</span></div>':'')
     +'<div class="det-note">'+_lock()+'<span>Regulada pela SUSEP e protegida pela LGPD. Dados criptografados ponta a ponta.</span></div>';
   return '<button class="back-link" data-aa="nav" data-view="apolices">‹ Voltar para apólices</button>'
-    +'<div class="det-hero"><div class="det-ico">'+_houseSvg('#46EF80')+'</div>'
+    +'<div class="det-hero"><div class="det-ico">'+prodIcon(p.tipo,prodColor(p.tipo))+'</div>'
     +'<div><div class="det-type">'+escapeHtml(p.tipo||'Seguro')+'</div><div class="det-item">'+escapeHtml(p.item||'')+'</div></div>'
     +'<span class="pc-badge '+(_isActive(p)?'on':'pend2')+'" style="margin-left:auto'+(_isCancelled(p)?';background:#eef1f2;color:#7c9098':'')+'">● '+_statusLabel(p)+'</span></div>'
     +'<div class="det-grid"><div>'+left+'</div><div class="det-rail">'+right+'</div></div>';
@@ -1641,7 +1698,7 @@ function _sinOpen(){
   var data=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw.split('-').reverse().join('/'):(raw||new Date().toLocaleDateString('pt-BR'));
   var msg=document.getElementById('sin-msg');
   var proto='SIN-'+Date.now().toString(36).toUpperCase().slice(-7);
-  S.sinistros=S.sinistros||[]; S.sinistros.unshift({proto:proto,apol:(p.tipo||'Seguro')+' — '+(p.item||''),data:data});
+  S.sinistros=S.sinistros||[]; S.sinistros.unshift({proto:proto,polId:String(p.id||''),tipo:(p.tipo||'Seguro'),apol:(p.tipo||'Seguro')+' — '+(p.item||''),data:data});
   if(msg){msg.className='msg show ok';msg.textContent='Sinistro aberto! Protocolo '+proto+'. Nossa equipe vai te contatar.';}
   setTimeout(function(){ renderArea(); },1200);
 }
@@ -1871,12 +1928,12 @@ const RES={
   franquiaTipos:[{v:'isenta',n:'Isenta',s:'Sem participação no sinistro',fator:1.10},{v:'reduzida',n:'Reduzida',s:'50% da franquia padrão',fator:1.05},{v:'padrao',n:'Padrão',s:'Franquia base do produto',fator:1.00,rec:true},{v:'agravada',n:'Agravada',s:'150% da padrão (mais barato)',fator:0.95}],
   questionario:{solarCoef:1.05,sinistroCoef:1.10,protecoes:['Grades e portões','Alarme','Monitoramento','CFTV','Portaria 24h','Controle de acesso','Fechadura digital','Vigilância']},
   assist:[{v:'essencial',n:'Essencial',preco:9.90,servicos:['Chaveiro','Encanador','Eletricista','Desentupimento','Vidraceiro','Help desk']},
-    {v:'protecao',n:'Proteção',preco:16.90,servicos:['Tudo do Essencial','Linha branca e marrom','Instalação de luminárias/tomadas','Olho mágico','Serviços gerais','Verificação de vazamentos']},
-    {v:'conforto',n:'Conforto+',preco:24.90,servicos:['Tudo do Proteção','Limpeza de ar-condicionado','Caçamba','Suporte de TV','Instalação de telas','Descarte inteligente']}],
+    {v:'protecao',n:'Proteção',preco:16.90,servicos:['Todos os serviços do Essencial','Linha branca e marrom','Instalação de luminárias/tomadas','Olho mágico','Serviços gerais','Verificação de vazamentos']},
+    {v:'conforto',n:'Conforto+',preco:24.90,servicos:['Todos os serviços do Proteção','Limpeza de ar-condicionado','Caçamba','Suporte de TV','Instalação de telas','Descarte inteligente']}],
   pet:[{v:'',n:'Sem assistência pet',preco:0,servicos:[]},
     {v:'pet_sossego',n:'Pet Sossego',preco:12.90,servicos:['Telemedicina veterinária','Consulta de urgência','Transporte emergencial','Funeral pet','Hospedagem']},
-    {v:'pet_conforto',n:'Pet Conforto',preco:19.90,servicos:['Tudo do Sossego','Consulta eletiva','Concierge','Orientação de vacinação','Exames laboratoriais']},
-    {v:'pet_total',n:'Pet Total',preco:29.90,servicos:['Tudo do Conforto','Exames de imagem']}],
+    {v:'pet_conforto',n:'Pet Conforto',preco:19.90,servicos:['Todos os serviços do Sossego','Consulta eletiva','Concierge','Orientação de vacinação','Exames laboratoriais']},
+    {v:'pet_total',n:'Pet Total',preco:29.90,servicos:['Todos os serviços do Conforto','Exames de imagem']}],
   pagamento:{cartao:{parc:12,juros:false},pix:{parc:12,juros:false},boleto:{parc:12,semJurosAte:4}},
   sorteio:{premio:5000,periodo:'mensal',nome:'Você+Seguro com Sorte'},
   reintegracao:{max:3,bloqueio:0.80},
@@ -1889,12 +1946,116 @@ const S={seg:null,res:null,authed:false,resStep:0};
 /* PACOTES DE COBERTURA — agrupam coberturas do app (como o dropdown da Tokio).
    Cada pacote ativa um conjunto de coberturas adicionais (por id, vindas do RES.adicionais). */
 const PACOTES=[
-  {v:'basico',n:'Básico',cobs:[2,3,4,5],resumo:['Incêndio, raio, explosão e fumaça','Vendaval, granizo e furacão','Danos elétricos','Alagamento e inundação','Ruptura de tubulações']},
-  {v:'intermediario',n:'Intermediário',cobs:[2,3,4,5,9,11],resumo:['Tudo do Básico','Roubo e subtração com arrombamento','Responsabilidade Civil Familiar'],rec:true},
-  {v:'completo',n:'Completo',cobs:[2,3,4,5,6,7,8,9,10,11,12,14,15,18],resumo:['Tudo do Intermediário','Quebra de vidros e impacto de veículos','Roubo de bicicletas','RC danos morais','Despesas extraordinárias e desmoronamento']},
+  {v:'basico',n:'Essencial',cobs:[2,3,4,5],resumo:['Incêndio, raio, explosão e fumaça','Vendaval, granizo e furacão','Danos elétricos','Alagamento e inundação','Ruptura de tubulações']},
+  {v:'intermediario',n:'Intermediário',cobs:[2,3,4,5,9,11],resumo:['Todas as coberturas do Essencial','Roubo e subtração com arrombamento','Responsabilidade Civil Familiar'],rec:true},
+  {v:'completo',n:'Ampliada',cobs:[2,3,4,5,6,7,8,9,10,11,12,14,15,18],resumo:['Todas as coberturas do Intermediário','Quebra de vidros e impacto de veículos','Roubo de bicicletas','RC danos morais','Despesas extraordinárias e desmoronamento']},
 ];
 /* Plano Pet do site = opção "Não Contratado" (sem custo) + os planos do app */
 const PET_OPCOES=[{v:'',n:'Não Contratado'}].concat(RES.pet.map(p=>({v:p.v,n:p.n})));
+
+/* ===== Descrições premium dos itens (clique no item → explicação no topo, estilo Tokio)
+   Coberturas baseadas na Especificação Técnica do Seguro Residencial. ===== */
+const ITEM_INFO={
+  // ---- Coberturas (pacotes) ----
+  'Incêndio, raio, explosão e fumaça':{t:'Incêndio, Raio, Explosão e Fumaça',d:'Cobertura básica do seguro. Indeniza os danos ao imóvel e ao conteúdo causados por incêndio, queda de raio dentro do terreno, explosão de qualquer natureza (inclusive de botijão de gás ou panela de pressão), fumaça e queda de aeronaves. É a base sobre a qual as demais coberturas são contratadas.'},
+  'Vendaval, granizo e furacão':{t:'Vendaval, Granizo, Furacão e Tornado',d:'Danos causados por eventos da natureza: vendaval (vento igual ou acima de 54 km/h), granizo, geada, neve, furacão, ciclone e tornado. Protege prédio, conteúdo, instalações fixas e o sistema de energia solar, incluindo destelhamento, quebra de vidros e entrada de água da chuva.'},
+  'Danos elétricos':{t:'Danos Elétricos',d:'Perdas por curto-circuito, sobretensão, oscilação, descarga atmosférica indireta ou variação anormal de energia. Cobre eletrodomésticos, eletrônicos, automação residencial, home office, carregador de carro elétrico (wallbox) e sistema solar (placas, inversores e baterias). Possui Participação Obrigatória do Segurado (P.O.S).'},
+  'Alagamento e inundação':{t:'Alagamento e Inundação',d:'Indeniza os danos causados pela entrada de água no imóvel em razão de enchente, transbordamento de rios e represas, trombas d\u2019água, chuvas intensas ou ruptura de encanamentos externos que não pertençam ao imóvel.'},
+  'Ruptura de tubulações':{t:'Ruptura de Tanques e Tubulações',d:'Danos ao imóvel e ao conteúdo por rompimento, vazamento ou derrame acidental de tubulações, encanamentos e reservatórios da rede interna de água e esgoto — inclui o reparo do sistema hidráulico danificado. Possui P.O.S.'},
+  'Roubo e subtração com arrombamento':{t:'Roubo e Subtração de Bens',d:'Cobre o roubo e a subtração de bens mediante arrombamento de portas, janelas, telhados ou paredes, ou com ameaça/violência contra o segurado e familiares, incluindo os danos causados ao imóvel durante a ação criminosa.'},
+  'Responsabilidade Civil Familiar':{t:'Responsabilidade Civil Familiar',d:'Reembolsa valores que você seja obrigado a pagar por danos materiais ou corporais causados involuntariamente a terceiros — por você, sua família, empregados domésticos ou seus animais de estimação, no uso e na conservação do imóvel.'},
+  'Quebra de vidros e impacto de veículos':{t:'Quebra de Vidros e Impacto de Veículos',d:'Quebra de vidros, espelhos, box, louças sanitárias, cooktop, mármores e granitos fixados à estrutura do imóvel; e danos ao imóvel e ao conteúdo causados pelo impacto de veículos de terceiros.'},
+  'Roubo de bicicletas':{t:'Roubo/Furto Qualificado de Bicicletas',d:'Indeniza furto qualificado (com arrombamento), roubo (com violência ou ameaça) e acidente com a bicicleta — inclusive elétricas até 1000 W — de propriedade do segurado e de familiares residentes no imóvel.'},
+  'RC danos morais':{t:'Responsabilidade Civil — Danos Morais',d:'Complementa a Responsabilidade Civil Familiar, reembolsando indenizações por danos morais decorrentes de danos materiais ou corporais causados a terceiros.'},
+  'Despesas extraordinárias e desmoronamento':{t:'Despesas Extraordinárias e Desmoronamento',d:'Despesas extraordinárias indenizam um adicional de 10% sobre as indenizações de danos materiais; a cobertura de desmoronamento protege contra o desabamento súbito de parede, coluna, viga ou laje.'},
+  'Todas as coberturas do Essencial':{t:'Todas as coberturas do Essencial',d:'Este plano inclui todas as coberturas do plano Essencial e acrescenta as proteções listadas a seguir.'},
+  'Todas as coberturas do Intermediário':{t:'Todas as coberturas do Intermediário',d:'Este plano inclui todas as coberturas do plano Intermediário e acrescenta as proteções listadas a seguir.'},
+  // ---- Assistência residencial ----
+  'Chaveiro':{t:'Chaveiro',d:'Envio de chaveiro em casos de perda, roubo, quebra de chave ou problema na fechadura, para garantir o acesso seguro à sua residência.'},
+  'Encanador':{t:'Encanador',d:'Mão de obra de encanador para conter vazamentos, entupimentos e problemas emergenciais na rede hidráulica do imóvel.'},
+  'Eletricista':{t:'Eletricista',d:'Atendimento de eletricista para falhas na rede elétrica que comprometam o uso ou a segurança da residência.'},
+  'Desentupimento':{t:'Desentupimento',d:'Serviço de desentupimento de pias, ralos, vasos sanitários e tubulações internas do imóvel.'},
+  'Vidraceiro':{t:'Vidraceiro',d:'Instalação de vidro provisório ou definitivo após quebra que exponha o imóvel ou comprometa a segurança.'},
+  'Help desk':{t:'Help Desk',d:'Suporte e orientação remota para dúvidas e encaminhamento de serviços, com canal de atendimento dedicado.'},
+  'Linha branca e marrom':{t:'Linha Branca e Marrom',d:'Conserto e suporte técnico para eletrodomésticos de linha branca (geladeira, máquina de lavar, fogão) e linha marrom (TV, som e eletrônicos).'},
+  'Instalação de luminárias/tomadas':{t:'Instalação de Luminárias e Tomadas',d:'Instalação de luminárias, tomadas e interruptores, com mão de obra especializada.'},
+  'Olho mágico':{t:'Instalação de Olho Mágico',d:'Instalação de olho mágico na porta para mais segurança no controle de acesso à residência.'},
+  'Serviços gerais':{t:'Serviços Gerais',d:'Pequenos reparos e serviços de manutenção do dia a dia, como fixações e ajustes simples.'},
+  'Verificação de vazamentos':{t:'Verificação de Vazamentos',d:'Inspeção preventiva para identificar possíveis vazamentos na rede hidráulica antes que virem prejuízo.'},
+  'Limpeza de ar-condicionado':{t:'Limpeza de Ar-Condicionado',d:'Higienização e manutenção preventiva do ar-condicionado para melhor desempenho e qualidade do ar.'},
+  'Caçamba':{t:'Caçamba para Entulho',d:'Disponibilização de caçamba para descarte de entulho em pequenas reformas e manutenções.'},
+  'Suporte de TV':{t:'Instalação de Suporte de TV',d:'Instalação de suporte de TV na parede, com fixação segura e organização dos cabos.'},
+  'Instalação de telas':{t:'Instalação de Telas',d:'Instalação de telas de proteção em janelas e áreas abertas, contra insetos ou para segurança.'},
+  'Descarte inteligente':{t:'Descarte Inteligente',d:'Retirada e descarte ambientalmente correto de itens e equipamentos sem uso.'},
+  'Todos os serviços do Essencial':{t:'Todos os serviços do Essencial',d:'Este plano inclui todos os serviços do plano Essencial e acrescenta os itens listados a seguir.'},
+  'Todos os serviços do Proteção':{t:'Todos os serviços do Proteção',d:'Este plano inclui todos os serviços do plano Proteção e acrescenta os itens listados a seguir.'},
+  // ---- Assistência Pet ----
+  'Telemedicina veterinária':{t:'Telemedicina Veterinária',d:'Atendimento clínico e preventivo com veterinário à distância, para orientação rápida sobre a saúde do seu pet.'},
+  'Consulta de urgência':{t:'Consulta de Urgência',d:'Consulta veterinária de urgência/emergência em casos de mal súbito, acidente ou sintomas que exigem atendimento imediato.'},
+  'Transporte emergencial':{t:'Transporte Emergencial',d:'Transporte do animal até a clínica ou hospital veterinário em situações de emergência.'},
+  'Funeral pet':{t:'Funeral Pet',d:'Apoio e reembolso das despesas com o funeral individual do pet, com acolhimento neste momento.'},
+  'Hospedagem':{t:'Hospedagem',d:'Hospedagem do pet quando o tutor precisa se ausentar por hospitalização decorrente de lesão ou doença.'},
+  'Consulta eletiva':{t:'Consulta Eletiva',d:'Consultas veterinárias agendadas para acompanhamento de rotina e cuidados preventivos.'},
+  'Concierge':{t:'Concierge Pet',d:'Serviço de concierge para orientações, indicações e organização de serviços para o seu animal.'},
+  'Orientação de vacinação':{t:'Orientação de Vacinação',d:'Orientação sobre o calendário de vacinas e os cuidados preventivos adequados ao seu pet.'},
+  'Exames laboratoriais':{t:'Exames Laboratoriais',d:'Cobertura de exames laboratoriais para diagnóstico e acompanhamento da saúde do animal.'},
+  'Exames de imagem':{t:'Exames de Imagem',d:'Exames de imagem (como raio-X e ultrassom) para um diagnóstico mais completo da saúde do pet.'},
+  'Todos os serviços do Sossego':{t:'Todos os serviços do Sossego',d:'Este plano inclui todos os serviços do plano Pet Sossego e acrescenta os itens listados a seguir.'},
+  'Todos os serviços do Conforto':{t:'Todos os serviços do Conforto',d:'Este plano inclui todos os serviços do plano Pet Conforto e acrescenta os itens listados a seguir.'},
+  'Sem assistência pet':{t:'Sem assistência pet',d:'Nenhum serviço de assistência pet está incluído nesta opção. Você pode adicionar um plano pet a qualquer momento.'}
+};
+/* Ícone específico por item (interior do SVG; stroke herda currentColor). */
+const IICON=(function(){
+  var I={
+    flame:'<path d="M12 3c2.5 3 4 5 4 8a4 4 0 11-8 0c0-1.3.5-2.4 1.2-3.3C8 9 9 6.5 12 3z"/>',
+    wind:'<path d="M3 8h10a3 3 0 100-6M3 16h14a3 3 0 110 6M3 12h6"/>',
+    bolt:'<path d="M13 2L4 14h6l-1 8 9-12h-6z"/>',
+    droplet:'<path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/>',
+    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 017.9-1"/>',
+    users:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0M16 5.5a3 3 0 010 5.8M20 20a5 5 0 00-3.5-4.7"/>',
+    window:'<rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16"/>',
+    bike:'<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17l4-8h5l-3 8M9 9h4"/>',
+    scale:'<path d="M12 3v18M6 21h12M5 6h14M6 6l-3 6a3 3 0 006 0L6 6zM18 6l-3 6a3 3 0 006 0L18 6z"/>',
+    building:'<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h6"/>',
+    layers:'<path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5"/>',
+    key:'<circle cx="8" cy="8" r="4"/><path d="M11 11l9 9M17 17l2-2M14 14l2-2"/>',
+    wrench:'<path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4l-2.5 2.5-2-2 2.5-2.5z"/>',
+    plug:'<path d="M9 2v6M15 2v6M7 8h10v2a5 5 0 01-10 0V8zM12 15v7"/>',
+    headset:'<path d="M4 14v-2a8 8 0 0116 0v2M4 14a2 2 0 002 2h1v-5H6a2 2 0 00-2 2zM20 14a2 2 0 01-2 2h-1v-5h1a2 2 0 012 2zM18 16a4 4 0 01-4 4h-2"/>',
+    appliance:'<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6h.01M11 6h.01"/>',
+    bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.8.7 1 1.3 1 2.5h6c0-1.2.2-1.8 1-2.5A6 6 0 0012 3z"/>',
+    eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+    tools:'<path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4M14 14l6 6"/>',
+    snow:'<path d="M12 2v20M3 7l18 10M21 7L3 17"/>',
+    truck:'<path d="M3 16V6h11v10M14 9h4l3 3v4h-3M3 16h8"/><circle cx="7.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/>',
+    tv:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    grid:'<rect x="3" y="3" width="18" height="18" rx="1"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>',
+    trash:'<path d="M4 6h16M9 6V4h6v2M18 6l-1 14H7L6 6"/>',
+    paw:'<circle cx="6.5" cy="11" r="1.7"/><circle cx="10" cy="7" r="1.7"/><circle cx="14" cy="7" r="1.7"/><circle cx="17.5" cy="11" r="1.7"/><path d="M12 12c-2.6 0-4.5 1.8-4.5 4S9.4 21 12 21s4.5-1.3 4.5-3.5S14.6 12 12 12z"/>',
+    crossmed:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/>',
+    heart:'<path d="M12 21s-7-4.5-9.5-9A5 5 0 0112 5a5 5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/>',
+    home:'<path d="M3 11l9-7 9 7M5 10v10h14V10"/>',
+    calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>',
+    bell:'<path d="M6 16V11a6 6 0 0112 0v5l2 2H4zM10 21a2 2 0 004 0"/>',
+    syringe:'<path d="M17 2l5 5M14 5l5 5M19 10l-9 9H6v-4l9-9zM8 13l3 3"/>',
+    flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4a2 2 0 001.8-3l-5-9V3M7.5 15h9"/>',
+    monitor:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 11l3-3 2 2 3-3"/>'
+  };
+  var M={
+    'Incêndio, raio, explosão e fumaça':'flame','Vendaval, granizo e furacão':'wind','Danos elétricos':'bolt',
+    'Alagamento e inundação':'droplet','Ruptura de tubulações':'droplet','Roubo e subtração com arrombamento':'lock',
+    'Responsabilidade Civil Familiar':'users','Quebra de vidros e impacto de veículos':'window','Roubo de bicicletas':'bike',
+    'RC danos morais':'scale','Despesas extraordinárias e desmoronamento':'building','Todas as coberturas do Essencial':'layers','Todas as coberturas do Intermediário':'layers',
+    'Chaveiro':'key','Encanador':'wrench','Eletricista':'plug','Desentupimento':'droplet','Vidraceiro':'window','Help desk':'headset',
+    'Linha branca e marrom':'appliance','Instalação de luminárias/tomadas':'bulb','Olho mágico':'eye','Serviços gerais':'tools','Verificação de vazamentos':'droplet',
+    'Limpeza de ar-condicionado':'snow','Caçamba':'truck','Suporte de TV':'tv','Instalação de telas':'grid','Descarte inteligente':'trash',
+    'Todos os serviços do Essencial':'layers','Todos os serviços do Proteção':'layers',
+    'Telemedicina veterinária':'paw','Consulta de urgência':'crossmed','Transporte emergencial':'truck','Funeral pet':'heart','Hospedagem':'home',
+    'Consulta eletiva':'calendar','Concierge':'bell','Orientação de vacinação':'syringe','Exames laboratoriais':'flask','Exames de imagem':'monitor',
+    'Todos os serviços do Sossego':'layers','Todos os serviços do Conforto':'layers','Sem assistência pet':'paw'
+  };
+  var out={}; for(var k in M){ out[k]=I[M[k]]; } return out;
+})();
 function aplicaPacote(v){
   const p=PACOTES.find(x=>x.v===v)||PACOTES[1];
   const cobs={}; p.cobs.forEach(id=>cobs[id]=true);
@@ -2058,8 +2219,10 @@ function renderTela3(){
   const pac=PACOTES.find(p=>p.v===r.pacote)||{resumo:[]};
   const ass=RES.assist.find(a=>a.v===r.assist)||{servicos:[]};
   const chk='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const liCob=pac.resumo.map(s=>'<li>'+chk+'<span>'+s+'</span></li>').join('');
-  const liAss=ass.servicos.map(s=>'<li>'+chk+'<span>'+s+'</span></li>').join('');
+  const iSvg='<svg class="rc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none"/></svg>';
+  const liItem=function(s){ return ITEM_INFO[s] ? ('<li class="rc-li" data-info="'+escapeHtml(s)+'">'+chk+'<span>'+s+'</span>'+iSvg+'</li>') : ('<li>'+chk+'<span>'+s+'</span></li>'); };
+  const liCob=pac.resumo.map(liItem).join('');
+  const liAss=ass.servicos.map(liItem).join('');
   const petTxt = r.pet ? ' + '+petNome(r.pet) : '';
   const liCobSvc = (r.pet?'<li class="cob-svc"><span>Serviço PET</span><b>'+petNome(r.pet)+'</b></li>':'')+'<li class="cob-svc"><span>Assistência 24h</span><b>'+assistNome(r.assist)+'</b></li>';
 
@@ -2120,6 +2283,15 @@ function renderTela3(){
       const el=document.getElementById(btn.dataset.tg);
       const open=el.classList.toggle('open');
       btn.classList.toggle('open',open);
+    };
+  });
+  document.querySelectorAll('.rc-collapse li.rc-li').forEach(function(li){
+    li.onclick=function(){
+      var info=ITEM_INFO[li.getAttribute('data-info')]; if(!info)return;
+      var nx=li.nextElementSibling;
+      if(nx&&nx.classList.contains('rc-li-desc')){ nx.remove(); return; }
+      var d=document.createElement('li'); d.className='rc-li-desc'; d.textContent=info.d;
+      li.parentNode.insertBefore(d, li.nextSibling);
     };
   });
   document.getElementById('t3-avancar').onclick=()=>{ S.resStep=4; renderTela4(); };
@@ -2551,11 +2723,7 @@ function updatePrice(){
     +'<div class="pc-from">'+fmtBRL(cheio)+'/mês</div>'
     +'<div class="pc-now">'+fmtBRL(q.mensal)+' <span>/mês</span></div>'
     +'<div class="pc-vig">(mensal com vigência de '+vigNome+')</div>'
-    +'</div>'
-    +'<div class="pc-mid"><div class="l">Valor Informado (Importância Segurada)</div>'
-    +'<div class="v">'+fmtBRL(r.lmi)+'</div>'
-    +'<button class="pc-edit" id="pc-edit">Editar</button></div>';
-  document.getElementById('pc-edit').onclick=()=>{ S.resStep=1; renderTela1(); };
+    +'</div>';
 }
 function bindTela2(){
   const r=S.res;
@@ -2607,7 +2775,7 @@ function openPlanModal(grupo){
   const cards=d.cards.map(it=>{
     const on=(it.v===d.sel);
     const isRec=(it.v===d.recomendado);
-    const lista=(it.list||[]).map(s=>'<li>'+check+'<span>'+s+'</span></li>').join('');
+    const lista=(it.list||[]).map(function(s){ var info=ITEM_INFO[s]; if(info){ return '<li class="pm-li" data-info="'+escapeHtml(s)+'">'+check+'<span>'+s+'</span><svg class="pm-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none"/></svg></li>'; } return '<li>'+check+'<span>'+s+'</span></li>'; }).join('');
     const precoBlock = it.price===null ? '<div class="pm-price free">Sem custo adicional</div>'
       : '<div class="pm-price"><span class="cur">R$</span> <b>'+fmtBRL(it.price).replace('R$ ','')+'</b> <span class="per">/mês</span></div>';
     return '<div class="pm-card'+(on?' on':'')+'">'
@@ -2621,10 +2789,25 @@ function openPlanModal(grupo){
   const wrap=document.getElementById('plan-modal');
   wrap.innerHTML='<div class="pm-box"><button class="pm-close" id="pm-close" aria-label="Fechar">&times;</button>'
     +'<div class="pm-title">'+d.titulo+'</div><div class="pm-sub">'+d.sub+'</div>'
+    +'<div class="pm-info" id="pm-info" style="display:none"></div>'
     +'<div class="pm-grid cols-'+d.cards.length+'">'+cards+'</div></div>';
   wrap.classList.add('show');
   document.getElementById('pm-close').onclick=closePlanModal;
   wrap.onclick=e=>{ if(e.target===wrap)closePlanModal(); };
+  wrap.querySelectorAll('.pm-li').forEach(function(li){
+    li.onclick=function(){
+      var key=li.getAttribute('data-info');
+      var info=ITEM_INFO[key]; if(!info)return;
+      var box=document.getElementById('pm-info');
+      var ey=(grupo==='pac'?'Sobre esta cobertura':'Sobre este serviço');
+      var inner=IICON[key]||'<path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>';
+      var icon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';
+      box.innerHTML='<div class="pm-info-head"><span class="pm-info-ic">'+icon+'</span><div><div class="pm-info-ey">'+ey+'</div><div class="pm-info-t">'+escapeHtml(info.t)+'</div></div></div><div class="pm-info-d">'+escapeHtml(info.d)+'</div><button type="button" class="pm-info-ok" id="pm-info-ok">Entendi</button>';
+      box.style.display='block';
+      document.getElementById('pm-info-ok').onclick=function(){ box.style.display='none'; };
+      var bx=document.querySelector('.pm-box'); if(bx)bx.scrollTop=0; box.scrollIntoView({behavior:'smooth',block:'nearest'});
+    };
+  });
   wrap.querySelectorAll('.pm-choose').forEach(btn=>{
     btn.onclick=()=>{
       const g=btn.dataset.grupo, val=btn.dataset.val;
