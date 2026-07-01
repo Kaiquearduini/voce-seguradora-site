@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="site-build" content="s6.5">
+<meta name="site-build" content="s6.6">
 <!-- SITE BUILD: s2.1 — Etapa 1: home (area do cliente, layout dividido escuro/claro) + login real Supabase + bloco "Vamos cotar" + pop-up de seguros + contratacao AAA do Residencial. Arquivo SEPARADO do app (voce-seguradora.html). Usa o MESMO Supabase, a MESMA logica de calculo e os MESMOS produtos do app. -->
 <title>Você Seguradora — Seguro Residencial 100% digital, em minutos</title>
 <meta name="description" content="Cote, personalize e contrate seu Seguro Residencial em minutos, sem burocracia. Coberturas para incêndio, roubo, danos elétricos e mais, com assistência 24h. Regulado pela SUSEP e protegido pela LGPD.">
@@ -538,6 +538,35 @@ a{color:inherit;text-decoration:none}
 .pay-missing ul{margin:0;padding-left:20px;font-size:13px;color:#b91c1c;line-height:1.65;font-weight:600}
 .co-cta.locked{opacity:.5;cursor:not-allowed;box-shadow:none;filter:saturate(.35)}
 .co-cta.locked:hover{transform:none}
+/* Linha do tempo do sinistro */
+.cl-item{padding:13px 0;border-bottom:1px solid rgba(0,36,48,.06)}
+.cl-item.last{border-bottom:none}
+.cl-top{font-size:13px;color:var(--txt2);margin-bottom:11px}
+.cl-top b{color:var(--txt1)}
+.cl-tl{display:flex;align-items:flex-start}
+.cl-step{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;width:74px;text-align:center}
+.cl-dot{width:15px;height:15px;border-radius:50%;border:2px solid rgba(0,36,48,.18);background:#fff;display:flex;align-items:center;justify-content:center}
+.cl-dot svg{width:9px;height:9px;color:#fff;opacity:0}
+.cl-step.done .cl-dot{border-color:var(--teal);background:var(--teal)}
+.cl-step.done .cl-dot svg{opacity:1}
+.cl-step.cur .cl-dot{border-color:var(--teal);background:#fff;box-shadow:0 0 0 4px rgba(39,153,137,.16)}
+.cl-lbl{font-size:11px;font-weight:700;color:#9fb2bb;line-height:1.2}
+.cl-step.done .cl-lbl,.cl-step.cur .cl-lbl{color:var(--navy)}
+.cl-bar{flex:1;height:2px;background:rgba(0,36,48,.12);margin:7px 2px 0}
+.cl-bar.done{background:var(--teal)}
+/* Proteção combinada (cross-sell) */
+.xsell{background:#fff;border:1px solid rgba(0,36,48,.08);border-radius:16px;padding:18px;margin-bottom:14px;text-align:left;box-shadow:0 10px 28px rgba(0,36,48,.06)}
+.xsell-h{font-size:14px;font-weight:800;color:var(--navy,#002430);margin-bottom:3px}
+.xsell-s{font-size:12.5px;color:var(--txt2,#5b6b70);margin-bottom:13px;line-height:1.5}
+.xsell-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.xs-card{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;border:1px solid rgba(0,36,48,.1);border-radius:12px;padding:13px 8px;background:#fff;cursor:pointer;transition:border-color .15s,transform .15s;text-decoration:none}
+.xs-card:hover{border-color:rgba(39,153,137,.5);transform:translateY(-2px)}
+.xs-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.xs-name{font-size:12.5px;font-weight:700;color:var(--navy,#002430);line-height:1.2}
+.xs-tag{font-size:10.5px;font-weight:800;color:var(--teal);letter-spacing:.03em}
+/* Acessibilidade */
+:focus-visible{outline:3px solid rgba(39,153,137,.55);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 .field-lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:9px;display:block}
 .titular-wrap{margin-bottom:22px;max-width:420px}
 .pay-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:13px;background:linear-gradient(135deg,var(--neon),var(--teal));color:var(--navy);font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;transition:all .18s;box-shadow:0 8px 20px rgba(70,239,128,.28)}
@@ -1094,7 +1123,7 @@ textarea.input{resize:vertical;min-height:96px;line-height:1.5}
       <div class="lp-faq">
         <details class="lp-q"><summary>Preciso criar conta para simular?<span class="pm"></span></summary><div class="a">Não. Você pode simular e ver o preço sem criar conta. A conta só é necessária para acompanhar suas apólices depois — e, se você já tiver simulado, sua proposta é vinculada automaticamente ao seu CPF quando você se cadastra.</div></details>
         <details class="lp-q"><summary>Quando a cobertura começa a valer?<span class="pm"></span></summary><div class="a">A cobertura inicia após a aceitação da proposta e a confirmação do pagamento da primeira parcela. Você recebe a apólice digital assim que isso acontece.</div></details>
-        <details class="lp-q"><summary>Como funciona o pagamento e o IOF?<span class="pm"></span></summary><div class="a">Você pode pagar no cartão de crédito (em parcelas) ou via PIX. O valor do IOF é calculado conforme a legislação vigente e aparece de forma transparente no resumo, antes de você confirmar.</div></details>
+        <details class="lp-q"><summary>Como funciona o pagamento e o IOF?<span class="pm"></span></summary><div class="a">Você pode pagar no cartão de crédito (em parcelas), via PIX ou boleto bancário (à vista ou parcelado). O valor do IOF é calculado conforme a legislação vigente e aparece de forma transparente no resumo, antes de você confirmar.</div></details>
         <details class="lp-q"><summary>Posso cancelar quando quiser?<span class="pm"></span></summary><div class="a">Sim. Não há fidelidade. Você pode solicitar o cancelamento a qualquer momento pela área do cliente, com devolução proporcional quando aplicável.</div></details>
         <details class="lp-q"><summary>Como aciono um sinistro?<span class="pm"></span></summary><div class="a">Pela área do cliente, no site ou no app, em poucos cliques. Você acompanha cada etapa em tempo real e fala com a nossa assistente, a Vic, sempre que precisar.</div></details>
         <details class="lp-q"><summary>Meus dados estão seguros?<span class="pm"></span></summary><div class="a">Sim. Seguimos a LGPD, usamos criptografia ponta a ponta e nunca compartilhamos seus dados sem a sua autorização.</div></details>
@@ -1460,9 +1489,13 @@ function areaApoliceDetail(p){
   var fmt=function(d){return d.toLocaleDateString('pt-BR');};
   var info=[['Número da apólice',num],['Status', _statusLabel(p)],['Início da vigência',fmt(ini)],['Fim da vigência',fmt(end)],['Forma de pagamento',p.pagamento||'—']];
   var myClaims=(S.sinistros||[]).filter(function(s){return s.polId&&String(s.polId)===String(p.id||'');});
+  var ckdot='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var clTl=function(status){ var steps=['Aberto','Em análise','Concluído']; var idx=status==='concluido'?2:(status==='aberto'?0:1);
+    return '<div class="cl-tl">'+steps.map(function(lb,i){ var st=i<idx?'done':(i===idx?'cur':'');
+      return '<div class="cl-step '+st+'"><span class="cl-dot">'+ckdot+'</span><span class="cl-lbl">'+lb+'</span></div>'+(i<2?'<span class="cl-bar '+(i<idx?'done':'')+'"></span>':''); }).join('')+'</div>'; };
   var ocorr='<div class="det-card"><div class="det-card-h">Ocorrências (sinistros)</div>'
     +(myClaims.length
-        ? myClaims.map(function(s,i){return '<div class="det-r'+(i<myClaims.length-1?'':' last')+'"><span>Protocolo '+escapeHtml(s.proto)+' · '+escapeHtml(s.data)+'</span><b style="color:#b8860b">● Em análise</b></div>';}).join('')
+        ? myClaims.map(function(s,i){ return '<div class="cl-item'+(i<myClaims.length-1?'':' last')+'"><div class="cl-top">Protocolo <b>'+escapeHtml(s.proto)+'</b> · aberto em '+escapeHtml(s.data)+'</div>'+clTl(s.status||'analise')+'</div>'; }).join('')
         : '<div class="det-r last"><span style="color:var(--txt2)">Nenhuma ocorrência registrada para esta apólice.</span><b></b></div>')
     +'</div>';
   var left='<div class="card-digital"><div class="cd-glow"></div><div class="cd-eye">Carteirinha digital</div><div class="cd-title">'+escapeHtml(p.tipo||'Seguro')+'</div>'
@@ -1471,9 +1504,14 @@ function areaApoliceDetail(p){
     +'<div class="det-card"><div class="det-card-h">Informações da apólice</div>'+info.map(function(kv,i){return '<div class="det-r'+(i<info.length-1?'':' last')+'"><span>'+kv[0]+'</span><b>'+escapeHtml(kv[1])+'</b></div>';}).join('')+'</div>'
     +'<div class="det-card"><div class="det-card-h">Cobertura contratada</div><div class="det-r last"><span>Resumo</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
     +ocorr;
-  var right='<div class="det-money"><div><span>Mensalidade</span><b>'+escapeHtml(p.preco||'—')+'</b></div><div style="text-align:right"><span>Cobertura</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
+  var days=Math.ceil((end-new Date())/86400000);
+  var clk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var renew = _isActive(p) ? (days<=60
+      ? '<div class="det-note" style="background:rgba(245,158,11,.08);color:#b45309;border:1px solid rgba(245,158,11,.28)">'+clk+'<span>Sua apólice vence em <b>'+days+' dia'+(days===1?'':'s')+'</b>. Renove para manter a proteção sem interrupção.</span></div>'
+      : '<div class="det-note">'+clk+'<span>Vigência ativa · faltam '+days+' dias para a renovação ('+fmt(end)+').</span></div>') : '';
+  var right=renew+'<div class="det-money"><div><span>Mensalidade</span><b>'+escapeHtml(p.preco||'—')+'</b></div><div style="text-align:right"><span>Cobertura</span><b>'+escapeHtml(p.cobertura||'—')+'</b></div></div>'
     +((!_isActive(p)&&!_isCancelled(p))?'<button class="co-cta" data-aa="ativar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-bottom:16px;justify-content:center">Ativar cobertura'+_arrow()+'</button>':'')
-    +'<div class="det-actions"><button class="btn-soft danger" data-aa="nav" data-view="sinistros">Abrir sinistro</button><button class="btn-soft" data-aa="baixar-apolice">Baixar resumo</button></div>'
+    +'<div class="det-actions"><button class="btn-soft danger" data-aa="nav" data-view="sinistros">Abrir sinistro</button><button class="btn-soft" data-aa="baixar-apolice">Baixar apólice</button></div>'
     +(_isActive(p)?'<button class="btn-soft" data-aa="cancelar-id" data-id="'+escapeHtml(String(p.id||''))+'" style="width:100%;margin-top:10px;justify-content:center;color:#dc2626;border-color:rgba(220,38,38,.25)">Cancelar apólice</button>':'')
     +(_isCancelled(p)?'<div class="det-note" style="background:rgba(220,38,38,.06);color:#b91c1c">'+_lock()+'<span>Esta apólice está cancelada. Para reativar, fale com o atendimento.</span></div>':'')
     +'<div class="det-note">'+_lock()+'<span>Regulada pela SUSEP e protegida pela LGPD. Dados criptografados ponta a ponta.</span></div>';
@@ -1713,19 +1751,32 @@ function _sinOpen(){
   var data=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw.split('-').reverse().join('/'):(raw||new Date().toLocaleDateString('pt-BR'));
   var msg=document.getElementById('sin-msg');
   var proto='SIN-'+Date.now().toString(36).toUpperCase().slice(-7);
-  S.sinistros=S.sinistros||[]; S.sinistros.unshift({proto:proto,polId:String(p.id||''),tipo:(p.tipo||'Seguro'),apol:(p.tipo||'Seguro')+' — '+(p.item||''),data:data});
+  S.sinistros=S.sinistros||[]; S.sinistros.unshift({proto:proto,polId:String(p.id||''),tipo:(p.tipo||'Seguro'),apol:(p.tipo||'Seguro')+' — '+(p.item||''),data:data,status:'analise'});
   if(msg){msg.className='msg show ok';msg.textContent='Sinistro aberto! Protocolo '+proto+'. Nossa equipe vai te contatar.';}
   setTimeout(function(){ renderArea(); },1200);
 }
 function _baixarResumo(){
   var p=S.curPol||{}; var num=p.numero||('VS-'+String(p.id||Date.now()).slice(-8).toUpperCase());
   var prof=_profile();
-  var rows=[['Segurado(a)',prof.nome||'—'],['CPF',prof.cpf||'—'],['Apólice',num],['Produto',p.tipo||'Seguro'],['Item',p.item||'—'],['Cobertura',p.cobertura||'—'],['Mensalidade',p.preco||'—'],['Pagamento',p.pagamento||'—'],['Status',_isActive(p)?'Ativa':'Ativação pendente']];
-  var html='<!doctype html><meta charset="utf-8"><title>Apólice '+escapeHtml(num)+'</title>'
-    +'<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:40px auto;color:#002430">'
-    +'<h2 style="color:#279989">Você Seguradora — Resumo da apólice</h2><table style="width:100%;border-collapse:collapse">'
-    +rows.map(function(r){return '<tr><td style="padding:8px 0;color:#5b6b70;border-bottom:1px solid #eee">'+r[0]+'</td><td style="padding:8px 0;text-align:right;font-weight:700;border-bottom:1px solid #eee">'+escapeHtml(r[1])+'</td></tr>';}).join('')
-    +'</table><p style="font-size:12px;color:#8aa0a4;margin-top:16px">Documento de resumo. A cobertura segue as Condições Gerais do produto, reguladas pela SUSEP.</p></div>';
+  var ini=_polStart(p), end=new Date(ini); end.setMonth(end.getMonth()+12);
+  var fmt=function(d){return d.toLocaleDateString('pt-BR');};
+  var rows=[['Segurado(a)',prof.nome||'—'],['CPF',prof.cpf||'—'],['Apólice',num],['Produto',p.tipo||'Seguro'],['Item segurado',p.item||'—'],['Cobertura contratada',p.cobertura||'—'],['Mensalidade',p.preco||'—'],['Forma de pagamento',p.pagamento||'—'],['Início da vigência',fmt(ini)],['Fim da vigência',fmt(end)],['Status',_statusLabel(p)]];
+  var html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apólice '+escapeHtml(num)+' — Você Seguradora</title>'
+    +'<style>body{font-family:Arial,Helvetica,sans-serif;color:#002430;max-width:720px;margin:28px auto;padding:0 18px}'
+    +'.hd{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #279989;padding-bottom:12px}'
+    +'.hd b{font-size:22px}.tag{font-size:12px;color:#279989;font-weight:800;letter-spacing:.1em;text-transform:uppercase}'
+    +'h2{font-size:16px;margin:22px 0 6px}table{width:100%;border-collapse:collapse}'
+    +'td{padding:9px 0;border-bottom:1px solid #eef2f4;font-size:14px}td.k{color:#5b6b70}td.v{text-align:right;font-weight:700}'
+    +'.btn{display:inline-block;margin:18px 0;background:#279989;color:#fff;border:none;border-radius:8px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:14px}'
+    +'.foot{font-size:12px;color:#8aa0a4;margin-top:18px;line-height:1.6}@media print{.btn{display:none}}</style></head><body>'
+    +'<div class="hd"><b>Você<span style="color:#279989">Seguradora</span></b><span class="tag">Apólice / Certificado</span></div>'
+    +'<div style="font-size:12.5px;color:#5b6b70;margin:8px 0">Documento gerado em '+fmt(new Date())+'</div>'
+    +'<h2>Dados da apólice</h2><table>'+rows.map(function(r){return '<tr><td class="k">'+r[0]+'</td><td class="v">'+escapeHtml(r[1])+'</td></tr>';}).join('')+'</table>'
+    +'<h2>Beneficiário</h2><table><tr><td class="k">Seguradora</td><td class="v">VOCÊ SEGURADORA S.A.</td></tr><tr><td class="k">CNPJ</td><td class="v">45.233.931/0001-78</td></tr></table>'
+    +'<button class="btn" onclick="window.print()">Imprimir / Salvar em PDF</button>'
+    +'<p class="foot">A cobertura segue as Condições Gerais do produto, reguladas pela SUSEP. Documento de demonstração — sem valor fiscal. Dados protegidos conforme a LGPD.</p>'
+    +'</body></html>';
+  try{ var w=window.open('','_blank'); if(w){ w.document.open(); w.document.write(html); w.document.close(); return; } }catch(e){}
   var blob=new Blob([html],{type:'text/html;charset=utf-8'});
   var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='apolice-'+num+'.html';
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500);
@@ -2782,6 +2833,13 @@ function renderTela5(num){
     +'<div class="ds-row total"><span>Valor mensal (com IOF)</span><b>'+fmtBRL(t.total)+'</b></div>'
     +'</div>'
     +'<p class="done-note">A cobertura inicia após a aceitação do risco e o pagamento da 1ª parcela. Você receberá a apólice e as Condições Gerais por e-mail.</p>'
+    +'<div class="xsell"><div class="xsell-h">Complete a sua proteção</div>'
+    +'<div class="xsell-s">Quem protege o imóvel costuma adicionar também:</div>'
+    +'<div class="xsell-grid">'
+    +'<a class="xs-card" href="https://wa.me/5511930549424?text=Quero%20incluir%20Seguro%20de%20Vida%20na%20minha%20prote%C3%A7%C3%A3o" target="_blank" rel="noopener"><span class="xs-ico" style="background:'+_tint('#ec4899',.14)+'">'+prodIcon('Vida','#ec4899',20)+'</span><span class="xs-name">Vida</span><span class="xs-tag">Proteja a família</span></a>'
+    +'<a class="xs-card" href="https://wa.me/5511930549424?text=Quero%20incluir%20Acidentes%20Pessoais" target="_blank" rel="noopener"><span class="xs-ico" style="background:'+_tint('#f59e0b',.14)+'">'+prodIcon('Acidentes Pessoais','#f59e0b',20)+'</span><span class="xs-name">Acidentes Pessoais</span><span class="xs-tag">Imprevistos do dia a dia</span></a>'
+    +'<a class="xs-card" href="https://wa.me/5511930549424?text=Quero%20incluir%20plano%20Pet" target="_blank" rel="noopener"><span class="xs-ico" style="background:'+_tint('#14b8a6',.14)+'">'+prodIcon('Pet','#14b8a6',20)+'</span><span class="xs-name">Pet</span><span class="xs-tag">Cuide do seu bicho</span></a>'
+    +'</div></div>'
     +(!S.authed?('<div style="background:rgba(70,239,128,.08);border:1px solid rgba(70,239,128,.28);border-radius:16px;padding:16px 18px;text-align:left;margin-bottom:14px">'
       +'<div style="font-size:14px;font-weight:800;color:var(--txt1,#002430);margin-bottom:6px">Apólice vinculada ao seu CPF e e-mail</div>'
       +'<div style="font-size:12.5px;color:var(--txt2,#5b6b70);margin-bottom:10px;line-height:1.5">Guardamos sua contratação. Crie sua conta (ou entre) com os mesmos dados e ela aparece automaticamente na sua área do cliente.</div>'
